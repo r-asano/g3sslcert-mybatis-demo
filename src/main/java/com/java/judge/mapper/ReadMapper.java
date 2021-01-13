@@ -1,0 +1,110 @@
+package com.java.judge.mapper;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
+
+import com.java.judge.dto.AgentDto;
+import com.java.judge.dto.CertificateDto;
+import com.java.judge.dto.DomainDto;
+import com.java.judge.dto.WildcardDto;
+
+
+@Mapper
+public interface ReadMapper {
+
+	//	@Select("SELECT * FROM Certificate WHERE issue_apply_id=#{issueApplyId}")
+	//	Certificate selectCn(String issueApplyId);
+	//
+	//	@Select("SELECT * FROM Certificate")
+	//	List<Certificate> selectCertAllCn();
+	//
+	//	@Select("SELECT * FROM Certificate WHERE status='G3' OR status='bfG2'")
+	//	List<Certificate> selectCertG3();
+	//
+	//	@Update("UPDATE certificate SET status='G4' WHERE csr_id= #{csrId}")
+	//	void updateStatusToG4(Integer csrId); // オブジェクトでもよい
+	//
+	//	@Update("UPDATE certificate SET rec_upd_date= #{rec_upd_date} WHERE csr_id= #{csrId}")
+	//	void updateDate(Integer csrId, Timestamp recUpdDate);  // オブジェクトでもよい
+	//
+	//	@Select("SELECT COUNT(*) FROM certificate WHERE status='G3' OR status='G4'")
+	//	int countG3();
+
+	/*
+	 * Certificate Table
+	 */
+	@Insert("INSERT INTO Certificate VALUES (#{issueApplyId}, #{jointAgentId}, #{certificateClass},"
+			+ "#{twoWayFlag}, #{paymentUnitClass}, #{validTermClass}, #{certificateStatus},"
+			+ "#{certificateX509}, #{certificateSerialNumber}, #{validTermStartDate}, #{validTermEndDate},"
+			+ "#{updatedApplyId}, #{revokeApplyId}, #{revokeReserveClass}, #{revokeDate},"
+			+ "#{reissueCertificateClass}, #{reissuedClass}, #{issueAvailableDate} )")
+	void insertCertificate(CertificateDto certificate);
+
+	@Select("SELECT certificate_x509 FROM Certificate WHERE (certificate_x509 IS NOT NULL AND certificate_x509 !='') "
+			+ "AND (valid_term_start_date <= '2019-07-31' AND valid_term_end_date >= '2021-01-01' "
+			+ "OR valid_term_start_date BETWEEN '2019-08-01' AND '2019-09-30')")
+	List<String> selectX509();
+
+	@Select("SELECT issue_apply_id FROM Certificate WHERE certificate_x509=#{certificateX509}")
+	String selectIssueApplyId(String certificateX509);
+
+
+	/*
+	 * Domain Table
+	 */
+	@Insert("INSERT INTO Domain VALUES (#{issueApplyId}, #{dnCn}, #{employeeName},"
+			+ "#{status}, #{recUpdDate}, #{wildcardFlag})")
+	void insertDomain(DomainDto domain);
+
+	@Select("SELECT * FROM Domain WHERE (status LIKE 'JPRS%' AND status LIKE '%G3') "
+			+ "OR status='CONNECTION ERROR' "
+			+ "OR status='ERROR' "
+			+ "OR status='ERROR' "
+			+ "OR status='ERROR' ")
+	List<DomainDto> selectG3OrErrorDomain();
+
+	@Select("SELECT * FROM Domain WHERE (status LIKE 'JPRS%' AND status LIKE '%G3') ")
+	List<DomainDto> selectG3Domain();
+
+	@Select("SELECT * FROM Domain")
+	List<DomainDto> selectAllDomain();
+
+	@Select("SELECT * FROM Domain WHERE dn_cn LIKE '*%' ")
+	List<DomainDto> selectWildcardDomain();
+
+	@Update("UPDATE Domain SET status=#{status}, rec_upd_date=#{recUpdDate} WHERE issue_apply_id=#{issueApplyId}")
+	void updateDomain(DomainDto domain);
+
+	@Select("SELECT COUNT(*) FROM Domain WHERE (status LIKE 'JPRS%' AND status LIKE '%G3')")
+	int countG3();
+
+	@Select("SELECT COUNT(*) FROM Domain WHERE (status LIKE 'JPRS%' AND status LIKE '%Domain%' AND status LIKE '%G3')")
+	int countDV();
+
+	@Select("SELECT COUNT(*) FROM Domain WHERE (status LIKE 'JPRS%' AND status LIKE '%Organization%' AND status LIKE '%G3')")
+	int countOV();
+
+
+
+
+
+	/*
+	 * Agent Table
+	 */
+	@Insert("INSERT INTO Agent VALUES (#{jointAgentId}, #{agentName})")
+	void insertAgent(AgentDto agent);
+
+
+	/*
+	 * Wildcard Table
+	 */
+	@Insert("INSERT INTO Wildcard VALUES (#{dnCn}, #{dn})")
+	void insertWildCard(WildcardDto wildcard);
+
+	@Select("SELECT dn FROM Wildcard WHERE dn_cn=#{dnCn}")
+	String selectNoWildcardDn(DomainDto domain);
+}

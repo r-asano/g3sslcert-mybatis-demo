@@ -1,0 +1,60 @@
+package com.java.judge;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
+import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import com.java.judge.demo.GetCert;
+import com.java.judge.demo.OutputLog;
+import com.java.judge.demo.SendMail;
+import com.java.judge.dto.DomainDto;
+import com.java.judge.read.UtilDao;
+
+@SpringBootApplication
+//@EnableScheduling
+@MapperScan(basePackages = "com.java.judge.mapper")
+public class G3sslcertMyBatisDemoApplication {
+
+	public static void main(String[] args) throws Exception  {
+
+		ClassPathXmlApplicationContext context =
+				new ClassPathXmlApplicationContext("applicationContext.xml");
+
+		Date date = new Date();
+		String path = "C:/Eclips4.6/pleiades_2019/workspace/g3sslcert-mybatis-demo/log/";
+		String dateString = new SimpleDateFormat("yyyy-MM-dd").format(date);
+		String logFileName = "sslcert-G3.log." + dateString;
+
+		UtilDao dao = context.getBean(UtilDao.class);
+		GetCert getCert = context.getBean(GetCert.class);
+		OutputLog output = context.getBean(OutputLog.class);
+		SendMail mail = context.getBean(SendMail.class);
+
+		// 初日と最終日のみ全数検査
+		boolean zensu = false;
+		if (dateString == "2021-01-01" || dateString == "2021-03-31") {
+			zensu = true;
+		}
+
+		List<DomainDto> domainList;
+		if (zensu) {
+			domainList = dao.getAllList();
+		} else {
+			domainList = dao.getG3OrErrorList();
+		}
+
+		// dn_cnリストの取得 + DB更新
+		getCert.getCertIssuerStatus(domainList, logFileName, path);
+		// ログファイル出力
+		output.outputLog(logFileName, path);
+		// メールの送出
+		mail.sendMail(domainList.size(), dateString, path, logFileName);
+
+		context.close();
+	}
+
+}
