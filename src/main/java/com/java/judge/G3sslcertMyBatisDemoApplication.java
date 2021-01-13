@@ -40,6 +40,8 @@ public class G3sslcertMyBatisDemoApplication {
 			zensu = true;
 		}
 
+		zensu = true;
+
 		List<DomainDto> domainList;
 		if (zensu) {
 			domainList = dao.getAllList();

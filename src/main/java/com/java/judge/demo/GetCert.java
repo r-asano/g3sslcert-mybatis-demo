@@ -59,14 +59,15 @@ public class GetCert {
 		Proxy proxy = new Proxy(Proxy.Type.HTTP, addr);
 
 		// エラーログファイル
-		FileWriter errorLogFile = new FileWriter(path + "error." + logFileName, true);
+		FileWriter errorLogFile = new FileWriter(path + "error." + logFileName);
 
 		// wildcard用にList型を用意
 		List<String> dnCn = new ArrayList<String>();
 
 		for (DomainDto domain : domainList) {
 
-			String status = null;
+			// nullPointerExceptionの回避
+			String status = "";
 
 			System.out.println("================================================\r\n\r\n");
 			System.out.println("対象ドメイン: " + domain.getDnCn() + "\r\n\r\n");
@@ -85,8 +86,8 @@ public class GetCert {
 			// wildcardの場合は*付かなしかのどちらかエラーならstatusをエラーで設定
 			for (String cn : dnCn) {
 
-				// もしエラーならもう1度、エラーじゃないなら回さないかstatusにセットしない
-				if (!(status.startsWith("ERROR")) && status != null) {
+				// {dn_cn},www.{dn_cn}いずれかにG3証明書がある場合、statusをG3とする
+				if (status.contains("G3") && status.contains("JPRS")) {
 					break;
 				}
 
@@ -159,9 +160,6 @@ public class GetCert {
 					status = "ERROR: CONNECTION ERROR";
 				}
 			}
-
-			System.out.println("========= Status: " + status + " ===========");
-
 			// statusの更新
 			domain.setStatus(status);
 

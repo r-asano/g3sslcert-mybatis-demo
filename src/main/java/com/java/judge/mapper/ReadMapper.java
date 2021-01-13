@@ -15,25 +15,6 @@ import com.java.judge.dto.WildcardDto;
 
 @Mapper
 public interface ReadMapper {
-
-	//	@Select("SELECT * FROM Certificate WHERE issue_apply_id=#{issueApplyId}")
-	//	Certificate selectCn(String issueApplyId);
-	//
-	//	@Select("SELECT * FROM Certificate")
-	//	List<Certificate> selectCertAllCn();
-	//
-	//	@Select("SELECT * FROM Certificate WHERE status='G3' OR status='bfG2'")
-	//	List<Certificate> selectCertG3();
-	//
-	//	@Update("UPDATE certificate SET status='G4' WHERE csr_id= #{csrId}")
-	//	void updateStatusToG4(Integer csrId); // オブジェクトでもよい
-	//
-	//	@Update("UPDATE certificate SET rec_upd_date= #{rec_upd_date} WHERE csr_id= #{csrId}")
-	//	void updateDate(Integer csrId, Timestamp recUpdDate);  // オブジェクトでもよい
-	//
-	//	@Select("SELECT COUNT(*) FROM certificate WHERE status='G3' OR status='G4'")
-	//	int countG3();
-
 	/*
 	 * Certificate Table
 	 */

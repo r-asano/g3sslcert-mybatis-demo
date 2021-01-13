@@ -23,7 +23,7 @@ public class OutputLog {
 	@Scheduled(cron = "0 8 * * * *")
 	public void outputLog(String logFileName, String path) {
 
-			try (FileWriter logFile = new FileWriter(path + logFileName, true)) {
+			try (FileWriter logFile = new FileWriter(path + logFileName)) {
 
 				logFile.write("更新日" + "\t\t\t" + "CN" + "\t\t\t\t" + "Status" + "\t\t\t\t\t\t" + "Agent" + "\r\n");
 
