@@ -52,6 +52,10 @@ public interface ReadMapper {
 	@Select("SELECT issue_apply_id FROM Certificate WHERE certificate_x509=#{certificateX509}")
 	String selectIssueApplyId(String certificateX509);
 
+	@Select("SELECT joint_agent_id FROM Certificate WHERE issue_apply_id=#{issueApplyId}")
+	String selectJointAgentId(DomainDto domain);
+
+
 
 	/*
 	 * Domain Table
@@ -59,13 +63,6 @@ public interface ReadMapper {
 	@Insert("INSERT INTO Domain VALUES (#{issueApplyId}, #{dnCn}, #{employeeName},"
 			+ "#{status}, #{recUpdDate}, #{wildcardFlag})")
 	void insertDomain(DomainDto domain);
-
-	@Select("SELECT * FROM Domain WHERE (status LIKE 'JPRS%' AND status LIKE '%G3') "
-			+ "OR status='CONNECTION ERROR' "
-			+ "OR status='ERROR' "
-			+ "OR status='ERROR' "
-			+ "OR status='ERROR' ")
-	List<DomainDto> selectG3OrErrorDomain();
 
 	@Select("SELECT * FROM Domain WHERE (status LIKE 'JPRS%' AND status LIKE '%G3') ")
 	List<DomainDto> selectG3Domain();
@@ -97,6 +94,9 @@ public interface ReadMapper {
 	 */
 	@Insert("INSERT INTO Agent VALUES (#{jointAgentId}, #{agentName})")
 	void insertAgent(AgentDto agent);
+
+	@Select("SELECT agent_name FROM Agent WHERE joint_agent_id=#{jointAgentId}")
+	String selectAgentName(String jointAgentId);
 
 
 	/*

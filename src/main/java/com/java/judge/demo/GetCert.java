@@ -86,12 +86,9 @@ public class GetCert {
 			for (String cn : dnCn) {
 
 				// もしエラーならもう1度、エラーじゃないなら回さないかstatusにセットしない
-				if (status != "ERROR" && status != null) {
+				if (!(status.startsWith("ERROR")) && status != null) {
 					break;
 				}
-
-				// statusを"ERROR"に設定
-				status = "ERROR";
 
 				try {
 					URL destinationURL = new URL("https://" + cn);
@@ -148,15 +145,18 @@ public class GetCert {
 						} catch(CertificateExpiredException cee) {
 							System.out.println("Certificate is expired or Not Found: " + cn);
 							errorLogFile.write("Certificate is expired or Not Found: " + cn + "\r\n");
+							status = "ERROR: EXPIRED OR NOT FOUND";
 						}
 					} else {
 						System.err.println("Unknown certificate type: " + cn);
 						errorLogFile.write("Unknown certificate type:             " + cn + "\r\n");
+						status = "ERROR: UNKNOWN CERTIFICATE TYPE";
 					}
 
 				} catch (Exception e) {
 					System.err.println("Connection Error: " + cn);
 					errorLogFile.write("Connection Error:                    " + cn + "\r\n");
+					status = "ERROR: CONNECTION ERROR";
 				}
 			}
 

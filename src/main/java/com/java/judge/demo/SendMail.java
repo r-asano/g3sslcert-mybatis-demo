@@ -43,12 +43,12 @@ public class SendMail {
 				+ "★対象範囲		: " + "有効期間開始日が 2019/08 - 2019/09 のサーバ証明書\r\n"
 				+ "★対象件数		: " + searchNumber + "件\r\n"
 				+ "★残留G3証明書数	: " + readMapper.countG3() + "件\r\n"
-				+ "★DV/OV証明書数	: DV証明書 " + readMapper.countDV() + "件\r\n"
-				+ "		  OV証明書 " + readMapper.countOV() + "件\r\n"
-				+ "★添付ファイル	: sslcert-G3.log." + dateString + "\r\n"
-				+ "		  error.sslcert-G3.log" + dateString + "\r\n"
+				+ "★DV/OV証明書数		: DV証明書 " + readMapper.countDV() + "件\r\n"
+				+ "		 	  OV証明書 " + readMapper.countOV() + "件\r\n"
+				+ "★添付ファイル		: sslcert-G3.log." + dateString + "\r\n"
+				+ "		 	  error.sslcert-G3.log" + dateString + "\r\n"
 				+ "\r\n"
-				+ "																						以上";
+				+ "以上";
 //				+ "★統計情報		: " + "\r\n"
 //				+ "-----------------------------------------------------------------------------------------\r\n"
 //				+ "残存G3証明書数: 		" + judgeMapper.countG3() + " 件\r\n"
@@ -126,22 +126,6 @@ public class SendMail {
 		mbp3.setDataHandler(new DataHandler(fs2));
 		mbp3.setFileName(MimeUtility.encodeWord(fs2.getName()));
 		multipart.addBodyPart(mbp3);
-
-//		List<String> attachFiles = new ArrayList<String>();
-//		attachFiles.add(path + logFileName);
-//		File file = new File(path + "error." + logFileName);
-//		if (file.exists()) {
-//			attachFiles.add(path + "error." + logFileName);
-//		}
-//
-//		for (String attach : attachFiles) {
-//			// 添付するファイルデータソースを指定
-//			FileDataSource fs = new FileDataSource(attach);
-//			mbp2.setDataHandler(new DataHandler(fs));
-//			mbp2.setFileName(MimeUtility.encodeWord(fs.getName()));
-//			multipart.addBodyPart(mbp2);
-//		}
-
 
 		// マルチパートオブジェクトをメッセージに設定
 		mimeMessage.setContent(multipart);

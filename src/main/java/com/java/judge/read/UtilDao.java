@@ -19,9 +19,9 @@ public class UtilDao {
 	 * DomainテーブルからG3のdn_cnリストを取得
 	 */
 	@Transactional
-	public List<DomainDto> getG3OrErrorList() {
+	public List<DomainDto> getG3List() {
 
-		List<DomainDto> g3DnCn = readMapper.selectG3OrErrorDomain();
+		List<DomainDto> g3DnCn = readMapper.selectG3Domain();
 
 		return g3DnCn;
 	}
@@ -35,8 +35,7 @@ public class UtilDao {
 
 		List<DomainDto> allDnCn = readMapper.selectAllDomain();
 
-		return allDnCn
-				;
+		return allDnCn;
 	}
 
 

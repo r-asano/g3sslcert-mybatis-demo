@@ -24,9 +24,9 @@ public class G3sslcertMyBatisDemoApplication {
 		ClassPathXmlApplicationContext context =
 				new ClassPathXmlApplicationContext("applicationContext.xml");
 
-		Date date = new Date();
 		String path = "C:/Eclips4.6/pleiades_2019/workspace/g3sslcert-mybatis-demo/log/";
-		String dateString = new SimpleDateFormat("yyyy-MM-dd").format(date);
+//		String path = "/home/jprs/asano/g3sslcert-mybatis-demo/log/";
+		String dateString = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
 		String logFileName = "sslcert-G3.log." + dateString;
 
 		UtilDao dao = context.getBean(UtilDao.class);
@@ -44,7 +44,7 @@ public class G3sslcertMyBatisDemoApplication {
 		if (zensu) {
 			domainList = dao.getAllList();
 		} else {
-			domainList = dao.getG3OrErrorList();
+			domainList = dao.getG3List();
 		}
 
 		// dn_cnリストの取得 + DB更新
