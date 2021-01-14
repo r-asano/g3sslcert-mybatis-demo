@@ -45,6 +45,9 @@ import lombok.NoArgsConstructor;
 	"reissuedClass",
 	"issueAvailableDate" })
 
+/*
+ * CertificateテーブルDTO
+ */
 @Entity
 @Repository
 @Table(name = "Certificate")
@@ -71,11 +74,11 @@ public class CertificateDto {
 	private String certificateX509;
 
 	private String certificateSerialNumber;
+
 //  Timesramp型でうまくいかないのでとりあえずString型で定義
 //	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss", timezone="UTC")
 //	private Timestamp validTermStartDate;
 //	private Timestamp validTermEndDate;
-
 	private String validTermStartDate;
 
 	private String validTermEndDate;

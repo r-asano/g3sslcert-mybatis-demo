@@ -13,7 +13,9 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateExpiredException;
 import java.security.cert.CertificateNotYetValidException;
 import java.security.cert.X509Certificate;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.net.ssl.HostnameVerifier;
@@ -24,7 +26,7 @@ import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.X509TrustManager;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,11 +50,24 @@ public class GetCert {
 	@Autowired
 	UtilDao dao;
 
+	@Value("${app.path}")
+	private String path;
 
+	@Value("${app.logFilePrefix}")
+	private String prefix;
+
+
+	/*
+	 * 証明書情報の取得
+	 * 証明書の状態更新
+	 * エラーログの出力
+	 */
 	@Transactional
-	@Scheduled(cron = "0 0 * * * *")
-	public void getCertIssuerStatus(List<DomainDto> domainList, String logFileName, String path)
+	public void getCertIssuerStatus(List<DomainDto> domainList)
 			throws KeyManagementException, NoSuchAlgorithmException, IOException, CertificateNotYetValidException, InterruptedException {
+
+		String logFileName = prefix + new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+
 
 		// プロキシの名前解決ができないのでIPで指定
 		SocketAddress addr = new InetSocketAddress("172.18.6.18", 8080);
@@ -83,7 +98,6 @@ public class GetCert {
 			}
 
 			// wildcardなら2件のループ
-			// wildcardの場合は*付かなしかのどちらかエラーならstatusをエラーで設定
 			for (String cn : dnCn) {
 
 				// {dn_cn},www.{dn_cn}いずれかにG3証明書がある場合、statusをG3とする
@@ -108,6 +122,9 @@ public class GetCert {
 					sslContext.init(null, new X509TrustManager[] { new RelaxedX509TrustManager() }, new SecureRandom());
 					SSLSocketFactory socketFactory = sslContext.getSocketFactory();
 
+//					// SNI無効化
+//					socketFactory = new SniDisabledSSLSocketFactory(socketFactory);
+
 					// connectionのタイムアウトを2000msに設定
 					connection.setConnectTimeout(2000);
 					connection.setReadTimeout(2000);
@@ -126,14 +143,13 @@ public class GetCert {
 					// Statusの更新
 					if(certs[0] instanceof X509Certificate) {
 						try {
+							// 証明書が有効か判定
 							( (X509Certificate) certs[0]).checkValidity();
 							System.out.println("Certificate is active for current date");
 
 							String issuer = ((X509Certificate) certs[0]).getIssuerX500Principal().getName();
 
 							// statusのみ抽出
-							// 問題発生：CN=Amazon があるため"-"で対応できない
-//							status = issuer.substring(issuer.indexOf("-")+2, issuer.indexOf("-")+4);
 							int startStatus = issuer.indexOf("CN=")+3;
 
 							if (issuer.contains(",")) {
@@ -160,13 +176,12 @@ public class GetCert {
 					status = "ERROR: CONNECTION ERROR";
 				}
 			}
-			// statusの更新
-			domain.setStatus(status);
-
 			// Domainオブジェクトにstausをセット
 			object.domainObjectSet(domain, status);
 
-			System.out.println("========= Status: " + domain.getStatus() + " ===========");
+			System.out.println("=====================================");
+			System.out.println("Status: " + domain.getStatus());
+			System.out.println("=====================================");
 
 			// DB更新
 			dao.updateDomainTable(domain);
@@ -178,6 +193,7 @@ public class GetCert {
 		errorLogFile.flush();
 		errorLogFile.close();
 	}
+
 
 
 	/**

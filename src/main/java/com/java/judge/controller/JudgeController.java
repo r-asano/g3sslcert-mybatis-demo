@@ -1,12 +1,32 @@
 package com.java.judge.controller;
 
-//@Controller
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.java.judge.dto.DomainDto;
+import com.java.judge.mapper.ReadMapper;
+
+@Controller
 public class JudgeController {
 
-//	@Autowired
-//	private JudgeRepository judgemapper;
+	@Autowired
+	ReadMapper readMapper;
 
 	// 以下、WEB UI用のアノテーション
+
+
+	@GetMapping("/test")
+	public DomainDto get(@RequestParam String dnCn){
+		return readMapper.selectOneCert(dnCn);
+	}
+	@GetMapping("/test/all")
+	public List<DomainDto> getAll(){
+		return readMapper.selectAllDomain();
+	}
 
 //	@GetMapping
 //	public String crtId(Model model) {

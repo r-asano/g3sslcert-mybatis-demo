@@ -25,7 +25,6 @@ import com.java.judge.dto.AgentDto;
 import com.java.judge.dto.AgentListDto;
 import com.java.judge.dto.CertificateDto;
 import com.java.judge.dto.DomainDto;
-import com.java.judge.dto.WildcardDto;
 import com.java.judge.mapper.ReadMapper;
 
 
@@ -38,8 +37,6 @@ public class InitInsertRecord {
 	CertificateDto certificate;
 	@Autowired
 	DomainDto domain;
-	@Autowired
-	WildcardDto wildcard;
 	@Autowired
 	AgentDto agent;
 	@Autowired
@@ -70,6 +67,115 @@ public class InitInsertRecord {
 
 				// CertificateテーブルにInsert
 				readMapper.insertCertificate(certificate);
+			}
+		}
+	}
+
+
+	/*
+	 * Domainテーブルの初期挿入
+	 */
+	@Transactional
+	public void InsertDomain() throws InterruptedException {
+
+		// X509証明書の取得
+		List<String> x509List =  readMapper.selectX509();
+
+
+		for (String x509: x509List) {
+
+			try (ByteArrayInputStream is = new ByteArrayInputStream(x509.getBytes())){
+
+				CertificateFactory cf = CertificateFactory.getInstance("X.509");
+				Certificate cert = cf.generateCertificate(is);
+
+				// Issuer: CN=JPRS Organization Validation Authority - G2, O="Japan Registry Services Co., Ltd.", C=JP
+				// getName => CN=JPRS Organization Validation Authority - G2,O=Japan Registry Services Co.\, Ltd.,C=JP
+				X500Principal subject = ((X509Certificate) cert).getSubjectX500Principal();
+				X500Principal issuer = ((X509Certificate) cert).getIssuerX500Principal();
+
+				// Domainオブジェクトにdn_cnをセット
+				int startCn = subject.getName().indexOf("CN=")+3;
+
+				if (subject.getName().contains(",")) {
+					int endCn = subject.getName().indexOf(",");
+					String dnCn = subject.getName().substring(startCn, endCn);
+					domain.setDnCn(dnCn);
+				} else {
+					String dnCn = subject.getName().substring(startCn);
+					domain.setDnCn(dnCn);
+				}
+
+				// "JPRS Domain Validation Authority - G1"(fullStatus)のような文字列になっている
+				// => CN=Amazon などに対応するためにCN全文に変更
+
+				// Domainオブジェクトにdn_cnをセット
+				int startStatus = issuer.getName().indexOf("CN=")+3;
+
+				if (issuer.getName().contains(",")) {
+					int endStatus = issuer.getName().indexOf(",");
+					String status = issuer.getName().substring(startStatus, endStatus);
+					domain.setStatus(status);
+				} else {
+					String status = issuer.getName().substring(startStatus);
+					domain.setDnCn(status);
+				}
+
+				// 残りのissue_apply_id, employee_name, rec_upd_dateをセット
+				domain.setIssueApplyId(readMapper.selectIssueApplyId(x509));
+				domain.setEmployeeName("asano");
+				Timestamp updDate = new Timestamp(System.currentTimeMillis());
+				domain.setRecUpdDate(updDate);
+
+				if( domain.getDnCn().startsWith("*")) {
+					domain.setWildcardFlag(true);
+				} else {
+					domain.setWildcardFlag(false);
+				}
+
+				System.out.println(subject.toString());
+				System.out.println(issuer.toString());
+				System.out.println("issue_apply_id: " + domain.getIssueApplyId());
+				System.out.println("dn_cn: " + domain.getDnCn());
+				System.out.println("employee_name: " + domain.getEmployeeName());
+				System.out.println("status: " + domain.getStatus());
+				System.out.println("rec_upd_date: " + domain.getRecUpdDate());
+				System.out.println("wildcard_flag:" + domain.isWildcardFlag());
+
+				// Domainオブジェクトを登録
+				readMapper.insertDomain(domain);
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+
+	/*
+	 * Agentテーブルの初期挿入
+	 */
+	@Transactional
+	public void InsertAgent() throws IOException {
+
+		// TSVファイルを指定し順に読み出す
+		CsvMapper mapper = new CsvMapper();
+		// ヘッダあり、タブ区切り
+		CsvSchema schema = mapper.schemaFor(AgentListDto.class).withHeader().withColumnSeparator('\t');
+		String listPath = "C:/common/開発部研修/kaihatsubuKenshu/agent_list/agent_list.csv";
+		Path path = Paths.get(listPath);
+
+		try ( BufferedReader br = Files.newBufferedReader(path) ) {
+			MappingIterator<AgentListDto> it = mapper.readerFor(AgentListDto.class).with(schema).readValues(br);
+
+			while (it.hasNextValue()) {
+				// TSVファイルを順に呼び出す
+				agentList = it.nextValue();
+				agent.setJointAgentId(agentList.getJointAgentId());
+				agent.setAgentName(agentList.getAgentName());
+
+				// CertificateテーブルにInsert
+				readMapper.insertAgent(agent);
 			}
 		}
 	}
@@ -132,144 +238,4 @@ public class InitInsertRecord {
 //			e.printStackTrace();
 //		}
 //	}
-
-
-	/*
-	 * Domainテーブルの初期挿入
-	 */
-	@Transactional
-	public void InsertDomain() throws InterruptedException {
-
-		// X509証明書の取得
-		List<String> x509List =  readMapper.selectX509();
-
-
-		for (String x509: x509List) {
-
-//			try (InputStream is = new ByteArrayInputStream(x509.getBytes()){
-			try (ByteArrayInputStream is = new ByteArrayInputStream(x509.getBytes())){
-
-				CertificateFactory cf = CertificateFactory.getInstance("X.509");
-				Certificate cert = cf.generateCertificate(is);
-
-				// Issuer: CN=JPRS Organization Validation Authority - G2, O="Japan Registry Services Co., Ltd.", C=JP
-				// getName => CN=JPRS Organization Validation Authority - G2,O=Japan Registry Services Co.\, Ltd.,C=JP
-				X500Principal subject = ((X509Certificate) cert).getSubjectX500Principal();
-				X500Principal issuer = ((X509Certificate) cert).getIssuerX500Principal();
-
-				// Domainオブジェクトにdn_cnをセット
-				int startCn = subject.getName().indexOf("CN=")+3;
-
-				if (subject.getName().contains(",")) {
-					int endCn = subject.getName().indexOf(",");
-					String dnCn = subject.getName().substring(startCn, endCn);
-					domain.setDnCn(dnCn);
-				} else {
-					String dnCn = subject.getName().substring(startCn);
-					domain.setDnCn(dnCn);
-				}
-
-				// "JPRS Domain Validation Authority - G1"(fullStatus)のような文字列になっている
-				// => CN=Amazon などに対応するためにCN全文に変更
-
-				// Domainオブジェクトにdn_cnをセット
-				int startStatus = issuer.getName().indexOf("CN=")+3;
-
-				if (issuer.getName().contains(",")) {
-					int endStatus = issuer.getName().indexOf(",");
-					String status = issuer.getName().substring(startStatus, endStatus);
-					domain.setStatus(status);
-				} else {
-					String status = issuer.getName().substring(startStatus);
-					domain.setDnCn(status);
-				}
-
-//				int startStatus = issuer.getName().indexOf("-")+2;
-//				int endStatus = issuer.getName().indexOf("-")+4;
-//				String status = issuer.getName().substring(startStatus, endStatus);
-//				domain.setStatus(status);
-
-				// 残りのissue_apply_id, employee_name, rec_upd_dateをセット
-				domain.setIssueApplyId(readMapper.selectIssueApplyId(x509));
-				domain.setEmployeeName("asano");
-				Timestamp updDate = new Timestamp(System.currentTimeMillis());
-				domain.setRecUpdDate(updDate);
-
-				if( domain.getDnCn().startsWith("*")) {
-					domain.setWildcardFlag(true);
-				} else {
-					domain.setWildcardFlag(false);
-				}
-
-				System.out.println(subject.toString());
-				System.out.println(issuer.toString());
-				System.out.println("issue_apply_id: " + domain.getIssueApplyId());
-				System.out.println("dn_cn: " + domain.getDnCn());
-				System.out.println("employee_name: " + domain.getEmployeeName());
-				System.out.println("status: " + domain.getStatus());
-				System.out.println("rec_upd_date: " + domain.getRecUpdDate());
-				System.out.println("wildcard_flag:" + domain.isWildcardFlag());
-
-				// Domainオブジェクトを登録
-				readMapper.insertDomain(domain);
-
-
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
-
-	/*
-	 * Agentテーブルの初期挿入
-	 */
-	@Transactional
-	public void InsertAgent() throws IOException {
-
-		// TSVファイルを指定し順に読み出す
-		CsvMapper mapper = new CsvMapper();
-		// ヘッダあり、タブ区切り
-		CsvSchema schema = mapper.schemaFor(AgentListDto.class).withHeader().withColumnSeparator('\t');
-		String listPath = "C:/common/開発部研修/kaihatsubuKenshu/agent_list/agent_list.csv";
-		Path path = Paths.get(listPath);
-
-		try ( BufferedReader br = Files.newBufferedReader(path) ) {
-			MappingIterator<AgentListDto> it = mapper.readerFor(AgentListDto.class).with(schema).readValues(br);
-
-			// 試しに10件のみ登録
-//			for (int i = 0; i < 200; i++) {
-			while (it.hasNextValue()) {
-				// TSVファイルを順に呼び出す
-				agentList = it.nextValue();
-				agent.setJointAgentId(agentList.getJointAgentId());
-				agent.setAgentName(agentList.getAgentName());
-
-				// CertificateテーブルにInsert
-				readMapper.insertAgent(agent);
-			}
-		}
-	}
-
-
-	/*
-	 * Wildcardテーブルの初期挿入
-	 */
-	@Transactional
-	public void InsertWildcard() {
-
-		List<DomainDto> g3DnCn = readMapper.selectG3Domain();
-
-		for (DomainDto domain : g3DnCn) {
-
-			if (domain.getDnCn().startsWith("*")) {
-				wildcard.setDnCn(domain.getDnCn());
-				// *.sample.jpのs以降（3文字目以降）を取得
-				wildcard.setDn(domain.getDnCn().substring(2));
-				readMapper.insertWildCard(wildcard);
-			}
-		}
-
-	}
-
 }

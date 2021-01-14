@@ -12,7 +12,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
+/*
+ * DomainテーブルDTO
+ */
 @Entity
 @Repository
 @Table(name = "Domain")

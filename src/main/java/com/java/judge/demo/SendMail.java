@@ -1,24 +1,16 @@
 package com.java.judge.demo;
 
-import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Properties;
 
-import javax.activation.DataHandler;
-import javax.activation.FileDataSource;
-import javax.mail.Message;
 import javax.mail.MessagingException;
-import javax.mail.Multipart;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
-import javax.mail.internet.MimeUtility;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 
 import com.java.judge.mapper.ReadMapper;
@@ -26,13 +18,22 @@ import com.java.judge.mapper.ReadMapper;
 @Component
 public class SendMail {
 
-//    →メール本文の文字コードはISO-2022-JP、添付ファイルは別の文字コードを
-//    用いてもよいが、ヘッダでコードを明示する
-
 	@Autowired
 	ReadMapper readMapper;
 
-	@Scheduled(cron = "59 17 * * * *")
+	// メール送信クラス
+	@Autowired
+	JavaMailSenderImpl mailSender;
+
+	@Value("${app.path}")
+	private String path;
+
+	@Value("${app.logFilePrefix}")
+	private String prefix;
+
+	/*
+	 * メール本文の設定
+	 */
 	public String mailContent(int searchNumber,String dateString) {
 		String content;
 
@@ -49,103 +50,45 @@ public class SendMail {
 				+ "		 	  error.sslcert-G3.log" + dateString + "\r\n"
 				+ "\r\n"
 				+ "以上";
-//				+ "★統計情報		: " + "\r\n"
-//				+ "-----------------------------------------------------------------------------------------\r\n"
-//				+ "残存G3証明書数: 		" + judgeMapper.countG3() + " 件\r\n"
-//				+ "\r\n"
-//				+ "指定事業者ごとのG3証明書残存件数:\r\n"
-//				+ "A社: "
-//				+ "B社: "
-//				+ "-----------------------------------------------------------------------------------------\r\n"
-//				+ "\r\n"
-//				+ "=========================================================================================\r\n"
-//				+ "\r\n";
 		return content;
 	}
 
-	@Scheduled(cron = "0 18 * * * *")
-	public void sendMail(int searchNumber, String dateString, String path, String logFileName)
-			throws UnsupportedEncodingException {
 
-		Properties properties = new Properties();
+	/**
+	 * メール送信
+	 *
+	 * @throws MessagingException
+	 */
+	public void sendMail(int searchNumber)
+			throws MessagingException {
 
-		final String username = "asnao";
-		final String password = "##Infnity22";
-		final String to = "space.888pq@gmail.com";
-		final String from = "asano@jprs.co.jp";
-		final String charset = "ISO-2022-JP";
-		String host = "smtp1.jprs.co.jp";
-		String port = String.valueOf("25");
-		String subject = " ■G3サーバ証明書残留状況調査■ (" + dateString + ") -- 淺野稜";
-		String content = mailContent(searchNumber, dateString);
+		String dateString = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+		String logFileName = prefix + dateString;
+		String errorLogFileName = "error." + logFileName;
 
-		properties.put("mail.smtp.connectiontimeout", "10000");
-		properties.put("mail.smtp.timeout", "10000");
+		// メールに添付するファイルのオブジェクトを生成
+		FileSystemResource logFileResource = new FileSystemResource(path + logFileName);
+		FileSystemResource errorLogFileResource = new FileSystemResource(path + errorLogFileName);
 
-		properties.put("mail.smtp.host", host);
-		properties.put("mail.smtp.port", port);
-		properties.put("mail.smtp.debug", "true");
+		// メッセージクラス生成
+		MimeMessage mimeMsg = mailSender.createMimeMessage();
+		// メッセージ情報をセットするためのヘルパークラスを生成(添付ファイル使用時の第2引数はtrue)
+		MimeMessageHelper helper = new MimeMessageHelper(mimeMsg, true);
 
-		// メールセッションを確立
-		Session session = Session.getDefaultInstance(properties);
+		// 送信元アドレスをセット
+		helper.setFrom("asano@jprs.co.jp");
+		// 送信先アドレスをセット
+		helper.setTo("space.888pq@gmail.com");
+		helper.setCc("asano@jprs.co.jp");
+		// 表題をセット
+		helper.setSubject("■G3サーバ証明書残留状況調査■ (" + dateString + ") -- 淺野稜");
+		// 本文をセット
+		helper.setText(mailContent(searchNumber, dateString));
+		// 添付ファイルをセット
+		helper.addAttachment(logFileName, logFileResource);
+		helper.addAttachment(errorLogFileName, errorLogFileResource);
 
-		// 送信メッセージを生成
-		MimeMessage mimeMessage = new MimeMessage(session);
-
-		try {
-		// 送信先
-		mimeMessage.setRecipients(Message.RecipientType.TO, to);
-		mimeMessage.setRecipients(Message.RecipientType.CC, from);
-
-		// 送信元
-		InternetAddress fromHeader = new InternetAddress(from);
-		mimeMessage.setFrom(fromHeader);
-
-		// 件名
-		mimeMessage.setSubject(subject, charset);
-
-		// マルチパートオブジェクトを生成
-		Multipart multipart = new MimeMultipart();
-
-		// 本文を指定
-		MimeBodyPart mbp1 = new MimeBodyPart();
-		mbp1.setText(content, charset);
-		mbp1.setHeader(from, "Ryo Asano");
-		multipart.addBodyPart(mbp1);
-
-		// ログファイルの添付
-		MimeBodyPart mbp2 = new MimeBodyPart();
-		FileDataSource fs1 = new FileDataSource(path + logFileName);
-		mbp2.setDataHandler(new DataHandler(fs1));
-		mbp2.setFileName(MimeUtility.encodeWord(fs1.getName()));
-		multipart.addBodyPart(mbp2);
-
-		// エラーログファイルの添付
-		MimeBodyPart mbp3 = new MimeBodyPart();
-		FileDataSource fs2 = new FileDataSource(path + "error." + logFileName);
-		mbp3.setDataHandler(new DataHandler(fs2));
-		mbp3.setFileName(MimeUtility.encodeWord(fs2.getName()));
-		multipart.addBodyPart(mbp3);
-
-		// マルチパートオブジェクトをメッセージに設定
-		mimeMessage.setContent(multipart);
-		// メール送信日時
-		mimeMessage.setSentDate(new Date());
-
-		Transport transport = session.getTransport("smtp");
-
-		//認証用ユーザ名とパスワードを設定しコネクト
-		transport.connect(username, password);
-
-		//メール送信
-		transport.sendMessage(mimeMessage, mimeMessage.getAllRecipients());
-		transport.close();
-
-		} catch (UnsupportedEncodingException e) {
-		e.printStackTrace();
-		} catch (MessagingException e) {
-		e.printStackTrace();
-		}
+		// メール送信
+		mailSender.send(mimeMsg);
 	}
-
 }

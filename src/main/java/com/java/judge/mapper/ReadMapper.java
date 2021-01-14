@@ -10,9 +10,10 @@ import org.apache.ibatis.annotations.Update;
 import com.java.judge.dto.AgentDto;
 import com.java.judge.dto.CertificateDto;
 import com.java.judge.dto.DomainDto;
-import com.java.judge.dto.WildcardDto;
 
-
+/*
+ * sampledbのマッパー
+ */
 @Mapper
 public interface ReadMapper {
 	/*
@@ -66,7 +67,8 @@ public interface ReadMapper {
 	@Select("SELECT COUNT(*) FROM Domain WHERE (status LIKE 'JPRS%' AND status LIKE '%Organization%' AND status LIKE '%G3')")
 	int countOV();
 
-
+	@Select("SELECT * FROM Domain WHERE dn_cn=#{dnCn}")
+	DomainDto selectOneCert(String dnCn);
 
 
 
@@ -78,14 +80,4 @@ public interface ReadMapper {
 
 	@Select("SELECT agent_name FROM Agent WHERE joint_agent_id=#{jointAgentId}")
 	String selectAgentName(String jointAgentId);
-
-
-	/*
-	 * Wildcard Table
-	 */
-	@Insert("INSERT INTO Wildcard VALUES (#{dnCn}, #{dn})")
-	void insertWildCard(WildcardDto wildcard);
-
-	@Select("SELECT dn FROM Wildcard WHERE dn_cn=#{dnCn}")
-	String selectNoWildcardDn(DomainDto domain);
 }

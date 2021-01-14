@@ -24,7 +24,6 @@ public class ReadCertificateApplication {
 		insert.InsertAgent();
 		insert.InsertCertificate();
 		insert.InsertDomain();
-		insert.InsertWildcard();
 
 		context.close();
 	}

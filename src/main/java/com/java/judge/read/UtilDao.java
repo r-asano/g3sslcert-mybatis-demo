@@ -16,7 +16,7 @@ public class UtilDao {
 	ReadMapper readMapper;
 
 	/*
-	 * DomainテーブルからG3のdn_cnリストを取得
+	 * DomainテーブルからG3証明書のdn_cnリストを取得
 	 */
 	@Transactional
 	public List<DomainDto> getG3List() {

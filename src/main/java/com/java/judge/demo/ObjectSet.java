@@ -13,6 +13,9 @@ public class ObjectSet {
 	@Autowired
 	DomainDto domain;
 
+	/*
+	 * Domainオブジェクトの設定
+	 */
 	public void domainObjectSet(DomainDto domain, String status) {
 
 		domain.setIssueApplyId(domain.getIssueApplyId());

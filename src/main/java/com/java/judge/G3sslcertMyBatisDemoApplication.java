@@ -15,7 +15,6 @@ import com.java.judge.dto.DomainDto;
 import com.java.judge.read.UtilDao;
 
 @SpringBootApplication
-//@EnableScheduling
 @MapperScan(basePackages = "com.java.judge.mapper")
 public class G3sslcertMyBatisDemoApplication {
 
@@ -24,23 +23,20 @@ public class G3sslcertMyBatisDemoApplication {
 		ClassPathXmlApplicationContext context =
 				new ClassPathXmlApplicationContext("applicationContext.xml");
 
-		String path = "C:/Eclips4.6/pleiades_2019/workspace/g3sslcert-mybatis-demo/log/";
 //		String path = "/home/jprs/asano/g3sslcert-mybatis-demo/log/";
-		String dateString = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
-		String logFileName = "sslcert-G3.log." + dateString;
 
 		UtilDao dao = context.getBean(UtilDao.class);
 		GetCert getCert = context.getBean(GetCert.class);
 		OutputLog output = context.getBean(OutputLog.class);
 		SendMail mail = context.getBean(SendMail.class);
 
+		String dateString = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+
 		// 初日と最終日のみ全数検査
 		boolean zensu = false;
 		if (dateString == "2021-01-01" || dateString == "2021-03-31") {
 			zensu = true;
 		}
-
-		zensu = true;
 
 		List<DomainDto> domainList;
 		if (zensu) {
@@ -50,11 +46,11 @@ public class G3sslcertMyBatisDemoApplication {
 		}
 
 		// dn_cnリストの取得 + DB更新
-		getCert.getCertIssuerStatus(domainList, logFileName, path);
+		getCert.getCertIssuerStatus(domainList);
 		// ログファイル出力
-		output.outputLog(logFileName, path);
+		output.outputLog();
 		// メールの送出
-		mail.sendMail(domainList.size(), dateString, path, logFileName);
+		mail.sendMail(domainList.size());
 
 		context.close();
 	}

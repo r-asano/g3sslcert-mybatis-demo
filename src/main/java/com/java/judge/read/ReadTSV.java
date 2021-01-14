@@ -49,7 +49,6 @@ public class ReadTSV {
 				while (it.hasNextValue()) {
 				certificate = it.nextValue();
 				System.out.println(certificate.getIssueApplyId());
-//				outputLine.write(certificate.getCertificateX509());
 				}
 				outputLine.flush();
 			}
