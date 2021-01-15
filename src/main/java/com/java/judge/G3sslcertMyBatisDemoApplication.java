@@ -23,8 +23,6 @@ public class G3sslcertMyBatisDemoApplication {
 		ClassPathXmlApplicationContext context =
 				new ClassPathXmlApplicationContext("applicationContext.xml");
 
-//		String path = "/home/jprs/asano/g3sslcert-mybatis-demo/log/";
-
 		UtilDao dao = context.getBean(UtilDao.class);
 		GetCert getCert = context.getBean(GetCert.class);
 		OutputLog output = context.getBean(OutputLog.class);
@@ -46,9 +44,9 @@ public class G3sslcertMyBatisDemoApplication {
 		}
 
 		// dn_cnリストの取得 + DB更新
-		getCert.getCertIssuerStatus(domainList);
+//		getCert.getCertIssuerStatus(domainList);
 		// ログファイル出力
-		output.outputLog();
+//		output.outputLog();
 		// メールの送出
 		mail.sendMail(domainList.size());
 
