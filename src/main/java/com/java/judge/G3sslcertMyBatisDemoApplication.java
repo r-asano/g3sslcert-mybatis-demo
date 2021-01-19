@@ -48,7 +48,7 @@ public class G3sslcertMyBatisDemoApplication {
 		// ログファイル出力
 		output.outputLog();
 		// メールの送出
-//		mail.sendMail(domainList.size());
+		mail.sendMail(domainList.size());
 
 		context.close();
 	}

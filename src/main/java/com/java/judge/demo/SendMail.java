@@ -31,6 +31,16 @@ public class SendMail {
 	@Value("${app.logFilePrefix}")
 	private String prefix;
 
+	@Value("${mail.to}")
+	private String TO;
+
+	@Value("${mail.cc}")
+	private String CC;
+
+	@Value("${mail.from}")
+	private String FROM;
+
+
 	/*
 	 * メール本文の設定
 	 */
@@ -76,10 +86,10 @@ public class SendMail {
 		MimeMessageHelper helper = new MimeMessageHelper(mimeMsg, true);
 
 		// 送信元アドレスをセット
-		helper.setFrom("asano@jprs.co.jp");
+		helper.setFrom(FROM);
 		// 送信先アドレスをセット
-		helper.setTo("space.888pq@gmail.com");
-		helper.setCc("asano@jprs.co.jp");
+		helper.setTo(TO);
+		helper.setCc(CC);
 		// 表題をセット
 		helper.setSubject("■G3サーバ証明書残留状況調査■ (" + dateString + ") -- 淺野稜");
 		// 本文をセット
