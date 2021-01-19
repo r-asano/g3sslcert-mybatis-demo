@@ -18,39 +18,38 @@ import com.java.judge.read.UtilDao;
 @MapperScan(basePackages = "com.java.judge.mapper")
 public class G3sslcertMyBatisDemoApplication {
 
-	public static void main(String[] args) throws Exception  {
+    public static void main(String[] args) throws Exception  {
 
-		ClassPathXmlApplicationContext context =
-				new ClassPathXmlApplicationContext("applicationContext.xml");
+        ClassPathXmlApplicationContext context =
+                new ClassPathXmlApplicationContext("applicationContext.xml");
 
-		UtilDao dao = context.getBean(UtilDao.class);
-		GetCert getCert = context.getBean(GetCert.class);
-		OutputLog output = context.getBean(OutputLog.class);
-		SendMail mail = context.getBean(SendMail.class);
+        UtilDao dao = context.getBean(UtilDao.class);
+        GetCert getCert = context.getBean(GetCert.class);
+        OutputLog output = context.getBean(OutputLog.class);
+        SendMail mail = context.getBean(SendMail.class);
+        String dateString = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
 
-		String dateString = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+        // 初日と最終日のみ全数検査
+        boolean zensu = false;
+        if (dateString == "2021-01-01" || dateString == "2021-03-31") {
+            zensu = true;
+        }
 
-		// 初日と最終日のみ全数検査
-		boolean zensu = false;
-		if (dateString == "2021-01-01" || dateString == "2021-03-31") {
-			zensu = true;
-		}
+        List<DomainDto> domainList;
+        if (zensu) {
+            domainList = dao.getAllList();
+        } else {
+            domainList = dao.getG3List();
+        }
 
-		List<DomainDto> domainList;
-		if (zensu) {
-			domainList = dao.getAllList();
-		} else {
-			domainList = dao.getG3List();
-		}
-
-		// dn_cnリストの取得 + DB更新
+//		// dn_cnリストの取得 + DB更新
 //		getCert.getCertIssuerStatus(domainList);
-		// ログファイル出力
+//		// ログファイル出力
 //		output.outputLog();
-		// メールの送出
-		mail.sendMail(domainList.size());
+        // メールの送出
+        mail.sendMail(domainList.size());
 
-		context.close();
-	}
+        context.close();
+    }
 
 }
