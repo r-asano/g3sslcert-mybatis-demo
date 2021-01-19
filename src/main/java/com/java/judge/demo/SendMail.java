@@ -1,5 +1,8 @@
 package com.java.judge.demo;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -13,6 +16,11 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.simpleemail.AmazonSimpleEmailService;
+import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClientBuilder;
+import com.amazonaws.services.simpleemail.model.RawMessage;
+import com.amazonaws.services.simpleemail.model.SendRawEmailRequest;
 import com.java.judge.mapper.ReadMapper;
 
 @Component
@@ -98,7 +106,41 @@ public class SendMail {
 		helper.addAttachment(logFileName, logFileResource);
 		helper.addAttachment(errorLogFileName, errorLogFileResource);
 
-		// メール送信
-		mailSender.send(mimeMsg);
+//		// メール送信
+//		mailSender.send(mimeMsg);
+
+
+		// Try to send the email.
+		try {
+			System.out.println("Attempting to send an email through Amazon SES "
+							+"using the AWS SDK for Java...");
+
+			AmazonSimpleEmailService client =
+					AmazonSimpleEmailServiceClientBuilder.standard()
+					// Replace US_WEST_2 with the AWS Region you're using for
+					// Amazon SES.
+					.withRegion(Regions.AP_NORTHEAST_1).build();
+
+			// Print the raw email content on the console
+			PrintStream out = System.out;
+			mimeMsg.writeTo(out);
+
+			// Send the email.
+			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+			mimeMsg.writeTo(outputStream);
+			RawMessage rawMessage =
+					new RawMessage(ByteBuffer.wrap(outputStream.toByteArray()));
+
+			SendRawEmailRequest rawEmailRequest =
+					new SendRawEmailRequest(rawMessage);
+
+			client.sendRawEmail(rawEmailRequest);
+			System.out.println("Email sent!");
+		// Display an error if something goes wrong.
+		} catch (Exception ex) {
+		System.out.println("Email Failed");
+			System.err.println("Error message: " + ex.getMessage());
+			ex.printStackTrace();
+		}
 	}
 }
