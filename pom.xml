@@ -113,8 +113,19 @@
 			<optional>true</optional>
 		</dependency>
 
-		<!-- AWS関連 -->
 		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
+
+		<!-- AWS関連 -->
+
+
+
+
+
+		<!--
+				<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-aws</artifactId>
 			<version>2.2.5.RELEASE</version>
@@ -136,6 +147,7 @@
 			<artifactId>aws-java-sdk-ses</artifactId>
 			<version>1.11.939</version>
 		</dependency>
+		-->
 	</dependencies>
 
 	<build>
