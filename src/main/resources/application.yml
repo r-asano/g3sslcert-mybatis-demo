@@ -1,12 +1,9 @@
 # postgreSQLの設定
 spring:
   datasource:
-    url:  jdbc:postgresql://localhost:5432/sampledb?serverTimezone=JST&characterEncoding=utf8
+    url:  jdbc:postgresql://localhost:5432/sslcert?serverTimezone=JST&characterEncoding=utf8
     username: postgres
     password: ${SPRING_PROPERTY_PASSWORD}
-
-# DBの初期化
-    initialization-mode:  never
 
 # 次の記述がないと、Spring Boot 2.1.xでは動くが、Spring Boot 2.2.0では動かない
   mvc:
@@ -19,30 +16,38 @@ spring:
 mybatis:
   configuration:
     map-underscore-to-camel-case: true
-    default-fetch-size:100
+    default-fetch-size: 100
     default-statement-timeout:  30
 
 # SPRINGメールプロパティ
   mail:
     default-encoding: ISO-2022-JP
-#spring.mail.host=smtp1.jprs.co.jp
-#spring.mail.port=25
-#spring.mail.username=${SPRING_PROPERTY_USERNAME}
-#spring.mail.password=${SPRING_PROPERTY_PASSWORD}
     host: email-smtp.ap-northeast-1.amazonaws.com
     port: 465
+    protocol: smtps
     username: ${AWS_ACCESS_KEY_ID}
     password: ${AWS_SECRET_ACCESS_KEY}
-    properties:
-      mail:
-        smtp:
-          connectiontimeout:  1000
-          timeout:  1000
-          debug:  true
-          auth: true
-          starttls:
-            enable: true
-
+    smtps:
+      auth: true
+    smtp:
+      ssl:
+        enable: true
+        
+mail:
+  smtps:
+    auth: true
+  smtp:
+    starttls:
+      enable: true
+  transport:
+    protocol: smtps
+  connectiontimeout:  1000
+  timeout:  1000
+  debug:  true
+  to: asano@jprs.co.jp
+  cc: space.888pq@gmail.com
+  from: no-reply@az.jprs.co.jp  
+            
 # log file
 app:
   path: log/
@@ -62,4 +67,13 @@ logging:
         web:  INFO
   file: log/console.log
 
-
+# AWS
+cloud:
+  aws:
+    credentials:
+      accessKey:  ${AWS_ACCESS_KEY_ID}
+      secretKey:  ${AWS_SECRET_ACCESS_KEY}
+    region:
+      auto: true
+    stack:
+      auto: true

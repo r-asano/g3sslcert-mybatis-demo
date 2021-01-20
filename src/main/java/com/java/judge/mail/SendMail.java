@@ -1,4 +1,4 @@
-package com.java.judge.demo;
+package com.java.judge.mail;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -20,7 +20,6 @@ import com.amazonaws.services.simpleemail.AmazonSimpleEmailService;
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClientBuilder;
 import com.amazonaws.services.simpleemail.model.RawMessage;
 import com.amazonaws.services.simpleemail.model.SendRawEmailRequest;
-import com.java.judge.mail.MailConfig;
 import com.java.judge.mapper.ReadMapper;
 
 @Service
@@ -55,7 +54,6 @@ public class SendMail {
     private String AWS_SECRET;
 
 
-
     /*
      * メール本文の設定
      */
@@ -63,7 +61,7 @@ public class SendMail {
         String content;
 
         content =
-                "■G3サーバ証明書残留数■　通知\r\n"
+                "■G3サーバ証明書残留数■  通知\r\n"
                 + "=========================================================================================\r\n"
                 + "★調査日時		: " + dateString + "\r\n"
                 + "★対象範囲		: " + "有効期間開始日が 2019/08 - 2019/09 のサーバ証明書\r\n"
@@ -102,13 +100,12 @@ public class SendMail {
         // メッセージ情報をセットするためのヘルパークラスを生成(添付ファイル使用時の第2引数はtrue)
         MimeMessageHelper helper = new MimeMessageHelper(mimeMsg, true);
 
-        // 送信元アドレスをセット
         helper.setFrom(FROM);
-        // 送信先アドレスをセット
         helper.setTo(TO);
         helper.setCc(CC);
-        // 表題をセット
         helper.setSubject("■G3サーバ証明書残留状況調査■ (" + dateString + ") -- 淺野稜");
+        helper.setSentDate(new Date());
+
 //        // 本文セット
 //        freemarkerConfig.setClassForTemplateLoading(this.getClass(), "/templates/");
 //        Template template = freemarkerConfig.getTemplate("mailTemplate.ftl");
@@ -121,9 +118,7 @@ public class SendMail {
 //        String text = FreeMarkerTemplateUtils.processTemplateIntoString(template, mailProperty);
 // 	      helper.setText(text, true);
 
-        // 本文をセット
         helper.setText(mailContent(searchNumber, dateString));
-        // 添付ファイルをセット
         helper.addAttachment(logFileName, logFileResource);
         helper.addAttachment(errorLogFileName, errorLogFileResource);
 

@@ -10,8 +10,8 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.java.judge.demo.GetCert;
 import com.java.judge.demo.OutputLog;
-import com.java.judge.demo.SendMail;
 import com.java.judge.dto.DomainDto;
+import com.java.judge.mail.SendMail;
 import com.java.judge.read.UtilDao;
 
 @SpringBootApplication
@@ -20,6 +20,8 @@ public class G3sslcertMyBatisDemoApplication {
 
     public static void main(String[] args) throws Exception  {
 
+//        ConfigurableApplicationContext context =
+//                SpringApplication.run(G3sslcertMyBatisDemoApplication.class, args);
         ClassPathXmlApplicationContext context =
                 new ClassPathXmlApplicationContext("applicationContext.xml");
 
@@ -35,6 +37,8 @@ public class G3sslcertMyBatisDemoApplication {
             zensu = true;
         }
 
+        zensu = true;
+
         List<DomainDto> domainList;
         if (zensu) {
             domainList = dao.getAllList();
@@ -43,9 +47,9 @@ public class G3sslcertMyBatisDemoApplication {
         }
 
         // dn_cnリストの取得 + DB更新
-//        getCert.getCertIssuerStatus(domainList);
+        getCert.getCertIssuerStatus(domainList);
         // ログファイル出力
-//        output.outputLog();
+        output.outputLog();
         // メールの送出
         mail.sendMail(domainList.size());
 
