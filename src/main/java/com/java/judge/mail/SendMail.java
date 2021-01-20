@@ -11,8 +11,13 @@ import javax.mail.internet.MimeMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
+import org.thymeleaf.spring5.SpringTemplateEngine;
+import org.thymeleaf.templatemode.TemplateMode;
+import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailService;
@@ -27,9 +32,8 @@ public class SendMail {
     @Autowired
     ReadMapper readMapper;
 
-    // メール送信クラス
     @Autowired
-    SendMailService sendMailService;
+    MailConfig mailSender;
 
     @Value("${app.path}")
     private String path;
@@ -45,6 +49,9 @@ public class SendMail {
 
     @Value("${mail.from}")
     private String FROM;
+
+    @Value("${mail.encoding}")
+    private String ENCODE;
 
     @Value("${spring.mail.username}")
     private String AWS_ID;
@@ -86,6 +93,38 @@ public class SendMail {
     public void sendMail(int searchNumber) throws MessagingException {
 
         String dateString = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+        String logFileName = prefix + dateString;
+        String errorLogFileName = "error." + logFileName;
+
+        // メールに添付するファイルのオブジェクトを生成
+        FileSystemResource logFileResource = new FileSystemResource(path + logFileName);
+        FileSystemResource errorLogFileResource = new FileSystemResource(path + errorLogFileName);
+
+        // メッセージクラス生成
+        MimeMessage mimeMsg = mailSender.createMimeMessage();
+        // メッセージ情報をセットするためのヘルパークラスを生成(添付ファイル使用時の第2引数はtrue)
+        MimeMessageHelper helper = new MimeMessageHelper(mimeMsg, true);
+
+        helper.setFrom(FROM);
+        helper.setTo(TO);
+        helper.setCc(CC);
+        helper.setSubject("■G3サーバ証明書残留状況調査■ (" + dateString + ") -- 淺野稜");
+        helper.setSentDate(new Date());
+
+        helper.addAttachment(logFileName, logFileResource);
+        helper.addAttachment(errorLogFileName, errorLogFileResource);
+
+        // テンプレートエンジンを使用するための設定インスタンスを生成
+        ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
+
+        // テンプレートエンジンの種類を指定
+        templateResolver.setTemplateMode(TemplateMode.HTML);
+        templateResolver.setCharacterEncoding(ENCODE);
+
+        // テンプレートエンジンを使用するためのインスタンスを生成
+        SpringTemplateEngine engine = new SpringTemplateEngine();
+        engine.setTemplateResolver(templateResolver);
+
 
         Context context = new Context();
         context.setVariable("dateString", dateString);
@@ -94,7 +133,9 @@ public class SendMail {
         context.setVariable("countDV", readMapper.countDV());
         context.setVariable("countOV", readMapper.countOV());
 
-        MimeMessage mimeMsg = sendMailService.getMimeMsg(context);
+        // 使用するテンプレートのファイル名とパラメータ情報を設定します。
+        String text = engine.process("/template/g3mail.html", context);
+        helper.setText(text);
 
         // メール送信
         try {
