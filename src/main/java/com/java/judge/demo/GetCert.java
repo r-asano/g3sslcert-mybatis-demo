@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.security.KeyManagementException;
@@ -127,14 +128,16 @@ public class GetCert {
                         sslContext.init(null, new X509TrustManager[] { new RelaxedX509TrustManager() }, new SecureRandom());
                         SSLSocketFactory socketFactory = sslContext.getSocketFactory();
 
+                        disableSNI = true;
+
                         // SNI無効化
                         if (disableSNI) {
                             socketFactory = new SNIDisabledSSLSocketFactory(socketFactory);
                         }
 
-                        // connectionのタイムアウトを1000msに設定
-                        connection.setConnectTimeout(1000);
-                        connection.setReadTimeout(1000);
+                        // connectionのタイムアウトを2000msに設定
+                        connection.setConnectTimeout(2000);
+                        connection.setReadTimeout(2000);
 
                         // 設定をconnectionに反映
                         connection.setSSLSocketFactory(socketFactory);
@@ -181,15 +184,13 @@ public class GetCert {
                             onemore = true;
                         }
 
-                    } catch (ConnectException e) {
+                    } catch (ConnectException | UnknownHostException | SocketTimeoutException e) {
                         System.err.println("Connection Error: " + cn);
                         errorLogFile.write("Connection Error:                    " + cn + "\r\n");
                         status = "ERROR: CONNECTION ERROR";
                         onemore = true;
                     }
-
                     disableSNI = !disableSNI;
-
                 }
 
                 // {dn_cn},www.{dn_cn}いずれかにG3証明書がある場合、statusをG3とする
