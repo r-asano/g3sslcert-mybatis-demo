@@ -118,7 +118,7 @@ public class SendMail {
         ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
 
         // テンプレートエンジンの種類を指定
-        templateResolver.setTemplateMode(TemplateMode.HTML);
+        templateResolver.setTemplateMode(TemplateMode.TEXT);
         templateResolver.setCharacterEncoding(ENCODE);
 
         // テンプレートエンジンを使用するためのインスタンスを生成
@@ -134,7 +134,7 @@ public class SendMail {
         context.setVariable("countOV", readMapper.countOV());
 
         // 使用するテンプレートのファイル名とパラメータ情報を設定します。
-        String text = engine.process("/template/g3mail.html", context);
+        String text = engine.process("/templates/g3mail.html", context);
         helper.setText(text);
 
         // メール送信
