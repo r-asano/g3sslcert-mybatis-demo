@@ -69,6 +69,9 @@ public class GetCert {
 
         String logFileName = prefix + new SimpleDateFormat("yyyy-MM-dd").format(new Date());
 
+        // プロキシ設定
+//        SocketAddress addr = new InetSocketAddress("172.18.6.18", 8080);
+//        Proxy proxy = new Proxy(Proxy.Type.HTTP, addr);
 
         // エラーログファイル
         FileWriter errorLogFile = new FileWriter(path + "error." + logFileName);
@@ -177,9 +180,9 @@ public class GetCert {
                         }
 
                     } catch (Exception e) {
-                        System.err.println(e.getMessage() + ": " + cn + ", SNI: " + !disableSNI);
-                        errorLogFile.write("Connection Error:                    " + cn + ", SNI: " + !disableSNI + "\r\n");
-                        status = "ERROR: " + e.getMessage() + ", SNI: " + !disableSNI;
+                        System.err.println(e.toString() + ": " + cn + ", SNI: " + !disableSNI);
+                        errorLogFile.write(e.toString() + ":                    " + cn + ", SNI: " + !disableSNI + "\r\n");
+                        status = "ERROR: " + e.toString();
                         onemore = true;
                     }
                     disableSNI = !disableSNI;
