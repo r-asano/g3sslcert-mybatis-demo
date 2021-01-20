@@ -24,16 +24,6 @@
     <property name="protocol" value="${spring.mail.protocol}" />
     <property name="username" value="${spring.mail.username}" />
     <property name="password" value="${spring.mail.password}" />
-    <property name="javaMailProperties">
-      <props>
-        <prop key="mail.smtps.auth">true</prop>
-        <prop key="mail.smtp.starttls.enable">true</prop>
-        <prop key="mail.smtp.ssl.enable">true</prop>
-        <prop key="mail.smtp.starttls.required">true</prop>
-        <prop key="mail.transport.protocol">smtps</prop>
-        <prop key="mail.debug">true</prop>
-      </props>
-    </property>
   </bean>
 
   <!-- <bean id="freemarkerConfig" class="org.springframework.ui.freemarker.FreeMarkerConfigurationFactoryBean">
@@ -43,5 +33,16 @@
     <property name="cache" value="true" /> <property name="prefix" value="" />
     <property name="suffix" value=".ftl" /> <property name="contentType" value="text/html;charset=UTF-8"/>
     </bean> -->
+
+    <!--     <property name="javaMailProperties">
+      <props>
+        <prop key="mail.smtps.auth">true</prop>
+        <prop key="mail.smtp.starttls.enable">true</prop>
+        <prop key="mail.smtp.ssl.enable">true</prop>
+        <prop key="mail.smtp.starttls.required">true</prop>
+        <prop key="mail.transport.protocol">smtps</prop>
+        <prop key="mail.debug">true</prop>
+      </props>
+    </property> -->
 
 </beans>
