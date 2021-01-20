@@ -12,7 +12,6 @@ import javax.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +20,7 @@ import com.amazonaws.services.simpleemail.AmazonSimpleEmailService;
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClientBuilder;
 import com.amazonaws.services.simpleemail.model.RawMessage;
 import com.amazonaws.services.simpleemail.model.SendRawEmailRequest;
+import com.java.judge.mail.MailConfig;
 import com.java.judge.mapper.ReadMapper;
 
 @Service
@@ -31,7 +31,7 @@ public class SendMail {
 
     // メール送信クラス
     @Autowired
-    JavaMailSenderImpl mailSender;
+    MailConfig mailSender;
 
     @Value("${app.path}")
     private String path;

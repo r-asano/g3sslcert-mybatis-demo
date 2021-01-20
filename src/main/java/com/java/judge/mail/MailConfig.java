@@ -9,7 +9,7 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 @Configuration
 public class MailConfig extends JavaMailSenderImpl {
 
-    @Value("${spring.mail.Host}")
+    @Value("${spring.mail.host}")
     private String HOST;
 
     @Value("${spring.mail.port}")
