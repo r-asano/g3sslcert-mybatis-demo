@@ -11,9 +11,8 @@ import javax.mail.internet.MimeMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.context.Context;
 
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailService;
@@ -30,7 +29,7 @@ public class SendMail {
 
     // メール送信クラス
     @Autowired
-    MailConfig mailSender;
+    SendMailService sendMailService;
 
     @Value("${app.path}")
     private String path;
@@ -84,43 +83,18 @@ public class SendMail {
      * @throws IOException
      * @throws TemplateException
      */
-    public void sendMail(int searchNumber)
-            throws MessagingException, IOException {
+    public void sendMail(int searchNumber) throws MessagingException {
 
         String dateString = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
-        String logFileName = prefix + dateString;
-        String errorLogFileName = "error." + logFileName;
 
-        // メールに添付するファイルのオブジェクトを生成
-        FileSystemResource logFileResource = new FileSystemResource(path + logFileName);
-        FileSystemResource errorLogFileResource = new FileSystemResource(path + errorLogFileName);
+        Context context = new Context();
+        context.setVariable("dateString", dateString);
+        context.setVariable("seachNumber", searchNumber);
+        context.setVariable("countG3", readMapper.countG3());
+        context.setVariable("countDV", readMapper.countDV());
+        context.setVariable("countOV", readMapper.countOV());
 
-        // メッセージクラス生成
-        MimeMessage mimeMsg = mailSender.createMimeMessage();
-        // メッセージ情報をセットするためのヘルパークラスを生成(添付ファイル使用時の第2引数はtrue)
-        MimeMessageHelper helper = new MimeMessageHelper(mimeMsg, true);
-
-        helper.setFrom(FROM);
-        helper.setTo(TO);
-        helper.setCc(CC);
-        helper.setSubject("■G3サーバ証明書残留状況調査■ (" + dateString + ") -- 淺野稜");
-        helper.setSentDate(new Date());
-
-//        // 本文セット
-//        freemarkerConfig.setClassForTemplateLoading(this.getClass(), "/templates/");
-//        Template template = freemarkerConfig.getTemplate("mailTemplate.ftl");
-//        Map<String, Object> mailProperty = new HashMap<String, Object>();
-//        mailProperty.put("dateString", dateString);
-//        mailProperty.put("searchNumber", searchNumber);
-//        mailProperty.put("countG3", readMapper.countG3());
-//        mailProperty.put("countDV", readMapper.countDV());
-//        mailProperty.put("countOV", readMapper.countOV());
-//        String text = FreeMarkerTemplateUtils.processTemplateIntoString(template, mailProperty);
-// 	      helper.setText(text, true);
-
-        helper.setText(mailContent(searchNumber, dateString));
-        helper.addAttachment(logFileName, logFileResource);
-        helper.addAttachment(errorLogFileName, errorLogFileResource);
+        MimeMessage mimeMsg = sendMailService.getMimeMsg(context);
 
         // メール送信
         try {
