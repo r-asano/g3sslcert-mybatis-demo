@@ -111,7 +111,9 @@ public class SendMail {
 
         // 使用するテンプレートのファイル名とパラメータ情報を設定します。
         String text = engine.process("/templates/g3mail.txt", context);
-        helper.setText(text);
+
+        mimeMsg.setText(text,"ISO-2022-JP");
+        mimeMsg.setHeader("Content-Transfer-Encoding", "7bit");
 
         // メール送信
         try {
