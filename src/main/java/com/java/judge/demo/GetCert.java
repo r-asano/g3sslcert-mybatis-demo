@@ -164,23 +164,22 @@ public class GetCert {
                                 break;
 
                             } catch(CertificateExpiredException e) {
-                                System.out.println("Certificate is expired or Not Found: " + cn);
-                                errorLogFile.write("Certificate is expired or Not Found: " + cn + "\r\n");
+                                System.err.println("Certificate is expired: " + cn);
+                                errorLogFile.write("Certificate is expired: " + cn + "\r\n");
                                 status = "ERROR: " + e.getMessage();
                                 onemore = true;
                             }
                         } else {
-                            System.err.println("Unknown certificate type: " + cn);
-                            errorLogFile.write("Unknown certificate type:             " + cn + "\r\n");
-                            status = "ERROR: UNKNOWN CERTIFICATE TYPE";
+                            System.err.println("Unknown certificate type: " + cn + ", SNI: " + !disableSNI);
+                            errorLogFile.write("Unknown certificate type:             " + cn + ", SNI: " + !disableSNI + "\r\n");
+                            status = "ERROR: UNKNOWN CERTIFICATE TYPE, SNI: " + !disableSNI;
                             onemore = true;
                         }
 
                     } catch (Exception e) {
-                        System.err.println("Connection Error: " + cn);
-                        errorLogFile.write("Connection Error:                    " + cn + "\r\n");
-                        status = "ERROR: " + e.getMessage();
-                        System.out.println(e.getMessage());
+                        System.err.println(e.getMessage() + ": " + cn + ", SNI: " + !disableSNI);
+                        errorLogFile.write("Connection Error:                    " + cn + ", SNI: " + !disableSNI + "\r\n");
+                        status = "ERROR: " + e.getMessage() + ", SNI: " + !disableSNI;
                         onemore = true;
                     }
                     disableSNI = !disableSNI;
