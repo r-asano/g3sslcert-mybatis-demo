@@ -2,10 +2,8 @@ package com.java.judge.demo;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.security.KeyManagementException;
@@ -60,7 +58,6 @@ public class GetCert {
     @Value("${app.logFilePrefix}")
     private String prefix;
 
-
     /*
      * 証明書情報の取得
      * 証明書の状態更新
@@ -72,10 +69,6 @@ public class GetCert {
 
         String logFileName = prefix + new SimpleDateFormat("yyyy-MM-dd").format(new Date());
 
-
-//        // ローカル用Proxy
-//        SocketAddress addr = new InetSocketAddress("172.18.6.18", 8080);
-//        Proxy proxy = new Proxy(Proxy.Type.HTTP, addr);
 
         // エラーログファイル
         FileWriter errorLogFile = new FileWriter(path + "error." + logFileName);
@@ -128,16 +121,15 @@ public class GetCert {
                         sslContext.init(null, new X509TrustManager[] { new RelaxedX509TrustManager() }, new SecureRandom());
                         SSLSocketFactory socketFactory = sslContext.getSocketFactory();
 
-                        disableSNI = true;
 
                         // SNI無効化
                         if (disableSNI) {
                             socketFactory = new SNIDisabledSSLSocketFactory(socketFactory);
                         }
 
-                        // connectionのタイムアウトを2000msに設定
-                        connection.setConnectTimeout(2000);
-                        connection.setReadTimeout(2000);
+                        // connectionのタイムアウトを1000msに設定
+                        connection.setConnectTimeout(1000);
+                        connection.setReadTimeout(1000);
 
                         // 設定をconnectionに反映
                         connection.setSSLSocketFactory(socketFactory);
@@ -171,10 +163,10 @@ public class GetCert {
 
                                 break;
 
-                            } catch(CertificateExpiredException cee) {
+                            } catch(CertificateExpiredException e) {
                                 System.out.println("Certificate is expired or Not Found: " + cn);
                                 errorLogFile.write("Certificate is expired or Not Found: " + cn + "\r\n");
-                                status = "ERROR: EXPIRED OR NOT FOUND";
+                                status = "ERROR: " + e.getMessage();
                                 onemore = true;
                             }
                         } else {
@@ -184,10 +176,11 @@ public class GetCert {
                             onemore = true;
                         }
 
-                    } catch (ConnectException | UnknownHostException | SocketTimeoutException e) {
+                    } catch (Exception e) {
                         System.err.println("Connection Error: " + cn);
                         errorLogFile.write("Connection Error:                    " + cn + "\r\n");
-                        status = "ERROR: CONNECTION ERROR";
+                        status = "ERROR: " + e.getMessage();
+                        System.out.println(e.getMessage());
                         onemore = true;
                     }
                     disableSNI = !disableSNI;
