@@ -42,6 +42,14 @@ public class SendMail {
     @Value("${mail.from}")
     private String FROM;
 
+    @Value("${spring.mail.username}")
+    private String AWS_ID;
+
+    @Value("${spring.mail.password}")
+    private String AWS_SECRET;
+
+
+
     /*
      * メール本文の設定
      */
@@ -115,7 +123,8 @@ public class SendMail {
 
         // メール送信
 //        mailSender.send(mimeMsg);
-        AWSJavaMailTransport.send(mimeMsg);
+
+        AWSJavaMailTransport.send(mimeMsg, AWS_ID, AWS_SECRET);;
 
 //        try {
 //            AmazonSimpleEmailService client =
