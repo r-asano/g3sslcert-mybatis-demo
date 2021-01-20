@@ -33,11 +33,9 @@ public class G3sslcertMyBatisDemoApplication {
 
         // 初日と最終日のみ全数検査
         boolean zensu = false;
-        if (dateString == "2021-01-01" || dateString == "2021-03-31") {
+        if (dateString == "2021-01-21" || dateString == "2021-03-31") {
             zensu = true;
         }
-
-        zensu = true;
 
         List<DomainDto> domainList;
         if (zensu) {
@@ -46,10 +44,10 @@ public class G3sslcertMyBatisDemoApplication {
             domainList = dao.getG3List();
         }
 
-//        // dn_cnリストの取得 + DB更新
-//        getCert.getCertIssuerStatus(domainList);
-//        // ログファイル出力
-//        output.outputLog();
+        // dn_cnリストの取得 + DB更新
+        getCert.getCertIssuerStatus(domainList);
+        // ログファイル出力
+        output.outputLog();
         // メールの送出
         mail.sendMail(domainList.size());
 
