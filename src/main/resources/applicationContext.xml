@@ -16,8 +16,8 @@
   <context:property-placeholder
     location="classpath:application.properties" />
 
-  <!-- MeilSenderのBean登録 -->
-  <bean id="mailSender"
+  <!-- MeilSenderのBean登録
+    <bean id="mailSender"
     class="org.springframework.mail.javamail.JavaMailSenderImpl">
     <property name="host" value="${spring.mail.host}" />
     <property name="port" value="${spring.mail.port}" />
@@ -25,6 +25,7 @@
     <property name="username" value="${spring.mail.username}" />
     <property name="password" value="${spring.mail.password}" />
   </bean>
+  -->
 
   <!-- <bean id="freemarkerConfig" class="org.springframework.ui.freemarker.FreeMarkerConfigurationFactoryBean">
     <property name="templateLoaderPath" value="file:src/main/resources/templates"

@@ -1,0 +1,40 @@
+package com.java.judge.mail;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
+
+@Configuration
+public class MailConfig extends JavaMailSenderImpl {
+
+    @Value("${spring.mail.Host}")
+    private String HOST;
+
+    @Value("${spring.mail.port}")
+    private Integer PORT;
+
+    @Value("${spring.mail.protocol}")
+    private String PROTOCOL;
+
+    @Value("${spring.mail.username}")
+    private String AWS_ID;
+
+    @Value("${spring.mail.password}")
+    private String AWS_SECRET;
+
+
+    @Bean
+    public JavaMailSender javaMailService() {
+        JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
+
+        javaMailSender.setHost(HOST);
+        javaMailSender.setPort(PORT);
+        javaMailSender.setProtocol(PROTOCOL);
+        javaMailSender.setUsername(AWS_ID);
+        javaMailSender.setPassword(AWS_SECRET);
+
+        return javaMailSender;
+    }
+}
