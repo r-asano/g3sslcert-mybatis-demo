@@ -31,7 +31,6 @@
         <prop key="mail.smtp.ssl.enable">true</prop>
         <prop key="mail.smtp.starttls.required">true</prop>
         <prop key="mail.transport.protocol">smtps</prop>
-        <prop key="mail.smtp.from">no-reply@az.jprs.co.jp</prop>
         <prop key="mail.debug">true</prop>
       </props>
     </property>

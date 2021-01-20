@@ -120,7 +120,7 @@ public class SendMail {
         helper.addAttachment(errorLogFileName, errorLogFileResource);
 
         // メール送信
-        mailSender.send(mimeMsg);
+//        mailSender.send(mimeMsg);
 
 
         // Try to send the email.
