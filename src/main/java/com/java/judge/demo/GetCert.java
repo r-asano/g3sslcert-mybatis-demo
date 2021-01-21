@@ -90,7 +90,7 @@ public class GetCert {
 
             // wildcardの判定
             dnCn.clear();
-            if (domain.isWildcardFlag()) {
+            if (domain.getDnCn().startsWith("*")) {
                 dnCn.add(domain.getDnCn().substring(2));
                 dnCn.add("www." + domain.getDnCn().substring(2));
             } else {
