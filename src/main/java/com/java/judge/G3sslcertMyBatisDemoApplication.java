@@ -37,6 +37,8 @@ public class G3sslcertMyBatisDemoApplication {
             zensu = true;
         }
 
+        zensu = true;
+
         List<DomainDto> domainList;
         if (zensu) {
             domainList = dao.getAllList();
@@ -45,9 +47,9 @@ public class G3sslcertMyBatisDemoApplication {
         }
 
         // dn_cnリストの取得 + DB更新
-        getCert.getCertIssuerStatus(domainList);
+//        getCert.getCertIssuerStatus(domainList);
         // ログファイル出力
-        output.outputLog();
+//        output.outputLog();
         // メールの送出
         mail.sendMail(domainList.size());
 
