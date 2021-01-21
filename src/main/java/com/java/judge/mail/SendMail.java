@@ -91,7 +91,7 @@ public class SendMail {
         context.put("countOV", readMapper.countOV());
 
         StringWriter writer = new StringWriter();
-        velocityEngine.mergeTemplate("src/main/resources/templates/g3mail.vm", "text/plain; charset=" + ENCODE, context, writer);
+        velocityEngine.mergeTemplate("src/main/resources/templates/g3mail.vm", ENCODE, context, writer);
         helper.setText(writer.toString());
 
         helper.setFrom(FROM);
