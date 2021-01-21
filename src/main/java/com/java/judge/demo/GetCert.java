@@ -18,11 +18,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLParameters;
-import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.X509TrustManager;
 
@@ -69,10 +67,6 @@ public class GetCert {
 
         String logFileName = prefix + new SimpleDateFormat("yyyy-MM-dd").format(new Date());
 
-        // プロキシ設定
-//        SocketAddress addr = new InetSocketAddress("172.18.6.18", 8080);
-//        Proxy proxy = new Proxy(Proxy.Type.HTTP, addr);
-
         // エラーログファイル
         FileWriter getCertLogFile = new FileWriter(path + "getCert." + logFileName);
 
@@ -112,18 +106,10 @@ public class GetCert {
                         HttpsURLConnection connection = (HttpsURLConnection) destinationURL.openConnection(); // 引数にproxy
                         connection.setRequestMethod("GET");
 
-                        // ホスト名チェック無効化
-                        connection.setHostnameVerifier(new HostnameVerifier() {
-                            public boolean verify(String hostname, SSLSession session) {
-                                return true;
-                            }
-                        });
-
                         // 証明書チェック無効化
                         SSLContext sslContext = SSLContext.getInstance("SSL");
                         sslContext.init(null, new X509TrustManager[] { new RelaxedX509TrustManager() }, new SecureRandom());
                         SSLSocketFactory socketFactory = sslContext.getSocketFactory();
-
 
                         // SNI無効化
                         if (disableSNI) {
@@ -213,7 +199,7 @@ public class GetCert {
             dao.updateDomainTable(domain);
 
             // Delay
-            Thread.sleep(100);
+            Thread.sleep(1000);
         }
 
         getCertLogFile.flush();
