@@ -7,7 +7,7 @@
 ★DV/OV証明書数   : DV証明書 $countDV 件
                     OV証明書 $countOV 件
 ★添付ファイル    : sslcert-G3.log.$dateString
-                    error.sslcert-G3.log.$dateString
+                    getCert.sslcert-G3.log.$dateString
 
 以上
 -------------------

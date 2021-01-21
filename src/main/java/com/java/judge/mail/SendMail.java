@@ -81,7 +81,7 @@ public class SendMail {
         // メッセージクラス生成
         MimeMessage mimeMsg = mailSender.createMimeMessage();
         // メッセージ情報をセットするためのヘルパークラスを生成(添付ファイル使用時の第2引数はtrue)
-        MimeMessageHelper helper = new MimeMessageHelper(mimeMsg, true, ENCODE);
+        MimeMessageHelper helper = new MimeMessageHelper(mimeMsg, true);
 
         VelocityContext context = new VelocityContext();
         context.put("dateString", dateString);
