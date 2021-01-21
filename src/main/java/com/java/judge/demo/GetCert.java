@@ -74,7 +74,7 @@ public class GetCert {
 //        Proxy proxy = new Proxy(Proxy.Type.HTTP, addr);
 
         // エラーログファイル
-        FileWriter errorLogFile = new FileWriter(path + "error." + logFileName);
+        FileWriter getCertLogFile = new FileWriter(path + "getCert." + logFileName);
 
         // wildcard用にList型を用意
         List<String> dnCn = new ArrayList<String>();
@@ -164,36 +164,44 @@ public class GetCert {
                                     status = issuer.substring(startStatus);
                                 }
 
-                                break;
+                                getCertLogFile.write("Get Cert Success! cn: " + cn + ": status: " + status + ", SNI: " + !disableSNI + "\r\n");
 
                             } catch(CertificateExpiredException e) {
                                 System.err.println("Certificate is expired: " + cn);
-                                errorLogFile.write("Certificate is expired: " + cn + "\r\n");
+                                getCertLogFile.write("Certificate is expired: " + cn + ", SNI: " + !disableSNI + "\r\n");
                                 status = "ERROR: " + e.getMessage();
                                 onemore = true;
                             }
                         } else {
                             System.err.println("Unknown certificate type: " + cn + ", SNI: " + !disableSNI);
-                            errorLogFile.write("Unknown certificate type:             " + cn + ", SNI: " + !disableSNI + "\r\n");
+                            getCertLogFile.write("Unknown certificate type:             " + cn + ", SNI: " + !disableSNI + "\r\n");
                             status = "ERROR: UNKNOWN CERTIFICATE TYPE, SNI: " + !disableSNI;
                             onemore = true;
                         }
 
                     } catch (Exception e) {
                         System.err.println(e.toString() + ": " + cn + ", SNI: " + !disableSNI);
-                        errorLogFile.write(e.toString() + ":                    " + cn + ", SNI: " + !disableSNI + "\r\n");
+                        getCertLogFile.write(e.toString() + ":                    " + cn + ", SNI: " + !disableSNI + "\r\n");
                         status = "ERROR: " + e.toString();
                         onemore = true;
                     }
+
+                    // SNIのいずれかにG3証明書がある場合、statusをG3とする（SNIありのログはとれない可能性あり）
+                    if (status.contains("G3") && status.contains("JPRS")) {
+                        break;
+                    }
+
                     disableSNI = !disableSNI;
+
                 }
 
-                // {dn_cn},www.{dn_cn}いずれか、SNIのいずれかにG3証明書がある場合、statusをG3とする
+                // {dn_cn},www.{dn_cn}いずれかにG3証明書がある場合、statusをG3とする（wwwありのログはとれない可能性あり）
                 if (status.contains("G3") && status.contains("JPRS")) {
                     break;
                 }
 
             }
+
             // Domainオブジェクトにstausをセット
             object.domainObjectSet(domain, status);
 
@@ -208,8 +216,8 @@ public class GetCert {
             Thread.sleep(100);
         }
 
-        errorLogFile.flush();
-        errorLogFile.close();
+        getCertLogFile.flush();
+        getCertLogFile.close();
     }
 }
 

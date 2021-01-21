@@ -47,9 +47,9 @@ public class G3sslcertMyBatisDemoApplication {
         }
 
         // dn_cnリストの取得 + DB更新
-        getCert.getCertIssuerStatus(domainList);
+//        getCert.getCertIssuerStatus(domainList);
         // ログファイル出力
-        output.outputLog();
+//        output.outputG3Log();
         // メールの送出
         mail.sendMail(domainList.size());
 

@@ -72,11 +72,11 @@ public class SendMail {
 
         String dateString = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
         String logFileName = prefix + dateString;
-        String errorLogFileName = "error." + logFileName;
+        String getCertLogFileName = "getCert." + logFileName;
 
         // メールに添付するファイルのオブジェクトを生成
         FileSystemResource logFileResource = new FileSystemResource(path + logFileName);
-        FileSystemResource errorLogFileResource = new FileSystemResource(path + errorLogFileName);
+        FileSystemResource errorLogFileResource = new FileSystemResource(path + getCertLogFileName);
 
         // メッセージクラス生成
         MimeMessage mimeMsg = mailSender.createMimeMessage();
@@ -100,7 +100,7 @@ public class SendMail {
         helper.setSubject("■G3サーバ証明書残留状況調査■ (" + dateString + ") -- 淺野稜");
 
         helper.addAttachment(logFileName, logFileResource);
-        helper.addAttachment(errorLogFileName, errorLogFileResource);
+        helper.addAttachment(getCertLogFileName, errorLogFileResource);
 
         // メール送信
         try {

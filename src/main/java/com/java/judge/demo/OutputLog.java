@@ -30,7 +30,7 @@ public class OutputLog {
      * 残存G3証明書ログの出力
      */
     @Transactional
-    public void outputLog() {
+    public void outputG3Log() {
 
         String logFileName = prefix + new SimpleDateFormat("yyyy-MM-dd").format(new Date());
 
