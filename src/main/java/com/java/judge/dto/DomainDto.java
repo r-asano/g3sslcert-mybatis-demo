@@ -13,27 +13,30 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /*
+ * 「インメモリのDB」が接続対象のデータベースとして指定されている場合、
+ * アプリケーション実行時に、@Entity アノテーションをつけたクラスのテーブルを作成
+ */
+
+/*
  * DomainテーブルDTO
  */
 @Entity
 @Repository
-@Table(name = "Domain")
+@Table(name = "domain")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 public class DomainDto {
 
-	@Id
-	private String issueApplyId;
+    @Id
+    private String issueApplyId;
 
-	private String dnCn;
+    private String dnCn;
 
-	private String employeeName;
+    private String employeeName;
 
-	private String Status;
+    private String Status;
 
-	private Timestamp recUpdDate;
-
-	private boolean wildcardFlag;
+    private Timestamp recUpdDate;
 
 }

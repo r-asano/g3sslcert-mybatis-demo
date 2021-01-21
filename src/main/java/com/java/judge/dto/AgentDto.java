@@ -15,15 +15,15 @@ import lombok.NoArgsConstructor;
  */
 @Entity
 @Repository
-@Table(name = "Agent")
+@Table(name = "agent")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 public class AgentDto {
 
-	@Id
-	private String jointAgentId;
+    @Id
+    private String jointAgentId;
 
-	private String agentName;
+    private String agentName;
 
 }
