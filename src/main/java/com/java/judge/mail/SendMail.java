@@ -102,20 +102,6 @@ public class SendMail {
         helper.addAttachment(logFileName, logFileResource);
         helper.addAttachment(errorLogFileName, errorLogFileResource);
 
-        //        // テンプレートエンジンを使用するための設定インスタンスを生成
-        //        ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
-        //
-        //        // テンプレートエンジンの種類を指定
-        //        templateResolver.setTemplateMode(TemplateMode.TEXT);
-        //        templateResolver.setCharacterEncoding(ENCODE);
-        //
-        //        // テンプレートエンジンを使用するためのインスタンスを生成
-        //        SpringTemplateEngine engine = new SpringTemplateEngine();
-        //        engine.setTemplateResolver(templateResolver);
-
-        // 使用するテンプレートのファイル名とパラメータ情報を設定します。
-        //        String text = engine.process("/templates/g3mail.txt", context);
-
         // メール送信
         try {
             AmazonSimpleEmailService client = AmazonSimpleEmailServiceClientBuilder.standard()

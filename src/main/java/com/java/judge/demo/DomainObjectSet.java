@@ -10,20 +10,20 @@ import com.java.judge.dto.DomainDto;
 @Component
 public class DomainObjectSet {
 
-	@Autowired
-	DomainDto domain;
+    @Autowired
+    private DomainDto domain;
 
-	/*
-	 * Domainオブジェクトの設定
-	 */
-	public void domainObjectSet(DomainDto domain, String status) {
+    /*
+     * Domainオブジェクトの設定
+     */
+    public void domainObjectSet(DomainDto domain, String status) {
 
-		domain.setIssueApplyId(domain.getIssueApplyId());
-		domain.setDnCn(domain.getDnCn());
-		domain.setEmployeeName("asano");
-		domain.setStatus(status);
-		Timestamp updDate = new Timestamp(System.currentTimeMillis());
-		domain.setRecUpdDate(updDate);
+        domain.setIssueApplyId(domain.getIssueApplyId());
+        domain.setDnCn(domain.getDnCn());
+        domain.setEmployeeName("asano");
+        domain.setStatus(status);
+        Timestamp updDate = new Timestamp(System.currentTimeMillis());
+        domain.setRecUpdDate(updDate);
 
-	}
+    }
 }
