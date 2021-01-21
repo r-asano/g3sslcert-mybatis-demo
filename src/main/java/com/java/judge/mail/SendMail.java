@@ -81,7 +81,7 @@ public class SendMail {
         // メッセージクラス生成
         MimeMessage mimeMsg = mailSender.createMimeMessage();
         // メッセージ情報をセットするためのヘルパークラスを生成(添付ファイル使用時の第2引数はtrue)
-        MimeMessageHelper helper = new MimeMessageHelper(mimeMsg, true, ENCODE);
+        MimeMessageHelper helper = new MimeMessageHelper(mimeMsg, true, "text/plain; charset=" + ENCODE);
 
         VelocityContext context = new VelocityContext();
         context.put("dateString", dateString);
@@ -91,7 +91,7 @@ public class SendMail {
         context.put("countOV", readMapper.countOV());
 
         StringWriter writer = new StringWriter();
-        velocityEngine.mergeTemplate("src/main/resources/templates/g3mail.vm", ENCODE, context, writer);
+        velocityEngine.mergeTemplate("src/main/resources/templates/g3mail.vm", "text/plain; charset=" + ENCODE, context, writer);
         helper.setText(writer.toString());
 
         helper.setFrom(FROM);

@@ -188,7 +188,7 @@ public class GetCert {
                     disableSNI = !disableSNI;
                 }
 
-                // {dn_cn},www.{dn_cn}いずれかにG3証明書がある場合、statusをG3とする
+                // {dn_cn},www.{dn_cn}いずれか、SNIのいずれかにG3証明書がある場合、statusをG3とする
                 if (status.contains("G3") && status.contains("JPRS")) {
                     break;
                 }
