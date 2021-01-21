@@ -63,7 +63,8 @@ public class GetCert {
      */
     @Transactional
     public void getCertIssuerStatus(List<DomainDto> domainList)
-            throws KeyManagementException, NoSuchAlgorithmException, IOException, CertificateNotYetValidException, InterruptedException {
+            throws KeyManagementException, NoSuchAlgorithmException, IOException, CertificateNotYetValidException,
+            InterruptedException {
 
         String logFileName = prefix + new SimpleDateFormat("yyyy-MM-dd").format(new Date());
 
@@ -99,7 +100,7 @@ public class GetCert {
                 boolean onemore = false;
 
                 // 排他的論理和で判断
-                while(!(disableSNI^onemore)) {
+                while (!(disableSNI ^ onemore)) {
 
                     try {
                         URL destinationURL = new URL("https://" + cn);
@@ -108,7 +109,8 @@ public class GetCert {
 
                         // 証明書チェック無効化
                         SSLContext sslContext = SSLContext.getInstance("SSL");
-                        sslContext.init(null, new X509TrustManager[] { new RelaxedX509TrustManager() }, new SecureRandom());
+                        sslContext.init(null, new X509TrustManager[] { new RelaxedX509TrustManager() },
+                                new SecureRandom());
                         SSLSocketFactory socketFactory = sslContext.getSocketFactory();
 
                         // SNI無効化
@@ -132,16 +134,16 @@ public class GetCert {
                         Certificate[] certs = connection.getServerCertificates();
 
                         // Statusの更新
-                        if(certs[0] instanceof X509Certificate) {
+                        if (certs[0] instanceof X509Certificate) {
                             try {
                                 // 証明書が有効か判定
-                                ( (X509Certificate) certs[0]).checkValidity();
+                                ((X509Certificate) certs[0]).checkValidity();
                                 System.out.println("Certificate is active for current date");
 
                                 String issuer = ((X509Certificate) certs[0]).getIssuerX500Principal().getName();
 
                                 // statusのみ抽出
-                                int startStatus = issuer.indexOf("CN=")+3;
+                                int startStatus = issuer.indexOf("CN=") + 3;
 
                                 if (issuer.contains(",")) {
                                     int endStatus = issuer.indexOf(",");
@@ -150,26 +152,26 @@ public class GetCert {
                                     status = issuer.substring(startStatus);
                                 }
 
-                                getCertLogFile.write("Get Cert Success! cn: " + cn + ": status: " + status + ", SNI: " + !disableSNI + "\r\n");
+                                getCertLogFile.write("Get Cert Success! cn: " + cn + ": status: " + status + ", SNI: "
+                                        + !disableSNI + "\r\n");
 
-                            } catch(CertificateExpiredException e) {
+                            } catch (CertificateExpiredException e) {
                                 System.err.println("Certificate is expired: " + cn);
-                                getCertLogFile.write("Certificate is expired: " + cn + ", SNI: " + !disableSNI + "\r\n");
+                                getCertLogFile
+                                        .write("Certificate is expired: " + cn + ", SNI: " + !disableSNI + "\r\n");
                                 status = "ERROR: " + e.getMessage();
-                                onemore = true;
                             }
                         } else {
                             System.err.println("Unknown certificate type: " + cn + ", SNI: " + !disableSNI);
-                            getCertLogFile.write("Unknown certificate type:             " + cn + ", SNI: " + !disableSNI + "\r\n");
+                            getCertLogFile.write(
+                                    "Unknown certificate type:             " + cn + ", SNI: " + !disableSNI + "\r\n");
                             status = "ERROR: UNKNOWN CERTIFICATE TYPE, SNI: " + !disableSNI;
-                            onemore = true;
                         }
-
                     } catch (Exception e) {
                         System.err.println(e.toString() + ": " + cn + ", SNI: " + !disableSNI);
-                        getCertLogFile.write(e.toString() + ":                    " + cn + ", SNI: " + !disableSNI + "\r\n");
+                        getCertLogFile
+                                .write(e.toString() + ":                    " + cn + ", SNI: " + !disableSNI + "\r\n");
                         status = "ERROR: " + e.toString();
-                        onemore = true;
                     }
 
                     // SNIのいずれかにG3証明書がある場合、statusをG3とする（SNIありのログはとれない可能性あり）
@@ -178,6 +180,7 @@ public class GetCert {
                     }
 
                     disableSNI = !disableSNI;
+                    onemore = true;
 
                 }
 
@@ -285,4 +288,3 @@ class SNIDisabledSSLSocketFactory extends SSLSocketFactory {
         return setSNI(baseSocketFactory.createSocket(paramInetAddress1, paramInt1, paramInetAddress2, paramInt2));
     }
 }
-
