@@ -96,11 +96,11 @@ public class GetCert {
             for (String cn : dnCn) {
 
                 // SNI有効
-                boolean disableSNI = false;
+                boolean disableSNI = true;
                 boolean onemore = false;
 
                 // 排他的論理和で判断
-                while (!(disableSNI ^ onemore)) {
+                while (disableSNI ^ onemore) {
 
                     try {
                         URL destinationURL = new URL("https://" + cn);
