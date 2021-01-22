@@ -6,7 +6,9 @@ import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -119,8 +121,9 @@ public class SendMail {
         // The email body for recipients with non-HTML email clients.
         String BODY_TEXT = writer.toString();
 
-        String ATTACHMENT1 = path + logFileName;
-        String ATTACHMENT2 = path + "getCert." + logFileName;
+        List<String> ATTACHMENTS = new ArrayList<String>();
+        ATTACHMENTS.add(path + logFileName);
+        ATTACHMENTS.add(path + "getCert." + logFileName);
 
         // Add subject, from and to lines.
         message.setSubject(SUBJECT, ENCODE);
@@ -152,23 +155,17 @@ public class SendMail {
         // Add the multipart/alternative part to the message.
         msg.addBodyPart(wrap);
 
-        // Define the attachment
-        MimeBodyPart att1 = new MimeBodyPart();
-        DataSource fds1 = new FileDataSource(ATTACHMENT1);
-        att1.setDataHandler(new DataHandler(fds1));
-        att1.setFileName(fds1.getName());
+        for (String file : ATTACHMENTS) {
+            // Define the attachment
+            MimeBodyPart bp = new MimeBodyPart();
 
-        // Add the attachment to the message.
-        msg.addBodyPart(att1);
+            DataSource fds = new FileDataSource(file);
+            bp.setDataHandler(new DataHandler(fds));
+            bp.setFileName(fds.getName());
 
-        // Define the attachment
-        MimeBodyPart att2 = new MimeBodyPart();
-        DataSource fds2 = new FileDataSource(ATTACHMENT2);
-        att1.setDataHandler(new DataHandler(fds2));
-        att1.setFileName(fds2.getName());
-
-        // Add the attachment to the message.
-        msg.addBodyPart(att2);
+            // Add the attachment to the message.
+            msg.addBodyPart(bp);
+        }
 
         // メール送信
         try {
