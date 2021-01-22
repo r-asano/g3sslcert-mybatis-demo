@@ -128,16 +128,16 @@ public class SendMail {
         mbp2.setDataHandler(new DataHandler(fds1));
         mbp2.setFileName(MimeUtility.encodeWord(fds1.getName()));
 
-        MimeBodyPart mbp3 = new MimeBodyPart();
-        File attachmentFile2 = new File(path + getCertLogFileName);
-        FileDataSource fds2 = new FileDataSource(attachmentFile2);
-        mbp2.setDataHandler(new DataHandler(fds2));
-        mbp2.setFileName(MimeUtility.encodeWord(fds2.getName()));
+//        MimeBodyPart mbp3 = new MimeBodyPart();
+//        File attachmentFile2 = new File(path + getCertLogFileName);
+//        FileDataSource fds2 = new FileDataSource(attachmentFile2);
+//        mbp2.setDataHandler(new DataHandler(fds2));
+//        mbp2.setFileName(MimeUtility.encodeWord(fds2.getName()));
 
         Multipart mp = new MimeMultipart();
         mp.addBodyPart(mbp1);
         mp.addBodyPart(mbp2);
-        mp.addBodyPart(mbp3);
+//        mp.addBodyPart(mbp3);
 
         mimeMsg.setContent(mp);
 
