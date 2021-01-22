@@ -11,7 +11,9 @@ import java.util.Date;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
+import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.Velocity;
 import org.apache.velocity.app.VelocityEngine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -82,6 +84,10 @@ public class SendMail {
         // メッセージ情報をセットするためのヘルパークラスを生成(添付ファイル使用時の第2引数はtrue)
         MimeMessageHelper helper = new MimeMessageHelper(mimeMsg, true, ENCODE);
 
+        Velocity.setProperty("file.resource.loader.path", "src/main/resources/templates/");
+        //Velocityの初期化
+        Velocity.init();
+
         VelocityContext context = new VelocityContext();
         context.put("dateString", dateString);
         context.put("searchNumber", searchNumber);
@@ -90,7 +96,9 @@ public class SendMail {
         context.put("countOV", readMapper.countOV());
 
         StringWriter writer = new StringWriter();
-        velocityEngine.mergeTemplate("src/main/resources/templates/g3mail.vm", ENCODE, context, writer);
+        Template template = Velocity.getTemplate("g3mail.vm", ENCODE);
+        template.merge(context, writer);
+//        velocityEngine.mergeTemplate("src/main/resources/templates/g3mail.vm", ENCODE, context, writer);
 
         helper.setText(writer.toString());
         helper.setFrom(FROM);
