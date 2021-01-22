@@ -9,54 +9,43 @@ import org.springframework.transaction.annotation.Transactional;
 import com.java.judge.dto.DomainDto;
 import com.java.judge.mapper.ReadMapper;
 
+/*
+ * DAOクラス
+ */
 @Component
 public class UtilDao {
 
-	@Autowired
-	ReadMapper readMapper;
+    @Autowired
+    ReadMapper readMapper;
 
-	/*
-	 * DomainテーブルからG3証明書のdn_cnリストを取得
-	 */
-	@Transactional
-	public List<DomainDto> getG3List() {
+    /*
+     * DomainテーブルからG3証明書のdn_cnリストを取得
+     */
+    @Transactional
+    public List<DomainDto> getG3List() {
 
-		List<DomainDto> g3DnCn = readMapper.selectG3Domain();
+        List<DomainDto> g3DnCn = readMapper.selectG3Domain();
 
-		return g3DnCn;
-	}
+        return g3DnCn;
+    }
 
+    /*
+     * Domainテーブルからすべてのdn_cnリストを取得
+     */
+    @Transactional
+    public List<DomainDto> getAllList() {
 
-	/*
-	 * Domainテーブルからすべてのdn_cnリストを取得
-	 */
-	@Transactional
-	public List<DomainDto> getAllList() {
+        List<DomainDto> allDnCn = readMapper.selectAllDomain();
 
-		List<DomainDto> allDnCn = readMapper.selectAllDomain();
+        return allDnCn;
+    }
 
-		return allDnCn;
-	}
-
-
-	/*
-	 * Domainテーブルからワイルドカードのdn_cnリストを取得
-	 */
-	@Transactional
-	public List<DomainDto> getWildcardList() {
-
-		List<DomainDto> wildDnCn = readMapper.selectWildcardDomain();
-
-		return wildDnCn;
-	}
-
-
-	/*
-	 * Domainテーブルの更新
-	 */
-	@Transactional
-	public void updateDomainTable(DomainDto updDomain) {
-		readMapper.updateDomain(updDomain);
-	}
+    /*
+     * Domainテーブルの更新
+     */
+    @Transactional
+    public void updateDomainTable(DomainDto updDomain) {
+        readMapper.updateDomain(updDomain);
+    }
 
 }
