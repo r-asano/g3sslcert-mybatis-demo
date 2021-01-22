@@ -61,6 +61,9 @@ public class SendMail {
     @Value("${mail.from}")
     private String FROM;
 
+    @Value("${mail.charset}")
+    private String CHARSET;
+
     @Value("${mail.encoding}")
     private String ENCODE;
 
@@ -86,12 +89,12 @@ public class SendMail {
 
         // メールに添付するファイルのオブジェクトを生成
         FileSystemResource logFileResource = new FileSystemResource(path + logFileName);
-        FileSystemResource errorLogFileResource = new FileSystemResource(path + getCertLogFileName);
+        FileSystemResource getCertLogFileResource = new FileSystemResource(path + getCertLogFileName);
 
         // メッセージクラス生成
         MimeMessage mimeMsg = mailSender.createMimeMessage();
 //        // メッセージ情報をセットするためのヘルパークラスを生成(添付ファイル使用時の第2引数はtrue)
-//        MimeMessageHelper helper = new MimeMessageHelper(mimeMsg, true, ENCODE.name());
+//        MimeMessageHelper helper = new MimeMessageHelper(mimeMsg, true, ENCODE);
 
         VelocityContext context = new VelocityContext();
         context.put("dateString", dateString);
@@ -110,17 +113,17 @@ public class SendMail {
 //        helper.setSubject("■G3サーバ証明書残留状況調査■ (" + dateString + ") -- 淺野稜");
 //
 //        helper.addAttachment(logFileName, logFileResource);
-//        helper.addAttachment(getCertLogFileName, errorLogFileResource);
+//        helper.addAttachment(getCertLogFileName, getCertLogFileResource);
 
         mimeMsg.addFrom(InternetAddress.parse(FROM));
         mimeMsg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(TO));
         mimeMsg.setRecipients(Message.RecipientType.CC, InternetAddress.parse(CC));
         mimeMsg.setSubject("■G3サーバ証明書残留状況調査■ (" + dateString + ") -- 淺野 稜", ENCODE);
-        mimeMsg.setText(writer.toString(), ENCODE);
         mimeMsg.setSentDate(new Date());
+        mimeMsg.setHeader("Content-Transfer-Encoding", "7bit");
 
         MimeBodyPart mbp1 = new MimeBodyPart();
-        mbp1.setText(writer.toString(), ENCODE);
+        mbp1.setText(writer.toString(), ENCODE, "plain");
 
         MimeBodyPart mbp2 = new MimeBodyPart();
         File attachmentFile1 = new File(path + logFileName);
@@ -139,7 +142,8 @@ public class SendMail {
         mp.addBodyPart(mbp2);
 //        mp.addBodyPart(mbp3);
 
-        mimeMsg.setContent(mp);
+        mimeMsg.setContent(mp, "text/html;charset=iso-2022-jp");
+
 
         // メール送信
         try {
