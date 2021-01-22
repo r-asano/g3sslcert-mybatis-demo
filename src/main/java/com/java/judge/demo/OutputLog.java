@@ -36,7 +36,7 @@ public class OutputLog {
 
         try (FileWriter logFile = new FileWriter(path + logFileName)) {
 
-            logFile.write("更新日" + "\t\t\t" + "CN" + "\t\t\t\t" + "Status" + "\t\t\t\t\t\t" + "Agent" + "\r\n");
+            logFile.write("更新日" + "\t" + "CN" + "\t" + "Status" + "\t" + "Agent" + "\r\n");
 
             // statusがG3のレコードを抽出
             List<DomainDto> certG3List = readMapper.selectG3Domain();
@@ -45,8 +45,8 @@ public class OutputLog {
                 // 「2020-12-18 00:00:00.0 yahoo.co.jp JPRS Domain Validation Authority - G3 株式会社日本レジストリサービス」 の形式でlogFile出力
                 logFile.write(
                         cert.getRecUpdDate() + "\t"
-                                + cert.getDnCn() + "\t\t"
-                                + cert.getStatus() + "\t\t"
+                                + cert.getDnCn() + "\t"
+                                + cert.getStatus() + "\t"
                                 + readMapper.selectAgentName(readMapper.selectJointAgentId(cert))
                                 + "\r\n");
             }

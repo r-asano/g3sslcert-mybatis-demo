@@ -59,7 +59,7 @@ public class GetCert {
     /*
      * 証明書情報の取得
      * 証明書の状態更新
-     * エラーログの出力
+     * ログの出力
      */
     @Transactional
     public void getCertIssuerStatus(List<DomainDto> domainList)
@@ -95,7 +95,7 @@ public class GetCert {
             // wildcardなら2件のループ
             for (String cn : dnCn) {
 
-                // SNI有効
+                // SNI無効
                 boolean disableSNI = true;
                 boolean onemore = false;
 
@@ -138,7 +138,7 @@ public class GetCert {
                             try {
                                 // 証明書が有効か判定
                                 ((X509Certificate) certs[0]).checkValidity();
-                                System.out.println("Certificate is active for current date");
+                                System.out.println("Certificate is active for current date, SNI: " + !disableSNI);
 
                                 String issuer = ((X509Certificate) certs[0]).getIssuerX500Principal().getName();
 
@@ -163,8 +163,7 @@ public class GetCert {
                             }
                         } else {
                             System.err.println("Unknown certificate type: " + cn + ", SNI: " + !disableSNI);
-                            getCertLogFile.write(
-                                    "Unknown certificate type:             " + cn + ", SNI: " + !disableSNI + "\r\n");
+                            getCertLogFile.write("Unknown certificate type:             " + cn + ", SNI: " + !disableSNI + "\r\n");
                             status = "ERROR: UNKNOWN CERTIFICATE TYPE, SNI: " + !disableSNI;
                         }
                     } catch (Exception e) {

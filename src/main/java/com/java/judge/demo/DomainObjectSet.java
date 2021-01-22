@@ -2,7 +2,7 @@ package com.java.judge.demo;
 
 import java.sql.Timestamp;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.java.judge.dto.DomainDto;
@@ -10,8 +10,8 @@ import com.java.judge.dto.DomainDto;
 @Component
 public class DomainObjectSet {
 
-    @Autowired
-    private DomainDto domain;
+    @Value("{app.employeeName}")
+    private String employeeName;
 
     /*
      * Domainオブジェクトの設定
@@ -20,7 +20,7 @@ public class DomainObjectSet {
 
         domain.setIssueApplyId(domain.getIssueApplyId());
         domain.setDnCn(domain.getDnCn());
-        domain.setEmployeeName("asano");
+        domain.setEmployeeName(employeeName);
         domain.setStatus(status);
         Timestamp updDate = new Timestamp(System.currentTimeMillis());
         domain.setRecUpdDate(updDate);
