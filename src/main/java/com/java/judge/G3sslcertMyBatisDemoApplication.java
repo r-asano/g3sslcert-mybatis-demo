@@ -20,8 +20,6 @@ public class G3sslcertMyBatisDemoApplication {
 
     public static void main(String[] args) throws Exception  {
 
-//        ConfigurableApplicationContext context =
-//                SpringApplication.run(G3sslcertMyBatisDemoApplication.class, args);
         ClassPathXmlApplicationContext context =
                 new ClassPathXmlApplicationContext("applicationContext.xml");
 
@@ -45,9 +43,9 @@ public class G3sslcertMyBatisDemoApplication {
         }
 
         // dn_cnリストの取得 + DB更新
-//        getCert.getCertIssuerStatus(domainList);
+        getCert.getCertIssuerStatus(domainList);
         // ログファイル出力
-//        output.outputG3Log();
+        output.outputG3Log();
         // メールの送出
         mail.sendMail(domainList.size());
 

@@ -66,9 +66,8 @@ public class GetCert {
             throws KeyManagementException, NoSuchAlgorithmException, IOException, CertificateNotYetValidException,
             InterruptedException {
 
+        // 実行ログ
         String logFileName = prefix + new SimpleDateFormat("yyyy-MM-dd").format(new Date());
-
-        // エラーログファイル
         FileWriter getCertLogFile = new FileWriter(path + "getCert." + logFileName);
 
         // wildcard用にList型を用意

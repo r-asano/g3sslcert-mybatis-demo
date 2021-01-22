@@ -94,12 +94,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.apache.velocity/velocity -->
-        <dependency>
-            <groupId>org.apache.velocity</groupId>
-            <artifactId>velocity</artifactId>
-            <version>1.7</version>
-        </dependency>
 
         <!-- AWS関連 -->
         <dependency>

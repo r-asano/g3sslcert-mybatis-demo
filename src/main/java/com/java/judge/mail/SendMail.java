@@ -10,7 +10,6 @@ import java.util.Date;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
-import org.apache.velocity.app.VelocityEngine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
@@ -32,9 +31,6 @@ public class SendMail {
 
     @Autowired
     private MailConfig mailSender;
-
-    @Autowired
-    private VelocityEngine velocityEngine;
 
     @Value("${app.path}")
     private String path;
@@ -106,46 +102,6 @@ public class SendMail {
         helper.setSubject(SUBJECT);
         helper.addAttachment(logFileName, logFileResource);
         helper.addAttachment(getCertLogFileName, getCertLogFileResource);
-
-        //        List<String> ATTACHMENTS = new ArrayList<String>();
-        //        ATTACHMENTS.add(path + logFileName);
-        //        ATTACHMENTS.add(path + "getCert." + logFileName);
-        //
-        //        // Add subject, from and to lines.
-        //        message.setSubject(SUBJECT, ENCODE);
-        //        message.setFrom(new InternetAddress(FROM));
-        //        message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(TO));
-        //
-        //        // Create a multipart/alternative child container.
-        //        MimeMultipart msg_body = new MimeMultipart();
-        //
-        //        // Create a wrapper for the HTML and text parts.
-        //        MimeBodyPart wrap = new MimeBodyPart();
-        //
-        //        // Define the text part.
-        //        MimeBodyPart textPart = new MimeBodyPart();
-        //        textPart.setContent(BODY_TEXT, "text/plain; charset=" + ENCODE);
-        //
-        //        // Add the text and HTML parts to the child container.
-        //        msg_body.addBodyPart(textPart);
-        //
-        //        // Add the child container to the wrapper object.
-        //        wrap.setContent(msg_body);
-        //
-        //        // Create a multipart/mixed parent container.(mixed:添付ファイルあり)
-        //        MimeMultipart msg = new MimeMultipart("mixed");
-        //
-        //        message.setContent(msg);
-        //
-        //        msg.addBodyPart(wrap);
-        //
-        //        for (String file : ATTACHMENTS) {
-        //            MimeBodyPart bp = new MimeBodyPart();
-        //            DataSource fds = new FileDataSource(file);
-        //            bp.setDataHandler(new DataHandler(fds));
-        //            bp.setFileName(fds.getName());
-        //            msg.addBodyPart(bp);
-        //        }
 
         // メール送信
         try {
