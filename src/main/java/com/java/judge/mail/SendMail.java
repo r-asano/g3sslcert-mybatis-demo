@@ -2,7 +2,6 @@ package com.java.judge.mail;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
@@ -20,9 +19,6 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
-import org.apache.velocity.Template;
-import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.Velocity;
 import org.apache.velocity.app.VelocityEngine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -90,22 +86,8 @@ public class SendMail {
         MimeMessage message = mailSender.createMimeMessage();
 
         // メッセージ情報をセットするためのヘルパークラスを生成(添付ファイル使用時の第2引数はtrue)
-        //                MimeMessageHelper helper = new MimeMessageHelper(message, true, ENCODE);
+//                        MimeMessageHelper helper = new MimeMessageHelper(message, true, ENCODE);
 
-        Velocity.setProperty("file.resource.loader.path", "src/main/resources/templates/");
-        //Velocityの初期化
-        Velocity.init();
-
-        VelocityContext context = new VelocityContext();
-        context.put("dateString", dateString);
-        context.put("searchNumber", searchNumber);
-        context.put("countG3", readMapper.countG3());
-        context.put("countDV", readMapper.countDV());
-        context.put("countOV", readMapper.countOV());
-
-        StringWriter writer = new StringWriter();
-        Template template = Velocity.getTemplate("g3mail.vm", ENCODE);
-        template.merge(context, writer);
 
         //
         //        helper.setText(writer.toString());
@@ -119,7 +101,23 @@ public class SendMail {
         String SUBJECT = "■G3サーバ証明書残留状況調査■ (" + dateString + ") -- 淺野 稜";
 
         // The email body for recipients with non-HTML email clients.
-        String BODY_TEXT = writer.toString();
+        String BODY_TEXT =
+                "■G3サーバ証明書残留数■  通知\r\n"
+                + "=========================================================================================\r\n"
+                + "★調査日時        : " + dateString + "\r\n"
+                + "★対象範囲        : 有効期間開始日が 2019/08 - 2019/09 のサーバ証明書\r\n"
+                + "★対象件数        : " + searchNumber + "件\r\n"
+                + "★残留G3証明書数  : " + readMapper.countG3() + "件\r\n"
+                + "★DV/OV証明書数   : DV証明書" + readMapper.countDV() + "件\r\n"
+                + "                    OV証明書" + readMapper.countOV() + "件\r\n"
+                + "★添付ファイル    : sslcert-G3.log." + dateString + "\r\n"
+                + "                    getCert.sslcert-G3.log." + dateString + "\r\n"
+                + "\r\n"
+                + "以上\r\n"
+                + "-------------------\r\n"
+                + "From : asano@jprs.co.jp\r\n"
+                + "開発部  淺野 稜\r\n"
+                + "-------------------";
 
         List<String> ATTACHMENTS = new ArrayList<String>();
         ATTACHMENTS.add(path + logFileName);
@@ -131,7 +129,7 @@ public class SendMail {
         message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(TO));
 
         // Create a multipart/alternative child container.
-        MimeMultipart msg_body = new MimeMultipart("alternative");
+        MimeMultipart msg_body = new MimeMultipart();
 
         // Create a wrapper for the HTML and text parts.
         MimeBodyPart wrap = new MimeBodyPart();
@@ -146,24 +144,18 @@ public class SendMail {
         // Add the child container to the wrapper object.
         wrap.setContent(msg_body);
 
-        // Create a multipart/mixed parent container.
+        // Create a multipart/mixed parent container.(mixed:添付ファイルあり)
         MimeMultipart msg = new MimeMultipart("mixed");
 
-        // Add the parent container to the message.
         message.setContent(msg);
 
-        // Add the multipart/alternative part to the message.
         msg.addBodyPart(wrap);
 
         for (String file : ATTACHMENTS) {
-            // Define the attachment
             MimeBodyPart bp = new MimeBodyPart();
-
             DataSource fds = new FileDataSource(file);
             bp.setDataHandler(new DataHandler(fds));
             bp.setFileName(fds.getName());
-
-            // Add the attachment to the message.
             msg.addBodyPart(bp);
         }
 
