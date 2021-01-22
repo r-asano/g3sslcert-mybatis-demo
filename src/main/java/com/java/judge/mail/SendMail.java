@@ -98,36 +98,7 @@ public class SendMail {
         helper.setSubject("■G3サーバ証明書残留状況調査■ (" + dateString + ") -- 淺野稜");
 
         helper.addAttachment(logFileName, logFileResource);
-        helper.addAttachment(getCertLogFileName, getCertLogFileResource);
-
-//        mimeMsg.addFrom(InternetAddress.parse(FROM));
-//        mimeMsg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(TO));
-//        mimeMsg.setSubject("■G3サーバ証明書残留状況調査■ (" + dateString + ") -- 淺野 稜", ENCODE);
-//        mimeMsg.setSentDate(new Date());
-//        mimeMsg.setHeader("Content-Transfer-Encoding", "7bit");
-//
-//        MimeBodyPart mbp1 = new MimeBodyPart();
-//        mbp1.setText(writer.toString(), ENCODE, "plain");
-//
-//        MimeBodyPart mbp2 = new MimeBodyPart();
-//        File attachmentFile1 = new File(path + logFileName);
-//        FileDataSource fds1 = new FileDataSource(attachmentFile1);
-//        mbp2.setDataHandler(new DataHandler(fds1));
-//        mbp2.setFileName(MimeUtility.encodeWord(fds1.getName()));
-//
-////        MimeBodyPart mbp3 = new MimeBodyPart();
-////        File attachmentFile2 = new File(path + getCertLogFileName);
-////        FileDataSource fds2 = new FileDataSource(attachmentFile2);
-////        mbp2.setDataHandler(new DataHandler(fds2));
-////        mbp2.setFileName(MimeUtility.encodeWord(fds2.getName()));
-//
-//        Multipart mp = new MimeMultipart();
-//        mp.addBodyPart(mbp1);
-//        mp.addBodyPart(mbp2);
-////        mp.addBodyPart(mbp3);
-//
-//        mimeMsg.setContent(mp, "text/html;charset=iso-2022-jp");
-
+//        helper.addAttachment(getCertLogFileName, getCertLogFileResource);
 
         // メール送信
         try {
