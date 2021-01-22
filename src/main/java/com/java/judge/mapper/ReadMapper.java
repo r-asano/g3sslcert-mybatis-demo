@@ -112,18 +112,6 @@ public interface ReadMapper {
             + "FROM domain")
     List<DomainDto> selectAllDomain();
 
-    @Select("SELECT * "
-            + "FROM domain "
-            + "WHERE dn_cn LIKE '*%' ")
-    List<DomainDto> selectWildcardDomain();
-
-    @Update("UPDATE domain "
-            + "SET "
-            + "status=#{status}, "
-            + "rec_upd_date=#{recUpdDate} "
-            + "WHERE issue_apply_id=#{issueApplyId}")
-    void updateDomain(DomainDto domain);
-
     @Select("SELECT COUNT(*) "
             + "FROM domain "
             + "WHERE (status LIKE 'JPRS%' AND status LIKE '%G3')")
@@ -150,6 +138,12 @@ public interface ReadMapper {
             + "WHERE dn_cn=#{dnCn}")
     DomainDto selectOneCert(String dnCn);
 
+    @Update("UPDATE domain "
+            + "SET "
+            + "status=#{status}, "
+            + "rec_upd_date=#{recUpdDate} "
+            + "WHERE issue_apply_id=#{issueApplyId}")
+    void updateDomain(DomainDto domain);
 
 
     /*
