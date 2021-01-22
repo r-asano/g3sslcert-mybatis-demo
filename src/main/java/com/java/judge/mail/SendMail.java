@@ -150,8 +150,8 @@ public class SendMail {
 
         // Add subject, from and to lines.
         message.setSubject(SUBJECT, "ISO-2022-JP");
-        message.setFrom(new InternetAddress(SENDER));
-        message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(RECIPIENT));
+        message.setFrom(new InternetAddress(FROM));
+        message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(TO));
 
         // Create a multipart/alternative child container.
         MimeMultipart msg_body = new MimeMultipart("alternative");
