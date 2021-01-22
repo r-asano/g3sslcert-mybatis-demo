@@ -61,9 +61,6 @@ public class SendMail {
     @Value("${mail.from}")
     private String FROM;
 
-    @Value("${mail.charset}")
-    private String CHARSET;
-
     @Value("${mail.encoding}")
     private String ENCODE;
 
