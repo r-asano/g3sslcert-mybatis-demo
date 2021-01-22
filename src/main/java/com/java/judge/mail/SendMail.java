@@ -145,6 +145,8 @@ public class SendMail {
 ////        helper.addAttachment(getCertLogFileName, getCertLogFileResource);
 
 
+        ATTACHMENT = path + logFileName;
+
 
         // Add subject, from and to lines.
         message.setSubject(SUBJECT, "ISO-2022-JP");
