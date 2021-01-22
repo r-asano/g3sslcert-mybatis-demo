@@ -5,23 +5,16 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
-import javax.activation.DataHandler;
-import javax.activation.DataSource;
-import javax.activation.FileDataSource;
-import javax.mail.Message;
 import javax.mail.MessagingException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
 
 import org.apache.velocity.app.VelocityEngine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import com.amazonaws.regions.Regions;
@@ -76,33 +69,21 @@ public class SendMail {
 
         String dateString = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
         String logFileName = prefix + dateString;
-        //        String getCertLogFileName = "getCert." + logFileName;
-        //
-        //        // メールに添付するファイルのオブジェクトを生成
-        //        FileSystemResource logFileResource = new FileSystemResource(path + logFileName);
-        //        FileSystemResource getCertLogFileResource = new FileSystemResource(path + getCertLogFileName);
+        String getCertLogFileName = "getCert." + logFileName;
+
+        // メールに添付するファイルのオブジェクトを生成
+        FileSystemResource logFileResource = new FileSystemResource(path + logFileName);
+        FileSystemResource getCertLogFileResource = new FileSystemResource(path + getCertLogFileName);
 
         // メッセージクラス生成
         MimeMessage message = mailSender.createMimeMessage();
 
         // メッセージ情報をセットするためのヘルパークラスを生成(添付ファイル使用時の第2引数はtrue)
-//                        MimeMessageHelper helper = new MimeMessageHelper(message, true, ENCODE);
-
-
-        //
-        //        helper.setText(writer.toString());
-        //        helper.setFrom(FROM);
-        //        helper.setTo(TO);
-        //        helper.setSubject("■G3サーバ証明書残留状況調査■ (" + dateString + ") -- 淺野稜");
-        //
-        //        helper.addAttachment(logFileName, logFileResource);
-        ////        helper.addAttachment(getCertLogFileName, getCertLogFileResource);
+        MimeMessageHelper helper = new MimeMessageHelper(message, true, ENCODE);
 
         String SUBJECT = "■G3サーバ証明書残留状況調査■ (" + dateString + ") -- 淺野 稜";
 
-        // The email body for recipients with non-HTML email clients.
-        String BODY_TEXT =
-                "■G3サーバ証明書残留数■  通知\r\n"
+        String BODY_TEXT = "■G3サーバ証明書残留数■  通知\r\n"
                 + "=========================================================================================\r\n"
                 + "★調査日時        : " + dateString + "\r\n"
                 + "★対象範囲        : 有効期間開始日が 2019/08 - 2019/09 のサーバ証明書\r\n"
@@ -119,45 +100,52 @@ public class SendMail {
                 + "開発部  淺野 稜\r\n"
                 + "-------------------";
 
-        List<String> ATTACHMENTS = new ArrayList<String>();
-        ATTACHMENTS.add(path + logFileName);
-        ATTACHMENTS.add(path + "getCert." + logFileName);
+        helper.setText(BODY_TEXT);
+        helper.setFrom(FROM);
+        helper.setTo(TO);
+        helper.setSubject(SUBJECT);
+        helper.addAttachment(logFileName, logFileResource);
+        helper.addAttachment(getCertLogFileName, getCertLogFileResource);
 
-        // Add subject, from and to lines.
-        message.setSubject(SUBJECT, ENCODE);
-        message.setFrom(new InternetAddress(FROM));
-        message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(TO));
-
-        // Create a multipart/alternative child container.
-        MimeMultipart msg_body = new MimeMultipart();
-
-        // Create a wrapper for the HTML and text parts.
-        MimeBodyPart wrap = new MimeBodyPart();
-
-        // Define the text part.
-        MimeBodyPart textPart = new MimeBodyPart();
-        textPart.setContent(BODY_TEXT, "text/plain; charset=" + ENCODE);
-
-        // Add the text and HTML parts to the child container.
-        msg_body.addBodyPart(textPart);
-
-        // Add the child container to the wrapper object.
-        wrap.setContent(msg_body);
-
-        // Create a multipart/mixed parent container.(mixed:添付ファイルあり)
-        MimeMultipart msg = new MimeMultipart("mixed");
-
-        message.setContent(msg);
-
-        msg.addBodyPart(wrap);
-
-        for (String file : ATTACHMENTS) {
-            MimeBodyPart bp = new MimeBodyPart();
-            DataSource fds = new FileDataSource(file);
-            bp.setDataHandler(new DataHandler(fds));
-            bp.setFileName(fds.getName());
-            msg.addBodyPart(bp);
-        }
+        //        List<String> ATTACHMENTS = new ArrayList<String>();
+        //        ATTACHMENTS.add(path + logFileName);
+        //        ATTACHMENTS.add(path + "getCert." + logFileName);
+        //
+        //        // Add subject, from and to lines.
+        //        message.setSubject(SUBJECT, ENCODE);
+        //        message.setFrom(new InternetAddress(FROM));
+        //        message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(TO));
+        //
+        //        // Create a multipart/alternative child container.
+        //        MimeMultipart msg_body = new MimeMultipart();
+        //
+        //        // Create a wrapper for the HTML and text parts.
+        //        MimeBodyPart wrap = new MimeBodyPart();
+        //
+        //        // Define the text part.
+        //        MimeBodyPart textPart = new MimeBodyPart();
+        //        textPart.setContent(BODY_TEXT, "text/plain; charset=" + ENCODE);
+        //
+        //        // Add the text and HTML parts to the child container.
+        //        msg_body.addBodyPart(textPart);
+        //
+        //        // Add the child container to the wrapper object.
+        //        wrap.setContent(msg_body);
+        //
+        //        // Create a multipart/mixed parent container.(mixed:添付ファイルあり)
+        //        MimeMultipart msg = new MimeMultipart("mixed");
+        //
+        //        message.setContent(msg);
+        //
+        //        msg.addBodyPart(wrap);
+        //
+        //        for (String file : ATTACHMENTS) {
+        //            MimeBodyPart bp = new MimeBodyPart();
+        //            DataSource fds = new FileDataSource(file);
+        //            bp.setDataHandler(new DataHandler(fds));
+        //            bp.setFileName(fds.getName());
+        //            msg.addBodyPart(bp);
+        //        }
 
         // メール送信
         try {
