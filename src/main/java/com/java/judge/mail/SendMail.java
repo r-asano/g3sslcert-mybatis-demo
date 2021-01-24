@@ -75,7 +75,8 @@ public class SendMail {
         MimeMessage message = mailSender.createMimeMessage();
 
         // メッセージ情報をセットするためのヘルパークラスを生成(添付ファイル使用時の第2引数はtrue)
-        MimeMessageHelper helper = new MimeMessageHelper(message, true, ENCODE);
+//        MimeMessageHelper helper = new MimeMessageHelper(message, true, ENCODE);
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
         String SUBJECT = "■G3サーバ証明書残留状況調査■ (" + dateString + ") -- 淺野 稜";
 
@@ -96,6 +97,7 @@ public class SendMail {
                 + "開発部  淺野 稜\r\n"
                 + "-------------------";
 
+        // mimemessageの設定（helperではheaderがサポートされていないので無視）
         helper.setText(BODY_TEXT);
         helper.setFrom(FROM);
         helper.setTo(TO);
