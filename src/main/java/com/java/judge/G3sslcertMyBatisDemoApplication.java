@@ -32,9 +32,13 @@ public class G3sslcertMyBatisDemoApplication {
 
         // 初日と最終日のみ全数検査
         boolean zensu = false;
-        if (dateString == "2021-01-21" || dateString == "2021-03-31") {
+        if (dateString == "2021-01-25" || dateString == "2021-03-31") {
             zensu = true;
         }
+
+        System.out.println("=====================================");
+        System.out.println("GET CERT MODE: " + zensu);
+        System.out.println("=====================================");
 
         String prefixAll;
         List<DomainDto> domainList;

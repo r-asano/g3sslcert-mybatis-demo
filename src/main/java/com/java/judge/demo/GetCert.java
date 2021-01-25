@@ -130,9 +130,9 @@ public class GetCert {
                             socketFactory = new SNIDisabledSSLSocketFactory(socketFactory);
                         }
 
-                        // connectionのタイムアウトを1000msに設定
-                        connection.setConnectTimeout(1000);
-                        connection.setReadTimeout(1000);
+                        // connectionのタイムアウトを5000msに設定
+                        connection.setConnectTimeout(5000);
+                        connection.setReadTimeout(5000);
 
                         // 設定をconnectionに反映
                         connection.setSSLSocketFactory(socketFactory);
