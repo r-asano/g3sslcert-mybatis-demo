@@ -10,13 +10,13 @@ import com.java.judge.dto.DomainDto;
 @Component
 public class DomainObjectSet {
 
-    @Value("{app.employeeName}")
+    @Value("${app.employeeName}")
     private String employeeName;
 
     /*
      * Domainオブジェクトの設定
      */
-    public DomainDto domainObjectSet(DomainDto domain, String status) {
+    public void domainObjectSet(DomainDto domain, String status) {
 
         domain.setIssueApplyId(domain.getIssueApplyId());
         domain.setDnCn(domain.getDnCn());
@@ -24,12 +24,6 @@ public class DomainObjectSet {
         domain.setStatus(status);
         Timestamp updDate = new Timestamp(System.currentTimeMillis());
         domain.setRecUpdDate(updDate);
-
-        System.out.println("=====================================");
-        System.out.println("OBJECT: " + domain.toString());
-        System.out.println("=====================================");
-
-        return domain;
 
     }
 }
