@@ -62,10 +62,10 @@ public class SendMail {
      * @throws IOException
      * @throws TemplateException
      */
-    public void sendMail(int searchNumber, String dateString) throws MessagingException, UnsupportedEncodingException {
+    public void sendMail(int searchNumber, String prefixAll, String dateString) throws MessagingException, UnsupportedEncodingException {
 
-        String G3logFile = prefixSSL + dateString;
-        String getCertLogFile = "getCert." + G3logFile;
+        String G3logFile = prefixAll + prefixSSL + dateString;
+        String getCertLogFile = prefixAll + "getCert." + prefixSSL + dateString;
 
         // メールに添付するファイルのオブジェクトを生成
         FileSystemResource G3logFileResource = new FileSystemResource(path + G3logFile);

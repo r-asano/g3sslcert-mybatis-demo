@@ -3,7 +3,7 @@ package com.java.judge.read;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.java.judge.dto.DomainDto;
@@ -12,15 +12,13 @@ import com.java.judge.mapper.ReadMapper;
 /*
  * DAOクラス
  */
-@Component
-public class UtilDao {
+@Service
+public class UtilDao implements UtilDaoInterface {
 
     @Autowired
-    ReadMapper readMapper;
+    private ReadMapper readMapper;
 
-    /*
-     * DomainテーブルからG3証明書のdn_cnリストを取得
-     */
+    @Override
     @Transactional
     public List<DomainDto> getG3List() {
 
@@ -29,9 +27,7 @@ public class UtilDao {
         return g3DnCn;
     }
 
-    /*
-     * Domainテーブルからすべてのdn_cnリストを取得
-     */
+    @Override
     @Transactional
     public List<DomainDto> getAllList() {
 
@@ -40,9 +36,8 @@ public class UtilDao {
         return allDnCn;
     }
 
-    /*
-     * Domainテーブルの更新
-     */
+
+    @Override
     @Transactional
     public void updateDomainTable(DomainDto updDomain) {
         readMapper.updateDomain(updDomain);

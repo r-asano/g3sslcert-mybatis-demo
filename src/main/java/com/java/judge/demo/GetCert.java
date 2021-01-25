@@ -31,7 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.java.judge.dto.DomainDto;
 import com.java.judge.mapper.ReadMapper;
-import com.java.judge.read.UtilDao;
+import com.java.judge.read.UtilDaoInterface;
 
 import sun.security.ssl.SSLSocketImpl;
 
@@ -46,7 +46,7 @@ public class GetCert {
     private DomainObjectSet object;
 
     @Autowired
-    private UtilDao dao;
+    private UtilDaoInterface dao;
 
     @Value("${app.path}")
     private String path;
@@ -75,8 +75,8 @@ public class GetCert {
 //        Proxy proxy = new Proxy(Proxy.Type.HTTP, addr);
 
         // 実行ログ
-        String G3logFile = prefixAll + prefixSSL + dateString;
-        FileWriter writer = new FileWriter(path + "getCert." + G3logFile);
+        String getCertLogFile = prefixAll + "getCert." + prefixSSL + dateString;
+        FileWriter writer = new FileWriter(path + getCertLogFile);
 
         // wildcard用にList型を用意
         List<String> dnCn = new ArrayList<String>();
