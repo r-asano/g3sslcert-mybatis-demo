@@ -106,6 +106,8 @@ public class SendMail {
         helper.addAttachment(G3logFile, G3logFileResource);
         helper.addAttachment(getCertLogFile, getCertLogFileResource);
 
+        message.addHeader("attachment-file-charset", "UTF-8");
+
         // メール送信
         try {
             AmazonSimpleEmailService client = AmazonSimpleEmailServiceClientBuilder.standard()
