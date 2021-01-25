@@ -3,10 +3,7 @@ package com.java.judge.demo;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.Proxy;
 import java.net.Socket;
-import java.net.SocketAddress;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.security.KeyManagementException;
@@ -73,9 +70,9 @@ public class GetCert {
             throws KeyManagementException, NoSuchAlgorithmException, IOException, CertificateNotYetValidException,
             InterruptedException {
 
-        // プロキシの名前解決ができないのでIPで指定
-        SocketAddress addr = new InetSocketAddress("172.18.6.18", 8080);
-        Proxy proxy = new Proxy(Proxy.Type.HTTP, addr);
+//        // プロキシの名前解決ができないのでIPで指定
+//        SocketAddress addr = new InetSocketAddress("172.18.6.18", 8080);
+//        Proxy proxy = new Proxy(Proxy.Type.HTTP, addr);
 
         // 実行ログ
         String G3logFile = prefixAll + prefixSSL + dateString;
@@ -119,7 +116,7 @@ public class GetCert {
                     try {
                         // 対象ドメイン名のHTTPS接続
                         URL destinationURL = new URL("https://" + cn);
-                        HttpsURLConnection connection = (HttpsURLConnection) destinationURL.openConnection(proxy);
+                        HttpsURLConnection connection = (HttpsURLConnection) destinationURL.openConnection(); // proxy
                         connection.setRequestMethod("GET");
 
                         // 証明書チェック無効化
@@ -206,12 +203,12 @@ public class GetCert {
 
             }
 
+            // Domainオブジェクトにstausをセット
+            object.domainObjectSet(domain, status);
+
             System.out.println("=====================================");
             System.out.println("STATUS: " + domain.getStatus());
             System.out.println("=====================================");
-
-            // Domainオブジェクトにstausをセット
-            object.domainObjectSet(domain, status);
 
             System.out.println("=====================================");
             System.out.println("DOMAIN: " + domain.toString());
