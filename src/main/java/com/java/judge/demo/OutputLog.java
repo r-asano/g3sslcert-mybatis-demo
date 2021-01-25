@@ -2,8 +2,6 @@ package com.java.judge.demo;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,39 +16,42 @@ import com.java.judge.mapper.ReadMapper;
 public class OutputLog {
 
     @Autowired
-    ReadMapper readMapper;
+    private ReadMapper readMapper;
 
     @Value("${app.path}")
     private String path;
 
-    @Value("${app.logFilePrefix}")
-    private String prefix;
+    @Value("${app.logPrefixSSL}")
+    private String prefixSSL;
+
+    @Value("${mail.encoding}")
+    private String ENCODE;
 
     /*
      * 残存G3証明書ログの出力
      */
     @Transactional
-    public void outputG3Log() {
+    public void outputG3Log(String dateString) {
 
-        String logFileName = prefix + new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+        String logFileName = prefixSSL + dateString;
 
-        try (FileWriter logFile = new FileWriter(path + logFileName)) {
+        try (FileWriter writer = new FileWriter(path + logFileName)) {
 
-            logFile.write("更新日" + "\t" + "CN" + "\t" + "Status" + "\t" + "Agent" + "\r\n");
+            writer.write("CHECK_DATE : CN :  : AGENT" + "\r\n");
+            writer.write("-----------------------------------------------------------------" + "\r\n");
 
             // statusがG3のレコードを抽出
-            List<DomainDto> certG3List = readMapper.selectG3Domain();
+            List<DomainDto> G3DomainList = readMapper.selectG3Domain();
 
-            for (DomainDto cert : certG3List) {
-                // 「2020-12-18 00:00:00.0 yahoo.co.jp JPRS Domain Validation Authority - G3 株式会社日本レジストリサービス」 の形式でlogFile出力
-                logFile.write(
-                        cert.getRecUpdDate() + "\t"
-                                + cert.getDnCn() + "\t"
-                                + cert.getStatus() + "\t"
-                                + readMapper.selectAgentName(readMapper.selectJointAgentId(cert))
+            for (DomainDto domain : G3DomainList) {
+                writer.write(
+                        domain.getRecUpdDate() + ":"
+                                + domain.getDnCn() + ":"
+                                + domain.getStatus() + ":"
+                                + readMapper.selectAgentName(readMapper.selectJointAgentId(domain))
                                 + "\r\n");
             }
-            logFile.flush();
+            writer.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -4,8 +4,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -27,7 +25,7 @@ import com.java.judge.mapper.ReadMapper;
 public class SendMail {
 
     @Autowired
-    ReadMapper readMapper;
+    private ReadMapper readMapper;
 
     @Autowired
     private MailConfig mailSender;
@@ -35,8 +33,8 @@ public class SendMail {
     @Value("${app.path}")
     private String path;
 
-    @Value("${app.logFilePrefix}")
-    private String prefix;
+    @Value("${app.logPrefixSSL}")
+    private String prefixSSL;
 
     @Value("${mail.to}")
     private String TO;
@@ -53,6 +51,9 @@ public class SendMail {
     @Value("${spring.mail.password}")
     private String AWS_SECRET;
 
+    @Value("${app.local}")
+    private boolean LOCAL;
+
     /**
      * メール送信
      *
@@ -61,25 +62,25 @@ public class SendMail {
      * @throws IOException
      * @throws TemplateException
      */
-    public void sendMail(int searchNumber) throws MessagingException, UnsupportedEncodingException {
+    public void sendMail(int searchNumber, String dateString) throws MessagingException, UnsupportedEncodingException {
 
-        String dateString = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
-        String logFileName = prefix + dateString;
-        String getCertLogFileName = "getCert." + logFileName;
+        String G3logFile = prefixSSL + dateString;
+        String getCertLogFile = "getCert." + G3logFile;
 
         // メールに添付するファイルのオブジェクトを生成
-        FileSystemResource logFileResource = new FileSystemResource(path + logFileName);
-        FileSystemResource getCertLogFileResource = new FileSystemResource(path + getCertLogFileName);
+        FileSystemResource G3logFileResource = new FileSystemResource(path + G3logFile);
+        FileSystemResource getCertLogFileResource = new FileSystemResource(path + getCertLogFile);
 
         // メッセージクラス生成
         MimeMessage message = mailSender.createMimeMessage();
 
         // メッセージ情報をセットするためのヘルパークラスを生成(添付ファイル使用時の第2引数はtrue)
-//        MimeMessageHelper helper = new MimeMessageHelper(message, true, ENCODE);
-        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+        // ENCODEの設定はspring.mail.default-encoding設定が引き継がれないので、明示的に設定
+        MimeMessageHelper helper = new MimeMessageHelper(message, true, ENCODE);
 
         String SUBJECT = "■G3サーバ証明書残留状況調査■ (" + dateString + ") -- 淺野 稜";
 
+        // Templateを用意したいがISO-2022-JPへのENCODEが上手くいかないので保留
         String BODY_TEXT = "■G3サーバ証明書残留数■  通知\r\n"
                 + "=========================================================================================\r\n"
                 + "★調査日時        : " + dateString + "\r\n"
@@ -102,8 +103,8 @@ public class SendMail {
         helper.setFrom(FROM);
         helper.setTo(TO);
         helper.setSubject(SUBJECT);
-        helper.addAttachment(logFileName, logFileResource);
-        helper.addAttachment(getCertLogFileName, getCertLogFileResource);
+        helper.addAttachment(G3logFile, G3logFileResource);
+        helper.addAttachment(getCertLogFile, getCertLogFileResource);
 
         // メール送信
         try {

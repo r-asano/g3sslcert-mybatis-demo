@@ -1,0 +1,94 @@
+2021-01-25 09:51:25:ipgl.co.jp:ipgl.co.jp:さくらインターネット株式会社:ERROR: javax.net.ssl.SSLHandshakeException: java.security.cert.CertificateException: No subject alternative DNS name matching ipgl.co.jp found.:false
+2021-01-25 09:51:26:ipgl.co.jp:ipgl.co.jp:さくらインターネット株式会社:JPRS Domain Validation Authority - G3:true
+2021-01-25 09:51:28:blue-ie.co.jp:blue-ie.co.jp:さくらインターネット株式会社:ERROR: javax.net.ssl.SSLHandshakeException: java.security.cert.CertificateException: No subject alternative DNS name matching blue-ie.co.jp found.:false
+2021-01-25 09:51:29:blue-ie.co.jp:blue-ie.co.jp:さくらインターネット株式会社:JPRS Domain Validation Authority - G3:true
+2021-01-25 09:51:30:carreaux-hair.com:carreaux-hair.com:さくらインターネット株式会社:ERROR: javax.net.ssl.SSLHandshakeException: java.security.cert.CertificateException: No subject alternative DNS name matching carreaux-hair.com found.:false
+2021-01-25 09:51:31:carreaux-hair.com:carreaux-hair.com:さくらインターネット株式会社:JPRS Domain Validation Authority - G3:true
+2021-01-25 09:51:33:pepanon.jp:pepanon.jp:株式会社ネットコムＢＢ:JPRS Domain Validation Authority - G3:false
+2021-01-25 09:51:34:api.pepanon.jp:api.pepanon.jp:株式会社ネットコムＢＢ:ERROR: javax.net.ssl.SSLHandshakeException: java.security.cert.CertificateException: No subject alternative DNS name matching api.pepanon.jp found.:false
+2021-01-25 09:51:35:api.pepanon.jp:api.pepanon.jp:株式会社ネットコムＢＢ:JPRS Domain Validation Authority - G3:true
+2021-01-25 09:51:37:www.total-beauty-craft.com:www.total-beauty-craft.com:さくらインターネット株式会社:JPRS Domain Validation Authority - G3:false
+2021-01-25 09:51:39:www.sabae.ed.jp:www.sabae.ed.jp:ミテネインターネット株式会社:JPRS Domain Validation Authority - G3:false
+2021-01-25 09:51:40:*.saasplat.jp:saasplat.jp:株式会社リンク:JPRS Domain Validation Authority - G3:false
+2021-01-25 09:51:42:www.hibari.ed.jp:www.hibari.ed.jp:ミテネインターネット株式会社:ERROR: CERTIFICATE IS EXPIRED:NotAfter: Sat May 18 11:32:30 JST 2019:false
+2021-01-25 09:51:43:www.hibari.ed.jp:www.hibari.ed.jp:ミテネインターネット株式会社:JPRS Domain Validation Authority - G3:true
+2021-01-25 09:51:44:www.agqr.jp:www.agqr.jp:ミテネインターネット株式会社:JPRS Domain Validation Authority - G3:false
+2021-01-25 09:51:46:www.awlink.co.jp:www.awlink.co.jp:ミテネインターネット株式会社:ERROR: javax.net.ssl.SSLHandshakeException: java.security.cert.CertificateException: No name matching www.awlink.co.jp found:false
+2021-01-25 09:51:46:www.awlink.co.jp:www.awlink.co.jp:ミテネインターネット株式会社:JPRS Domain Validation Authority - G3:true
+2021-01-25 09:51:48:www.fukui-ts.co.jp:www.fukui-ts.co.jp:ミテネインターネット株式会社:ERROR: javax.net.ssl.SSLHandshakeException: java.security.cert.CertificateException: No name matching www.fukui-ts.co.jp found:false
+2021-01-25 09:51:48:www.fukui-ts.co.jp:www.fukui-ts.co.jp:ミテネインターネット株式会社:JPRS Domain Validation Authority - G3:true
+2021-01-25 09:51:50:shibecha-free-wi-fi.jp:shibecha-free-wi-fi.jp:フェニックスコミュニケーションズ株式会社:JPRS Domain Validation Authority - G3:false
+2021-01-25 09:51:52:4466.jp:4466.jp:株式会社ベッコアメ・インターネット:JPRS Domain Validation Authority - G3:false
+2021-01-25 09:51:53:endoscopes-job.com:endoscopes-job.com:さくらインターネット株式会社:ERROR: javax.net.ssl.SSLHandshakeException: java.security.cert.CertificateException: No name matching endoscopes-job.com found:false
+2021-01-25 09:51:54:endoscopes-job.com:endoscopes-job.com:さくらインターネット株式会社:JPRS Domain Validation Authority - G3:true
+2021-01-25 09:51:56:ivd-job.com:ivd-job.com:さくらインターネット株式会社:ERROR: javax.net.ssl.SSLHandshakeException: java.security.cert.CertificateException: No name matching ivd-job.com found:false
+2021-01-25 09:51:56:ivd-job.com:ivd-job.com:さくらインターネット株式会社:JPRS Domain Validation Authority - G3:true
+2021-01-25 09:51:58:infrastructuredesign-job.com:infrastructuredesign-job.com:さくらインターネット株式会社:ERROR: javax.net.ssl.SSLHandshakeException: java.security.cert.CertificateException: No name matching infrastructuredesign-job.com found:false
+2021-01-25 09:51:58:infrastructuredesign-job.com:infrastructuredesign-job.com:さくらインターネット株式会社:JPRS Domain Validation Authority - G3:true
+2021-01-25 09:52:00:globalclinicaltrial-job.com:globalclinicaltrial-job.com:さくらインターネット株式会社:ERROR: javax.net.ssl.SSLHandshakeException: java.security.cert.CertificateException: No name matching globalclinicaltrial-job.com found:false
+2021-01-25 09:52:00:globalclinicaltrial-job.com:globalclinicaltrial-job.com:さくらインターネット株式会社:JPRS Domain Validation Authority - G3:true
+2021-01-25 09:52:02:catheters-job.com:catheters-job.com:さくらインターネット株式会社:ERROR: javax.net.ssl.SSLHandshakeException: java.security.cert.CertificateException: No name matching catheters-job.com found:false
+2021-01-25 09:52:03:catheters-job.com:catheters-job.com:さくらインターネット株式会社:JPRS Domain Validation Authority - G3:true
+2021-01-25 09:52:04:dentalequipment-job.com:dentalequipment-job.com:さくらインターネット株式会社:ERROR: javax.net.ssl.SSLHandshakeException: java.security.cert.CertificateException: No name matching dentalequipment-job.com found:false
+2021-01-25 09:52:05:dentalequipment-job.com:dentalequipment-job.com:さくらインターネット株式会社:JPRS Domain Validation Authority - G3:true
+2021-01-25 09:52:06:medicalimaging-job.com:medicalimaging-job.com:さくらインターネット株式会社:ERROR: javax.net.ssl.SSLHandshakeException: java.security.cert.CertificateException: No name matching medicalimaging-job.com found:false
+2021-01-25 09:52:07:medicalimaging-job.com:medicalimaging-job.com:さくらインターネット株式会社:JPRS Domain Validation Authority - G3:true
+2021-01-25 09:52:08:medicalventilator-job.com:medicalventilator-job.com:さくらインターネット株式会社:ERROR: javax.net.ssl.SSLHandshakeException: java.security.cert.CertificateException: No name matching medicalventilator-job.com found:false
+2021-01-25 09:52:09:medicalventilator-job.com:medicalventilator-job.com:さくらインターネット株式会社:JPRS Domain Validation Authority - G3:true
+2021-01-25 09:52:10:www.cnnee.jp:www.cnnee.jp:さくらインターネット株式会社:JPRS Domain Validation Authority - G3:false
+2021-01-25 09:52:12:ophthalmicequipment-job.com:ophthalmicequipment-job.com:さくらインターネット株式会社:ERROR: javax.net.ssl.SSLHandshakeException: java.security.cert.CertificateException: No name matching ophthalmicequipment-job.com found:false
+2021-01-25 09:52:12:ophthalmicequipment-job.com:ophthalmicequipment-job.com:さくらインターネット株式会社:JPRS Domain Validation Authority - G3:true
+2021-01-25 09:52:14:biconsulting-job.com:biconsulting-job.com:さくらインターネット株式会社:ERROR: javax.net.ssl.SSLHandshakeException: java.security.cert.CertificateException: No name matching biconsulting-job.com found:false
+2021-01-25 09:52:14:biconsulting-job.com:biconsulting-job.com:さくらインターネット株式会社:JPRS Domain Validation Authority - G3:true
+2021-01-25 09:52:16:antibodydrugs-job.com:antibodydrugs-job.com:さくらインターネット株式会社:ERROR: javax.net.ssl.SSLHandshakeException: java.security.cert.CertificateException: No name matching antibodydrugs-job.com found:false
+2021-01-25 09:52:17:antibodydrugs-job.com:antibodydrugs-job.com:さくらインターネット株式会社:JPRS Domain Validation Authority - G3:true
+2021-01-25 09:52:18:processsafety-job.com:processsafety-job.com:さくらインターネット株式会社:ERROR: javax.net.ssl.SSLHandshakeException: java.security.cert.CertificateException: No name matching processsafety-job.com found:false
+2021-01-25 09:52:19:processsafety-job.com:processsafety-job.com:さくらインターネット株式会社:JPRS Domain Validation Authority - G3:true
+2021-01-25 09:52:20:pacemakers-job.com:pacemakers-job.com:さくらインターネット株式会社:ERROR: javax.net.ssl.SSLHandshakeException: java.security.cert.CertificateException: No name matching pacemakers-job.com found:false
+2021-01-25 09:52:21:pacemakers-job.com:pacemakers-job.com:さくらインターネット株式会社:JPRS Domain Validation Authority - G3:true
+2021-01-25 09:52:22:orthopedicimplants-job.com:orthopedicimplants-job.com:さくらインターネット株式会社:ERROR: javax.net.ssl.SSLHandshakeException: java.security.cert.CertificateException: No name matching orthopedicimplants-job.com found:false
+2021-01-25 09:52:23:orthopedicimplants-job.com:orthopedicimplants-job.com:さくらインターネット株式会社:JPRS Domain Validation Authority - G3:true
+2021-01-25 09:52:24:santafe-shinbashi.jp:santafe-shinbashi.jp:グローリーネット株式会社:JPRS Domain Validation Authority - G3:false
+2021-01-25 09:52:26:peloce.com:peloce.com:グローリーネット株式会社:JPRS Domain Validation Authority - G3:false
+2021-01-25 09:52:28:www.ainikoi.com:www.ainikoi.com:グローリーネット株式会社:JPRS Domain Validation Authority - G3:false
+2021-01-25 09:52:30:vizan.dns-domain.jp:vizan.dns-domain.jp:グローリーネット株式会社:ERROR: javax.net.ssl.SSLHandshakeException: java.security.cert.CertificateException: No subject alternative DNS name matching vizan.dns-domain.jp found.:false
+2021-01-25 09:52:30:vizan.dns-domain.jp:vizan.dns-domain.jp:グローリーネット株式会社:JPRS Domain Validation Authority - G3:true
+2021-01-25 09:52:32:www.vill.hirata.fukushima.jp:www.vill.hirata.fukushima.jp:pepex株式会社:JPRS Domain Validation Authority - G3:false
+2021-01-25 09:52:34:*.liveon.ne.jp:liveon.ne.jp:ジャパンメディアシステム株式会社:ERROR: java.net.SocketTimeoutException: Read timed out:false
+2021-01-25 09:52:35:*.liveon.ne.jp:liveon.ne.jp:ジャパンメディアシステム株式会社:ERROR: java.net.SocketTimeoutException: Read timed out:true
+2021-01-25 09:52:36:*.liveon.ne.jp:www.liveon.ne.jp:ジャパンメディアシステム株式会社:JPRS Organization Validation Authority - G3:false
+2021-01-25 09:52:37:xn--u9j1j3a7j6998b6bra.jp:xn--u9j1j3a7j6998b6bra.jp:株式会社日本レジストリサービス:ERROR: javax.net.ssl.SSLHandshakeException: Received fatal alert: handshake_failure:false
+2021-01-25 09:52:38:xn--u9j1j3a7j6998b6bra.jp:xn--u9j1j3a7j6998b6bra.jp:株式会社日本レジストリサービス:JPRS Organization Validation Authority - G3:true
+2021-01-25 09:52:39:www.intkk.co.jp:www.intkk.co.jp:アイテック阪急阪神株式会社:ERROR: javax.net.ssl.SSLHandshakeException: java.security.cert.CertificateException: No subject alternative DNS name matching www.intkk.co.jp found.:false
+2021-01-25 09:52:40:www.intkk.co.jp:www.intkk.co.jp:アイテック阪急阪神株式会社:JPRS Domain Validation Authority - G3:true
+2021-01-25 09:52:41:s-shinnagata.jp:s-shinnagata.jp:株式会社日本レジストリサービス:ERROR: javax.net.ssl.SSLHandshakeException: java.security.cert.CertificateException: No subject alternative DNS name matching s-shinnagata.jp found.:false
+2021-01-25 09:52:42:s-shinnagata.jp:s-shinnagata.jp:株式会社日本レジストリサービス:JPRS Domain Validation Authority - G3:true
+2021-01-25 09:52:43:s-morinotonari.jp:s-morinotonari.jp:株式会社日本レジストリサービス:ERROR: javax.net.ssl.SSLHandshakeException: java.security.cert.CertificateException: No subject alternative DNS name matching s-morinotonari.jp found.:false
+2021-01-25 09:52:44:s-morinotonari.jp:s-morinotonari.jp:株式会社日本レジストリサービス:JPRS Domain Validation Authority - G3:true
+2021-01-25 09:52:45:s-chuorinkan.jp:s-chuorinkan.jp:株式会社日本レジストリサービス:ERROR: javax.net.ssl.SSLHandshakeException: java.security.cert.CertificateException: No subject alternative DNS name matching s-chuorinkan.jp found.:false
+2021-01-25 09:52:46:s-chuorinkan.jp:s-chuorinkan.jp:株式会社日本レジストリサービス:JPRS Domain Validation Authority - G3:true
+2021-01-25 09:52:47:fox-ext.mitene.jp:fox-ext.mitene.jp:ミテネインターネット株式会社:JPRS Domain Validation Authority - G3:false
+2021-01-25 09:52:49:www.uniqueradio.jp:www.uniqueradio.jp:ミテネインターネット株式会社:JPRS Domain Validation Authority - G3:false
+2021-01-25 09:52:51:www.4k8k-kusatsu.com:www.4k8k-kusatsu.com:ミテネインターネット株式会社:ERROR: javax.net.ssl.SSLHandshakeException: java.security.cert.CertificateException: No name matching www.4k8k-kusatsu.com found:false
+2021-01-25 09:52:51:www.4k8k-kusatsu.com:www.4k8k-kusatsu.com:ミテネインターネット株式会社:JPRS Domain Validation Authority - G3:true
+2021-01-25 09:52:53:www.fukury.jp:www.fukury.jp:ミテネインターネット株式会社:ERROR: javax.net.ssl.SSLHandshakeException: java.security.cert.CertificateException: No subject alternative DNS name matching www.fukury.jp found.:false
+2021-01-25 09:52:53:www.fukury.jp:www.fukury.jp:ミテネインターネット株式会社:JPRS Domain Validation Authority - G3:true
+2021-01-25 09:52:55:www.joqr-event.com:www.joqr-event.com:ミテネインターネット株式会社:ERROR: javax.net.ssl.SSLHandshakeException: java.security.cert.CertificateException: No subject alternative DNS name matching www.joqr-event.com found.:false
+2021-01-25 09:52:55:www.joqr-event.com:www.joqr-event.com:ミテネインターネット株式会社:JPRS Domain Validation Authority - G3:true
+2021-01-25 09:52:57:tv.foxjapan.com:tv.foxjapan.com:ミテネインターネット株式会社:JPRS Domain Validation Authority - G3:false
+2021-01-25 09:52:58:webmail.joqr.net:webmail.joqr.net:ミテネインターネット株式会社:JPRS Domain Validation Authority - G3:false
+2021-01-25 09:53:00:www.joqr-bkc.co.jp:www.joqr-bkc.co.jp:ミテネインターネット株式会社:ERROR: java.net.SocketTimeoutException: connect timed out:false
+2021-01-25 09:53:01:www.joqr-bkc.co.jp:www.joqr-bkc.co.jp:ミテネインターネット株式会社:JPRS Domain Validation Authority - G3:true
+2021-01-25 09:53:03:www.musashino-shuzo.com:www.musashino-shuzo.com:さくらインターネット株式会社:ERROR: javax.net.ssl.SSLHandshakeException: java.security.cert.CertificateException: No subject alternative DNS name matching www.musashino-shuzo.com found.:false
+2021-01-25 09:53:03:www.musashino-shuzo.com:www.musashino-shuzo.com:さくらインターネット株式会社:JPRS Domain Validation Authority - G3:true
+2021-01-25 09:53:05:www.tecowl.co.jp:www.tecowl.co.jp:さくらインターネット株式会社:ERROR: javax.net.ssl.SSLHandshakeException: java.security.cert.CertificateException: No subject alternative DNS name matching www.tecowl.co.jp found.:false
+2021-01-25 09:53:05:www.tecowl.co.jp:www.tecowl.co.jp:さくらインターネット株式会社:JPRS Domain Validation Authority - G3:true
+2021-01-25 09:53:07:www.flutters.co.jp:www.flutters.co.jp:さくらインターネット株式会社:ERROR: javax.net.ssl.SSLHandshakeException: java.security.cert.CertificateException: No subject alternative DNS name matching www.flutters.co.jp found.:false
+2021-01-25 09:53:07:www.flutters.co.jp:www.flutters.co.jp:さくらインターネット株式会社:JPRS Domain Validation Authority - G3:true
+2021-01-25 09:53:09:www.city.shimada.shizuoka.jp:www.city.shimada.shizuoka.jp:さくらインターネット株式会社:JPRS Domain Validation Authority - G3:false
+2021-01-25 09:53:11:crystal-hall.co.jp:crystal-hall.co.jp:さくらインターネット株式会社:ERROR: javax.net.ssl.SSLHandshakeException: java.security.cert.CertificateException: No subject alternative DNS name matching crystal-hall.co.jp found.:false
+2021-01-25 09:53:11:crystal-hall.co.jp:crystal-hall.co.jp:さくらインターネット株式会社:JPRS Domain Validation Authority - G3:true
+2021-01-25 09:53:13:ice-bj.com:ice-bj.com:さくらインターネット株式会社:ERROR: javax.net.ssl.SSLHandshakeException: java.security.cert.CertificateException: No subject alternative DNS name matching ice-bj.com found.:false
+2021-01-25 09:53:14:ice-bj.com:ice-bj.com:さくらインターネット株式会社:JPRS Domain Validation Authority - G3:true
+2021-01-25 09:53:15:*.g-square.jp:g-square.jp:さくらインターネット株式会社:JPRS Domain Validation Authority - G3:false
+2021-01-25 09:53:17:www.perfectvoice.co.jp:www.perfectvoice.co.jp:さくらインターネット株式会社:ERROR: javax.net.ssl.

@@ -24,6 +24,8 @@ public class MailConfig extends JavaMailSenderImpl {
     @Value("${spring.mail.password}")
     private String AWS_SECRET;
 
+    @Value("${mail.encoding}")
+    private String ENCODE;
 
     @Bean
     public JavaMailSender javaMailService() {
@@ -34,6 +36,7 @@ public class MailConfig extends JavaMailSenderImpl {
         javaMailSender.setProtocol(PROTOCOL);
         javaMailSender.setUsername(AWS_ID);
         javaMailSender.setPassword(AWS_SECRET);
+        javaMailSender.setDefaultEncoding(ENCODE);
 
         return javaMailSender;
     }

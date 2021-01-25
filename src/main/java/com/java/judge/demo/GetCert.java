@@ -3,7 +3,10 @@ package com.java.judge.demo;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.net.Socket;
+import java.net.SocketAddress;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.security.KeyManagementException;
@@ -13,9 +16,9 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateExpiredException;
 import java.security.cert.CertificateNotYetValidException;
 import java.security.cert.X509Certificate;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -35,26 +38,30 @@ import com.java.judge.read.UtilDao;
 
 import sun.security.ssl.SSLSocketImpl;
 
+//finalフィールドへ値をセットするための引数付きコンストラクタを自動生成するLomBokアノテーション
 @Service
 public class GetCert {
 
     @Autowired
-    ReadMapper readMapper;
+    private ReadMapper readMapper;
 
     @Autowired
-    DomainDto domain;
+    private DomainObjectSet object;
 
     @Autowired
-    DomainObjectSet object;
-
-    @Autowired
-    UtilDao dao;
+    private UtilDao dao;
 
     @Value("${app.path}")
     private String path;
 
-    @Value("${app.logFilePrefix}")
-    private String prefix;
+    @Value("${app.logPrefixSSL}")
+    private String prefixSSL;
+
+    @Value("${app.local}")
+    private boolean LOCAL;
+
+    @Value("${mail.encoding}")
+    private String ENCODE;
 
     /*
      * 証明書情報の取得
@@ -62,13 +69,17 @@ public class GetCert {
      * ログの出力
      */
     @Transactional
-    public void getCertIssuerStatus(List<DomainDto> domainList)
+    public void getCertIssuerStatus(List<DomainDto> domainList, String prefixAll, String dateString)
             throws KeyManagementException, NoSuchAlgorithmException, IOException, CertificateNotYetValidException,
             InterruptedException {
 
+        // プロキシの名前解決ができないのでIPで指定
+        SocketAddress addr = new InetSocketAddress("172.18.6.18", 8080);
+        Proxy proxy = new Proxy(Proxy.Type.HTTP, addr);
+
         // 実行ログ
-        String logFileName = prefix + new SimpleDateFormat("yyyy-MM-dd").format(new Date());
-        FileWriter getCertLogFile = new FileWriter(path + "getCert." + logFileName);
+        String G3logFile = prefixAll + prefixSSL + dateString;
+        FileWriter writer = new FileWriter(path + "getCert." + G3logFile);
 
         // wildcard用にList型を用意
         List<String> dnCn = new ArrayList<String>();
@@ -79,7 +90,7 @@ public class GetCert {
             String status = "";
 
             System.out.println("================================================\r\n\r\n");
-            System.out.println("対象ドメイン: " + domain.getDnCn() + "\r\n\r\n");
+            System.out.println("対象CN: " + domain.getDnCn() + "\r\n\r\n");
             System.out.println("================================================\r\n\r\n");
 
             // wildcardの判定
@@ -101,9 +112,14 @@ public class GetCert {
                 // 排他的論理和で判断
                 while (disableSNI ^ onemore) {
 
+                    // 実行TimeStamp
+                    String updTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                            .format(new Timestamp(System.currentTimeMillis()));
+
                     try {
+                        // 対象ドメイン名のHTTPS接続
                         URL destinationURL = new URL("https://" + cn);
-                        HttpsURLConnection connection = (HttpsURLConnection) destinationURL.openConnection(); // 引数にproxy
+                        HttpsURLConnection connection = (HttpsURLConnection) destinationURL.openConnection(proxy);
                         connection.setRequestMethod("GET");
 
                         // 証明書チェック無効化
@@ -151,26 +167,28 @@ public class GetCert {
                                     status = issuer.substring(startStatus);
                                 }
 
-                                getCertLogFile.write("Get Cert Success! cn: " + cn + ": status: " + status + ", SNI: "
-                                        + !disableSNI + "\r\n");
-
                             } catch (CertificateExpiredException e) {
                                 System.err.println("Certificate is expired: " + cn);
-                                getCertLogFile
-                                        .write("Certificate is expired: " + cn + ", SNI: " + !disableSNI + "\r\n");
-                                status = "ERROR: " + e.getMessage();
+                                status = "ERROR: CERTIFICATE IS EXPIRED:" + e.getMessage();
                             }
                         } else {
                             System.err.println("Unknown certificate type: " + cn + ", SNI: " + !disableSNI);
-                            getCertLogFile.write("Unknown certificate type:             " + cn + ", SNI: " + !disableSNI + "\r\n");
                             status = "ERROR: UNKNOWN CERTIFICATE TYPE, SNI: " + !disableSNI;
                         }
                     } catch (Exception e) {
                         System.err.println(e.toString() + ": " + cn + ", SNI: " + !disableSNI);
-                        getCertLogFile
-                                .write(e.toString() + ":                    " + cn + ", SNI: " + !disableSNI + "\r\n");
                         status = "ERROR: " + e.toString();
                     }
+
+                    // getCertLog：検索日時、CN、検索ドメイン名、指定事業者名、検索結果(*)、SNI有効
+                    String getCertLogRec = updTime + ":"
+                            + domain.getDnCn() + ":"
+                            + cn + ":"
+                            + readMapper.selectAgentName(readMapper.selectJointAgentId(domain)) + ":"
+                            + status + ":"
+                            + !disableSNI
+                            + "\r\n";
+                    writer.write(getCertLogRec);
 
                     // SNIのいずれかにG3証明書がある場合、statusをG3とする（SNIありのログはとれない可能性あり）
                     if (status.contains("G3") && status.contains("JPRS")) {
@@ -179,7 +197,6 @@ public class GetCert {
 
                     disableSNI = !disableSNI;
                     onemore = true;
-
                 }
 
                 // {dn_cn},www.{dn_cn}いずれかにG3証明書がある場合、statusをG3とする（wwwありのログはとれない可能性あり）
@@ -189,11 +206,15 @@ public class GetCert {
 
             }
 
+            System.out.println("=====================================");
+            System.out.println("STATUS: " + domain.getStatus());
+            System.out.println("=====================================");
+
             // Domainオブジェクトにstausをセット
             object.domainObjectSet(domain, status);
 
             System.out.println("=====================================");
-            System.out.println("Status: " + domain.getStatus());
+            System.out.println("DOMAIN: " + domain.toString());
             System.out.println("=====================================");
 
             // DB更新
@@ -202,9 +223,8 @@ public class GetCert {
             // Delay
             Thread.sleep(1000);
         }
-
-        getCertLogFile.flush();
-        getCertLogFile.close();
+        writer.flush();
+        writer.close();
     }
 }
 

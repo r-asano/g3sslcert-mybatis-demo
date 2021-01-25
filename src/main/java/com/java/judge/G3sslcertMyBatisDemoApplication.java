@@ -27,6 +27,7 @@ public class G3sslcertMyBatisDemoApplication {
         GetCert getCert = context.getBean(GetCert.class);
         OutputLog output = context.getBean(OutputLog.class);
         SendMail mail = context.getBean(SendMail.class);
+
         String dateString = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
 
         // 初日と最終日のみ全数検査
@@ -35,19 +36,22 @@ public class G3sslcertMyBatisDemoApplication {
             zensu = true;
         }
 
+        String prefixAll;
         List<DomainDto> domainList;
         if (zensu) {
             domainList = dao.getAllList();
+            prefixAll="all_";
         } else {
             domainList = dao.getG3List();
+            prefixAll="";
         }
 
         // dn_cnリストの取得 + DB更新
-        getCert.getCertIssuerStatus(domainList);
-        // ログファイル出力
-        output.outputG3Log();
+        getCert.getCertIssuerStatus(domainList, prefixAll, dateString);
+        // 残存G3ログ出力
+        output.outputG3Log(dateString);
         // メールの送出
-        mail.sendMail(domainList.size());
+        mail.sendMail(domainList.size(), dateString);
 
         context.close();
     }
