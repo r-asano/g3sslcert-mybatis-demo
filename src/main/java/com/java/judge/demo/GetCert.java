@@ -51,11 +51,8 @@ public class GetCert {
     @Value("${app.logPrefixSSL}")
     private String prefixSSL;
 
-    @Value("${app.local}")
-    private boolean LOCAL;
-
-    @Value("${mail.encoding}")
-    private String ENCODE;
+    @Value("${app.timeout}")
+    private Integer timeout;
 
     /*
      * 証明書情報の取得
@@ -125,9 +122,8 @@ public class GetCert {
                             socketFactory = new SNIDisabledSSLSocketFactory(socketFactory);
                         }
 
-                        // connectionのタイムアウトを5000msに設定
-                        connection.setConnectTimeout(5000);
-                        connection.setReadTimeout(5000);
+                        // connectionのタイムアウト設定
+                        connection.setConnectTimeout(timeout);
 
                         // 設定をconnectionに反映
                         connection.setSSLSocketFactory(socketFactory);
@@ -200,10 +196,6 @@ public class GetCert {
 
             // Domainオブジェクトにstausをセット
             object.domainObjectSet(domain, status);
-
-            System.out.println("=====================================");
-            System.out.println("STATUS: " + domain.getStatus());
-            System.out.println("=====================================");
 
             System.out.println("=====================================");
             System.out.println("DOMAIN: " + domain.toString());

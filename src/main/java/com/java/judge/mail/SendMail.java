@@ -51,9 +51,6 @@ public class SendMail {
     @Value("${spring.mail.password}")
     private String AWS_SECRET;
 
-    @Value("${app.local}")
-    private boolean LOCAL;
-
     /**
      * メール送信
      *
@@ -106,7 +103,7 @@ public class SendMail {
         helper.addAttachment(G3logFile, G3logFileResource);
         helper.addAttachment(getCertLogFile, getCertLogFileResource);
 
-        message.addHeader("attachment-file-charset", "UTF-8");
+        message.addHeader("Attachment-File-Charset", "UTF-8");
 
         // メール送信
         try {
