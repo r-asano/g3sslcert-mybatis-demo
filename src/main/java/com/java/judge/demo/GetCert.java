@@ -6,12 +6,9 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.URL;
 import java.net.UnknownHostException;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateExpiredException;
-import java.security.cert.CertificateNotYetValidException;
 import java.security.cert.X509Certificate;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -66,9 +63,7 @@ public class GetCert {
      * ログの出力
      */
     @Transactional
-    public void getCertIssuerStatus(List<DomainDto> domainList, String prefixAll, String dateString)
-            throws KeyManagementException, NoSuchAlgorithmException, IOException, CertificateNotYetValidException,
-            InterruptedException {
+    public void getCertIssuerStatus(List<DomainDto> domainList, String prefixAll, String dateString) throws IOException {
 
 //        // プロキシの名前解決ができないのでIPで指定
 //        SocketAddress addr = new InetSocketAddress("172.18.6.18", 8080);
@@ -218,7 +213,12 @@ public class GetCert {
             dao.updateDomainTable(domain);
 
             // Delay
-            Thread.sleep(1000);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                System.err.println(e.toString() + ": Delay error");
+                e.getStackTrace();
+            }
         }
         writer.flush();
         writer.close();

@@ -31,9 +31,9 @@ public class OutputLog {
      * 残存G3証明書ログの出力
      */
     @Transactional
-    public void outputG3Log(String dateString) {
+    public void outputG3Log(String dateString, String prefixAll) {
 
-        String logFileName = prefixSSL + dateString;
+        String logFileName = prefixAll + prefixSSL + dateString;
 
         try (FileWriter writer = new FileWriter(path + logFileName)) {
 

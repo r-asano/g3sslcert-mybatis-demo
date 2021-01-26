@@ -11,39 +11,13 @@ import com.java.judge.dto.AgentDto;
 import com.java.judge.dto.CertificateDto;
 import com.java.judge.dto.DomainDto;
 
-
-// Mapper XMLで可能だった動的SQL（<if>）や共通化（<sql>）は、SqlProviderで実現
-// 可読性もXMLに追従し、これによりJavaのように動的SQLを書くことが可能になる
-// (ただし、慣れないと読みにくい)
 /*
- *
-    @SelectProvider(type = TodoSqlProvider.class, method = "find")
-    Optional<Todo> findById(String todoId);
-
-    @SelectProvider(type = TodoSqlProvider.class, method = "find")
-    Collection<Todo> findAll();
-
-    // (1)
-    public class TodoSqlProvider {
-        public String find(String todoId) {
-            return new SQL() {{
-                SELECT("todo_id", "todo_title", "finished", "created_at");
-                FROM("todo");
-                if (todoId != null) {
-                    WHERE("todo_id = #{todoId}");
-                }
-            }}.toString();
-        }
-    }
- */
-
-/*
- * sampledbのマッパー
+ * sslcertdbのマッパー
  */
 @Mapper
 public interface ReadMapper {
     /*
-     * Certificate Table
+     * certificate Table
      */
     @Insert("INSERT INTO "
             + "certificate "
@@ -82,15 +56,11 @@ public interface ReadMapper {
             + "WHERE certificate_x509=#{certificateX509}")
     String selectIssueApplyId(String certificateX509);
 
-    @Select("SELECT joint_agent_id "
-            + "FROM certificate "
-            + "WHERE issue_apply_id=#{issueApplyId}")
+    @Select("SELECT joint_agent_id FROM certificate WHERE issue_apply_id=#{issueApplyId}")
     String selectJointAgentId(DomainDto domain);
 
-
-
     /*
-     * Domain Table
+     * domain Table
      */
     @Insert("INSERT INTO domain "
             + "VALUES ("
