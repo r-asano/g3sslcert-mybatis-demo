@@ -65,7 +65,7 @@
             #{recUpdDate},
             #{wildcardFlag})
     </insert>
-    <select id="selectG3Domain">
+    <select id="selectG3Domain" resultType="com.java.judge.dto.DomainDto">
         SELECT
             *
         FROM
@@ -73,7 +73,7 @@
         WHERE
             (status LIKE 'JPRS%' AND status LIKE '%G3')
     </select>
-    <select id="selectAllDomain">
+    <select id="selectAllDomain" resultType="com.java.judge.dto.DomainDto">
         SELECT
             *
         FROM
@@ -103,7 +103,7 @@
         WHERE
             (status LIKE 'JPRS%' AND status LIKE '%Organization%' AND status LIKE '%G3')
     </select>
-    <select id="selectOneCert">
+    <select id="selectOneCert" resultType="com.java.judge.dto.DomainDto">
         SELECT
             *
         FROM
@@ -129,7 +129,7 @@
             (#{jointAgentId},
             #{agentName})
     </insert>
-    <select id="selectAgentName">
+    <select id="selectAgentName" resultType="string">
         SELECT
             agent_name
         FROM
