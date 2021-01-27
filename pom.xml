@@ -99,9 +99,11 @@
             <version>1.7</version>
         </dependency>
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-webmvc</artifactId>
+            <groupId>velocity</groupId>
+            <artifactId>velocity-dep</artifactId>
+            <version>1.4</version>
         </dependency>
+
 
         <!-- AWS関連 -->
         <dependency>
