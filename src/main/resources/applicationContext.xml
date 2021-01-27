@@ -17,7 +17,7 @@
         location="classpath:application.properties" />
 
     <bean id="viewResolver"
-        class="org.springframework.web.servlet.view.velocity.VelocityViewResolver">
+        class="org.springframework.web.servlet.ViewResolver">
         <property name="contentType">
             <value>text/plain; charset=ISO-2022-JP</value>
         </property>

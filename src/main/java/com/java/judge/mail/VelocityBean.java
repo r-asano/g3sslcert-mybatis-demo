@@ -9,7 +9,7 @@ public class VelocityBean {
 
     @Bean
     public VelocityEngine velocityEngine() {
-
         return new VelocityEngine();
     }
+
 }
