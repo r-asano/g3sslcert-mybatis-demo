@@ -18,10 +18,6 @@
 
     <bean id="viewResolver"
         class="org.springframework.web.servlet.view.velocity.VelocityViewResolver">
-        <property name="viewClass">
-            <value>org.springframework.web.servlet.view.velocity.VelocityView
-            </value>
-        </property>
         <property name="contentType">
             <value>text/plain; charset=ISO-2022-JP</value>
         </property>
