@@ -39,4 +39,6 @@ public class DomainDto {
 
     private Timestamp recUpdDate;
 
+    private String jointAgentId;
+
 }

@@ -32,7 +32,6 @@ import com.java.judge.read.UtilDaoInterface;
 
 import sun.security.ssl.SSLSocketImpl;
 
-//finalフィールドへ値をセットするための引数付きコンストラクタを自動生成するLomBokアノテーション
 @Service
 public class GetCert {
 
@@ -48,8 +47,8 @@ public class GetCert {
     @Value("${app.path}")
     private String path;
 
-    @Value("${app.logPrefixSSL}")
-    private String prefixSSL;
+    @Value("$app.getCertPrefix}")
+    private String getCertPrefix;
 
     @Value("${app.timeout}")
     private Integer timeout;
@@ -67,8 +66,12 @@ public class GetCert {
 //        Proxy proxy = new Proxy(Proxy.Type.HTTP, addr);
 
         // 実行ログ
-        String getCertLogFile = prefixAll + "getCert." + prefixSSL + dateString;
+        String getCertLogFile = prefixAll + getCertPrefix + dateString;
         FileWriter writer = new FileWriter(path + getCertLogFile);
+
+        // getCertLog：検索日時、CN、検索ドメイン名、指定事業者名、検索結果(*)、SNI有効
+        String headerRec = "Timestamp,dn_cn,FQDN,agent_name,status,SNI\r\n";
+        writer.write(headerRec);
 
         // wildcard用にList型を用意
         List<String> dnCn = new ArrayList<String>();
@@ -157,11 +160,11 @@ public class GetCert {
 
                             } catch (CertificateExpiredException e) {
                                 System.err.println("Certificate is expired: " + cn);
-                                status = "ERROR: CERTIFICATE IS EXPIRED:" + e.getMessage();
+                                status = "ERROR: " + e.getMessage();
                             }
                         } else {
                             System.err.println("Unknown certificate type: " + cn + ", SNI: " + !disableSNI);
-                            status = "ERROR: UNKNOWN CERTIFICATE TYPE, SNI: " + !disableSNI;
+                            status = "ERROR: UNKNOWN CERTIFICATE TYPE";
                         }
                     } catch (Exception e) {
                         System.err.println(e.toString() + ": " + cn + ", SNI: " + !disableSNI);
@@ -169,11 +172,11 @@ public class GetCert {
                     }
 
                     // getCertLog：検索日時、CN、検索ドメイン名、指定事業者名、検索結果(*)、SNI有効
-                    String getCertLogRec = updTime + ":"
-                            + domain.getDnCn() + ":"
-                            + cn + ":"
-                            + readMapper.selectAgentName(readMapper.selectJointAgentId(domain)) + ":"
-                            + status + ":"
+                    String getCertLogRec = updTime + ","
+                            + domain.getDnCn() + ","
+                            + cn + ","
+                            + readMapper.selectAgentName(readMapper.selectJointAgentId(domain)) + ","
+                            + status + ","
                             + !disableSNI
                             + "\r\n";
                     writer.write(getCertLogRec);

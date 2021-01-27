@@ -21,8 +21,8 @@ public class OutputLog {
     @Value("${app.path}")
     private String path;
 
-    @Value("${app.logPrefixSSL}")
-    private String prefixSSL;
+    @Value("${app.remainG3Prefix}")
+    private String remainG3Prefix;
 
     @Value("${mail.encoding}")
     private String ENCODE;
@@ -33,11 +33,11 @@ public class OutputLog {
     @Transactional
     public void outputG3Log(String dateString, String prefixAll) {
 
-        String logFileName = prefixAll + prefixSSL + dateString;
+        String logFileName = prefixAll + remainG3Prefix + dateString;
 
         try (FileWriter writer = new FileWriter(path + logFileName)) {
 
-            writer.write("CHECK_DATE : CN :  : AGENT" + "\r\n");
+            writer.write("rec_upd_date,dn_cn,status,agent_name" + "\r\n");
             writer.write("-----------------------------------------------------------------" + "\r\n");
 
             // statusがG3のレコードを抽出
@@ -45,9 +45,9 @@ public class OutputLog {
 
             for (DomainDto domain : G3DomainList) {
                 writer.write(
-                        domain.getRecUpdDate() + ":"
-                                + domain.getDnCn() + ":"
-                                + domain.getStatus() + ":"
+                        domain.getRecUpdDate() + ","
+                                + domain.getDnCn() + ","
+                                + domain.getStatus() + ","
                                 + readMapper.selectAgentName(readMapper.selectJointAgentId(domain))
                                 + "\r\n");
             }

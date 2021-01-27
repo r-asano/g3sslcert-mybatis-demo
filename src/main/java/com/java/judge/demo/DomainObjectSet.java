@@ -22,6 +22,7 @@ public class DomainObjectSet {
         domain.setStatus(status);
         Timestamp updDate = new Timestamp(System.currentTimeMillis());
         domain.setRecUpdDate(updDate);
+        domain.setJointAgentId(domain.getJointAgentId());
 
     }
 }
