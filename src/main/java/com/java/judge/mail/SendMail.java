@@ -116,6 +116,7 @@ public class SendMail {
         StringWriter writer = new StringWriter();
         velocityEngine.mergeTemplate("src/main/resources/templates/remainG3Temp.vm", ENCODE, context, writer);
 
+
         // mimemessageの設定
 //        helper.setText(BODY_TEXT);
         helper.setText(writer.toString());
