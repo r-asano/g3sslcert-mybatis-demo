@@ -121,7 +121,7 @@ public interface ReadMapper {
             + "WHERE status LIKE 'JPRS%' AND status LIKE '%G3' "
             + "GROUP BY joint_agent_id "
             + "ORDER BY count(*) desc")
-    Map<String, Map<Integer,Object>> countG3GroupByAgent();
+    Map<String, Integer> countG3GroupByAgent();
 
 
 
@@ -140,5 +140,5 @@ public interface ReadMapper {
     @MapKey("jointAgentId")
     @Select("SELECT joint_agent_id,agent_name "
             + "FROM agent ")
-    Map<String, Map<String,Object>> selectAgentNameMap();
+    Map<String, String> selectAgentNameMap();
 }

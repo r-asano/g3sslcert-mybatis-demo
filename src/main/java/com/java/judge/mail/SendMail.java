@@ -111,14 +111,14 @@ public class SendMail {
         context.put("countG3", readMapper.countG3());
         context.put("countDV", readMapper.countDV());
         context.put("countOV", readMapper.countOV());
-        context.put("countCertMap", readMapper.countG3GroupByAgent());
-        context.put("agentMap", readMapper.selectAgentNameMap());
+//        context.put("countCertMap", readMapper.countG3GroupByAgent());
+//        context.put("agentMap", readMapper.selectAgentNameMap());
         StringWriter writer = new StringWriter();
         velocityEngine.mergeTemplate("src/main/resources/templates/remainG3Temp.vm", ENCODE, context, writer);
 
-
         // mimemessageの設定
 //        helper.setText(BODY_TEXT);
+        helper.setText(writer.toString());
         helper.setFrom(FROM);
         helper.setTo(TO);
         helper.setSubject(SUBJECT);
