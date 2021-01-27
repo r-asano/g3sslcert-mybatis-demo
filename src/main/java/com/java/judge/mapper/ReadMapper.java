@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
@@ -114,12 +115,13 @@ public interface ReadMapper {
             + "WHERE issue_apply_id=#{issueApplyId}")
     void updateDomain(DomainDto domain);
 
+    @MapKey("jointAgentId")
     @Select("SELECT joint_agent_id,count(*) "
             + "FROM domain "
             + "WHERE status LIKE 'JPRS%' AND status LIKE '%G3' "
             + "GROUP BY joint_agent_id "
             + "ORDER BY count(*) desc")
-    Map<String, Integer> countG3GroupByAgent();
+    Map<String, Map<Integer,Object>> countG3GroupByAgent();
 
 
 
@@ -135,7 +137,8 @@ public interface ReadMapper {
             + "WHERE joint_agent_id=#{jointAgentId}")
     String selectAgentName(String jointAgentId);
 
+    @MapKey("jointAgentId")
     @Select("SELECT joint_agent_id,agent_name "
             + "FROM agent ")
-    Map<String, Integer> selectAgentNameMap();
+    Map<String, Map<String,Object>> selectAgentNameMap();
 }

@@ -1,8 +1,10 @@
 package com.java.judge.mail;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -15,6 +17,11 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.simpleemail.AmazonSimpleEmailService;
+import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClientBuilder;
+import com.amazonaws.services.simpleemail.model.RawMessage;
+import com.amazonaws.services.simpleemail.model.SendRawEmailRequest;
 import com.java.judge.mapper.ReadMapper;
 
 @Service
@@ -110,7 +117,7 @@ public class SendMail {
         velocityEngine.mergeTemplate("src/main/resources/templates/remainG3Temp.vm", ENCODE, context, writer);
 
 
-        // mimemessageの設定（helperではheaderがサポートされていないので無視）
+        // mimemessageの設定
 //        helper.setText(BODY_TEXT);
         helper.setFrom(FROM);
         helper.setTo(TO);
@@ -120,25 +127,23 @@ public class SendMail {
 
         message.addHeader("Attachment-File-Charset", "UTF-8");
 
-        mailSender.send(message);
+        // メール送信
+        try {
+            AmazonSimpleEmailService client = AmazonSimpleEmailServiceClientBuilder.standard()
+                    .withRegion(Regions.AP_NORTHEAST_1).build();
 
-//        // メール送信
-//        try {
-//            AmazonSimpleEmailService client = AmazonSimpleEmailServiceClientBuilder.standard()
-//                    .withRegion(Regions.AP_NORTHEAST_1).build();
-//
-//            // Send the email.
-//            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-//            message.writeTo(outputStream);
-//            RawMessage rawMessage = new RawMessage(ByteBuffer.wrap(outputStream.toByteArray()));
-//
-//            SendRawEmailRequest rawEmailRequest = new SendRawEmailRequest(rawMessage);
-//
-//            client.sendRawEmail(rawEmailRequest);
-//        } catch (Exception ex) {
-//            System.out.println("Email Failed");
-//            System.err.println("Error message: " + ex.getMessage());
-//            ex.printStackTrace();
-//        }
+            // Send the email.
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            message.writeTo(outputStream);
+            RawMessage rawMessage = new RawMessage(ByteBuffer.wrap(outputStream.toByteArray()));
+
+            SendRawEmailRequest rawEmailRequest = new SendRawEmailRequest(rawMessage);
+
+            client.sendRawEmail(rawEmailRequest);
+        } catch (Exception ex) {
+            System.out.println("Email Failed");
+            System.err.println("Error message: " + ex.getMessage());
+            ex.printStackTrace();
+        }
     }
 }
