@@ -73,7 +73,7 @@ public class SendMail {
 
         // メールに添付するファイルのオブジェクトを生成
         FileSystemResource G3logFileResource = new FileSystemResource(path + remainG3LogFile);
-        FileSystemResource getCertLogFileResource = new FileSystemResource(path + getCertLogFile);
+//        FileSystemResource getCertLogFileResource = new FileSystemResource(path + getCertLogFile);
 
         // メッセージクラス生成
         MimeMessage message = mailSender.createMimeMessage();
@@ -92,9 +92,10 @@ public class SendMail {
         helper.setTo(TO);
         helper.setSubject(SUBJECT);
         helper.addAttachment(remainG3LogFile, G3logFileResource);
-        helper.addAttachment(getCertLogFile, getCertLogFileResource);
+//        helper.addAttachment(getCertLogFile, getCertLogFileResource);
 
         message.addHeader("Attachment-File-Charset", "UTF-8");
+
 
         // メール送信
         try {
@@ -133,7 +134,6 @@ public class SendMail {
                         + "★DV/OV証明書数   : DV証明書" + readMapper.countDV() + " 件\r\n"
                         + "                    OV証明書" + readMapper.countOV() + " 件\r\n"
                         + "★添付ファイル    : " + remainG3LogFile + "\r\n"
-                        + "                    " + getCertLogFile + "\r\n"
                         + "\r\n"
                         + "★指定事業者ごとの残留G3証明書数\r\n"
                         + "joint_agent_id, agent_name, amount_of_G3\r\n"

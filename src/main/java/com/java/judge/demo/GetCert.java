@@ -30,9 +30,11 @@ import com.java.judge.dto.DomainDto;
 import com.java.judge.mapper.ReadMapper;
 import com.java.judge.read.UtilDaoInterface;
 
+import lombok.extern.slf4j.Slf4j;
 import sun.security.ssl.SSLSocketImpl;
 
 @Service
+@Slf4j
 public class GetCert {
 
     @Autowired
@@ -61,6 +63,7 @@ public class GetCert {
     @Transactional
     public void getCertIssuerStatus(List<DomainDto> domainList, String prefixAll, String dateString) throws IOException {
 
+
 //        // プロキシの名前解決ができないのでIPで指定
 //        SocketAddress addr = new InetSocketAddress("172.18.6.18", 8080);
 //        Proxy proxy = new Proxy(Proxy.Type.HTTP, addr);
@@ -71,7 +74,7 @@ public class GetCert {
 
         // getCertLog：検索日時、CN、検索ドメイン名、指定事業者名、検索結果(*)、SNI有効
         String headerRec =
-                "Timestamp,dn_cn,FQDN,agent_name,status,SNI\r\n"
+                "Timestamp, dn_cn, FQDN, agent_name, status, SNI\r\n"
                 + "------------------------------------------\r\n";
         writer.write(headerRec);
 
@@ -161,16 +164,19 @@ public class GetCert {
                                 }
 
                             } catch (CertificateExpiredException e) {
-                                System.err.println("Certificate is expired: " + cn);
+                                System.err.println("Certificate is expired: " + cn + ", SNI:" + !disableSNI);
                                 status = "ERROR: " + e.getMessage();
+                                log.info("Certificate is expired: " + cn + ", SNI:" + !disableSNI);
                             }
                         } else {
                             System.err.println("Unknown certificate type: " + cn + ", SNI: " + !disableSNI);
                             status = "ERROR: UNKNOWN CERTIFICATE TYPE";
+                            log.info("Unknown certificate type: " + cn + ", SNI: " + !disableSNI);
                         }
                     } catch (Exception e) {
                         System.err.println(e.toString() + ": " + cn + ", SNI: " + !disableSNI);
                         status = "ERROR: " + e.toString();
+                        log.info(e.toString()  + ": " + cn + ", SNI: " + !disableSNI);
                     }
 
                     // getCertLog：検索日時、CN、検索ドメイン名、指定事業者名、検索結果(*)、SNI有効
@@ -213,8 +219,9 @@ public class GetCert {
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
-                System.err.println(e.toString() + ": Delay error");
+                System.err.println(e.toString());
                 e.getStackTrace();
+                log.info(e.toString());
             }
         }
         writer.flush();

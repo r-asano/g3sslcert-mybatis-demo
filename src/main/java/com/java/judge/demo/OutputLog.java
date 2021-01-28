@@ -12,7 +12,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.java.judge.dto.DomainDto;
 import com.java.judge.mapper.ReadMapper;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Service
+@Slf4j
 public class OutputLog {
 
     @Autowired
@@ -37,7 +40,7 @@ public class OutputLog {
 
         try (FileWriter writer = new FileWriter(path + logFileName)) {
 
-            writer.write("rec_upd_date,dn_cn,status,agent_name" + "\r\n");
+            writer.write("rec_upd_date, dn_cn,status, agent_name" + "\r\n");
             writer.write("-----------------------------------------------------------------" + "\r\n");
 
             // statusがG3のレコードを抽出
@@ -50,10 +53,12 @@ public class OutputLog {
                                 + domain.getStatus() + ","
                                 + readMapper.selectAgentName(readMapper.selectJointAgentId(domain))
                                 + "\r\n");
+                log.info(domain.toString());
             }
             writer.flush();
         } catch (IOException e) {
             e.printStackTrace();
+            log.info(e.toString());
         }
     }
 }
