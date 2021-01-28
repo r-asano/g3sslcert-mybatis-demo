@@ -16,13 +16,13 @@ public class DomainObjectSet {
     // Domainオブジェクトの設定
     public void domainObjectSet(DomainDto domain, String status) {
 
-        domain.setIssueApplyId(domain.getIssueApplyId());
-        domain.setDnCn(domain.getDnCn());
-        domain.setEmployeeName(employeeName);
+//        domain.setIssueApplyId(domain.getIssueApplyId());
+//        domain.setDnCn(domain.getDnCn());
+//        domain.setEmployeeName(employeeName);
         domain.setStatus(status);
         Timestamp updDate = new Timestamp(System.currentTimeMillis());
         domain.setRecUpdDate(updDate);
-        domain.setJointAgentId(domain.getJointAgentId());
+//        domain.setJointAgentId(domain.getJointAgentId());
 
     }
 }
