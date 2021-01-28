@@ -16,20 +16,19 @@
     <context:property-placeholder
         location="classpath:application.properties" />
 
-    <bean id="viewResolver"
-        class="org.springframework.web.servlet.ViewResolver">
-        <property name="contentType">
-            <value>text/plain; charset=ISO-2022-JP</value>
-        </property>
-        <property name="cache">
-            <value>true</value>
-        </property>
-        <property name="prefix">
-            <value></value>
-        </property>
-        <property name="suffix">
-            <value>.vm</value>
+    <bean id="mailSender"
+        class="org.springframework.mail.javamail.JavaMailSenderImpl">
+        <property name="host" value="${spring.mail.host}" />
+        <property name="port" value="${spring.mail.port}" />
+        <property name="username" value="${spring.mail.username}" /> <!-- (1) -->
+        <property name="password" value="${spring.mail.password}" /> <!-- (2) -->
+        <property name="defaultEncoding" value="${spring.mail.default-encoding}" />
+        <property name="javaMailProperties">
+            <props>
+                <prop key="mail.smtp.auth">true</prop> <!-- (3) -->
+            </props>
         </property>
     </bean>
+
 
 </beans>

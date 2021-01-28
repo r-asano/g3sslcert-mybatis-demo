@@ -27,7 +27,7 @@ public class MailConfig extends JavaMailSenderImpl {
     @Value("${mail.encoding}")
     private String ENCODE;
 
-    @Bean
+    @Bean("MailConfig")
     public JavaMailSender javaMailService() {
         JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
 

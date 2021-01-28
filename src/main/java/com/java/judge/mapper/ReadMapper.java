@@ -116,13 +116,12 @@ public interface ReadMapper {
     void updateDomain(DomainDto domain);
 
     @MapKey("jointAgentId")
-    @Select("SELECT joint_agent_id,count(*) "
+    @Select("SELECT joint_agent_id as id,count(*) as count "
             + "FROM domain "
             + "WHERE status LIKE 'JPRS%' AND status LIKE '%G3' "
-            + "GROUP BY joint_agent_id "
-            + "ORDER BY count(*) desc")
-    Map<String, Integer> countG3GroupByAgent();
-
+            + "GROUP BY id "
+            + "ORDER BY count desc")
+    List<Map<String, Object>>  countG3GroupByAgent(); // asでaliasしないとmap.get("id")が使えない
 
 
     // agent Table
@@ -137,8 +136,4 @@ public interface ReadMapper {
             + "WHERE joint_agent_id=#{jointAgentId}")
     String selectAgentName(String jointAgentId);
 
-    @MapKey("jointAgentId")
-    @Select("SELECT joint_agent_id,agent_name "
-            + "FROM agent ")
-    Map<String, String> selectAgentNameMap();
 }

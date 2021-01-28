@@ -2,18 +2,18 @@ package com.java.judge.mail;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
+import java.util.List;
+import java.util.Map;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
-import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.VelocityEngine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
@@ -31,10 +31,7 @@ public class SendMail {
     private ReadMapper readMapper;
 
     @Autowired
-    private MailConfig mailSender;
-
-    @Autowired
-    private VelocityEngine velocityEngine;
+    private JavaMailSenderImpl mailSender;
 
     @Value("${app.path}")
     private String path;
@@ -68,7 +65,8 @@ public class SendMail {
      * @throws IOException
      * @throws TemplateException
      */
-    public void sendMail(int searchNumber, String prefixAll, String dateString) throws MessagingException, UnsupportedEncodingException {
+    public void sendMail(int searchNumber, String prefixAll, String dateString)
+            throws MessagingException, UnsupportedEncodingException {
 
         String remainG3LogFile = prefixAll + remainG3Prefix + dateString;
         String getCertLogFile = prefixAll + getCertPrefix + dateString;
@@ -86,40 +84,10 @@ public class SendMail {
 
         String SUBJECT = "■G3サーバ証明書残留状況調査■ (" + dateString + ") -- 淺野 稜";
 
-        // Templateを用意したいがISO-2022-JPへのENCODEが上手くいかないので保留
-//        String BODY_TEXT = "■G3サーバ証明書残留数■  通知\r\n"
-//                + "=========================================================================================\r\n"
-//                + "★調査日時        : " + dateString + "\r\n"
-//                + "★対象範囲        : 有効期間開始日が 2019/08 - 2019/09 のサーバ証明書\r\n"
-//                + "★対象件数        : " + searchNumber + "件\r\n"
-//                + "★残留G3証明書数  : " + readMapper.countG3() + "件\r\n"
-//                + "★DV/OV証明書数   : DV証明書" + readMapper.countDV() + "件\r\n"
-//                + "                    OV証明書" + readMapper.countOV() + "件\r\n"
-//                + "★添付ファイル    : sslcert-G3.log." + dateString + "\r\n"
-//                + "                    getCert.sslcert-G3.log." + dateString + "\r\n"
-//                + "\r\n"
-//                + "以上\r\n"
-//                + "-------------------\r\n"
-//                + "From : asano@jprs.co.jp\r\n"
-//                + "開発部  淺野 稜\r\n"
-//                + "-------------------";
-
-        // メール本文の生成
-        VelocityContext context = new VelocityContext();
-        context.put("dateString", dateString);
-        context.put("searchNumber", searchNumber);
-        context.put("countG3", readMapper.countG3());
-        context.put("countDV", readMapper.countDV());
-        context.put("countOV", readMapper.countOV());
-//        context.put("countCertMap", readMapper.countG3GroupByAgent());
-//        context.put("agentMap", readMapper.selectAgentNameMap());
-        StringWriter writer = new StringWriter();
-        velocityEngine.mergeTemplate("src/main/resources/templates/remainG3Temp.vm", ENCODE, context, writer);
-
+        String BODY_TEXT = mailContext(dateString, remainG3LogFile, getCertLogFile, searchNumber);
 
         // mimemessageの設定
-//        helper.setText(BODY_TEXT);
-        helper.setText(writer.toString());
+        helper.setText(BODY_TEXT);
         helper.setFrom(FROM);
         helper.setTo(TO);
         helper.setSubject(SUBJECT);
@@ -146,5 +114,54 @@ public class SendMail {
             System.err.println("Error message: " + ex.getMessage());
             ex.printStackTrace();
         }
+    }
+
+    /*
+     * メール本文
+     */
+    public String mailContext(String dateString, String remainG3LogFile, String getCertLogFile, int searchNumber) {
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(
+                "■G3サーバ証明書残留数■  通知\r\n"
+                        + "=========================================================================================\r\n"
+                        + "★調査日時        : " + dateString + "\r\n"
+                        + "★対象範囲        : 有効期間開始日が 2019/08 - 2019/09 のサーバ証明書\r\n"
+                        + "★対象件数        : " + searchNumber + "件\r\n"
+                        + "★残留G3証明書数  : " + readMapper.countG3() + " 件\r\n"
+                        + "★DV/OV証明書数   : DV証明書" + readMapper.countDV() + " 件\r\n"
+                        + "                    OV証明書" + readMapper.countOV() + " 件\r\n"
+                        + "★添付ファイル    : " + remainG3LogFile + "\r\n"
+                        + "                    " + getCertLogFile + "\r\n"
+                        + "\r\n"
+                        + "★指定事業者ごとの残留G3証明書数\r\n"
+                        + "joint_agent_id, agent_name, amount_of_G3\r\n"
+                        + "------------------------------------------------------------\r\n");
+
+        // mapでagent_id,count(*)を取得
+        List<Map<String, Object>> countMap = readMapper.countG3GroupByAgent();
+
+        // for文でagent_id, agent_name, count(*)をappend
+        for (Map<String, Object> entry  : countMap) {
+            sb.append(
+                    entry.get("id") + ", "
+                    + readMapper.selectAgentName((String) entry.get("id")) + ", "
+                    + entry.get("count") + "\r\n"
+                    );
+        }
+
+
+        sb.append(
+                "\r\n"
+                        + "以上\r\n"
+                        + "-------------------\r\n"
+                        + "asano@jprs.co.jp\r\n"
+                        + "開発部  淺野 稜\r\n"
+                        + "-------------------");
+
+        String BODY_TEXT = sb.toString();
+
+        return BODY_TEXT;
     }
 }
