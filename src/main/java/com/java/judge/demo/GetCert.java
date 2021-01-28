@@ -47,7 +47,7 @@ public class GetCert {
     @Value("${app.path}")
     private String path;
 
-    @Value("$app.getCertPrefix}")
+    @Value("${app.getCertPrefix}")
     private String getCertPrefix;
 
     @Value("${app.timeout}")
@@ -70,7 +70,9 @@ public class GetCert {
         FileWriter writer = new FileWriter(path + getCertLogFile);
 
         // getCertLog：検索日時、CN、検索ドメイン名、指定事業者名、検索結果(*)、SNI有効
-        String headerRec = "Timestamp,dn_cn,FQDN,agent_name,status,SNI\r\n";
+        String headerRec =
+                "Timestamp,dn_cn,FQDN,agent_name,status,SNI\r\n"
+                + "------------------------------------------\r\n";
         writer.write(headerRec);
 
         // wildcard用にList型を用意
