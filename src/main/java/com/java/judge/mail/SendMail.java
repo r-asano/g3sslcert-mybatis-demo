@@ -79,7 +79,6 @@ public class SendMail {
             throws MessagingException, UnsupportedEncodingException {
 
         String remainG3LogFile = prefixAll + remainG3Prefix + dateString;
-//        String getCertLogFile = prefixAll + getCertPrefix + dateString;
 
         // メッセージクラス生成
         MimeMessage message = mailSender.createMimeMessage();
@@ -90,10 +89,7 @@ public class SendMail {
         String BODY_TEXT = mailContext(dateString, remainG3LogFile, searchNumber);
 
         // 基本情報
-//     // 日本語部分のみをMime エンコード。
-        PERSONAL = MimeUtility.encodeText(PERSONAL, ENCODE, "B");
-
-        message.setFrom(new InternetAddress(FROM, PERSONAL));
+        message.setFrom(new InternetAddress(FROM, PERSONAL, "UTF-8"));
         message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(TO));
         message.setSubject(SUBJECT, ENCODE);
         message.setSentDate(new Date());
@@ -113,21 +109,6 @@ public class SendMail {
 
         // メールにマルチパートを設定
         message.setContent(multipart);
-
-//        // メッセージ情報をセットするためのヘルパークラスを生成(添付ファイル使用時の第2引数はtrue)
-//        // ENCODEの設定はspring.mail.default-encoding設定が引き継がれないので、明示的に設定
-//        MimeMessageHelper helper = new MimeMessageHelper(message, true, ENCODE);
-//
-//
-//        // mimemessageの設定
-//        helper.setText(BODY_TEXT);
-//        helper.setFrom(FROM);
-//        helper.setTo(TO);
-//        helper.setSubject(SUBJECT);
-//        helper.addAttachment(remainG3LogFile, G3logFileResource);
-//        helper.addAttachment(getCertLogFile, getCertLogFileResource);
-
-
 
         // メール送信
         try {
