@@ -17,6 +17,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import javax.mail.internet.MimeUtility;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -80,10 +81,6 @@ public class SendMail {
         String remainG3LogFile = prefixAll + remainG3Prefix + dateString;
 //        String getCertLogFile = prefixAll + getCertPrefix + dateString;
 
-        // メールに添付するファイルのオブジェクトを生成
-//        FileSystemResource G3logFileResource = new FileSystemResource(path + remainG3LogFile);
-//        FileSystemResource getCertLogFileResource = new FileSystemResource(path + getCertLogFile);
-
         // メッセージクラス生成
         MimeMessage message = mailSender.createMimeMessage();
 
@@ -93,7 +90,10 @@ public class SendMail {
         String BODY_TEXT = mailContext(dateString, remainG3LogFile, searchNumber);
 
         // 基本情報
-        message.setFrom(new InternetAddress(FROM, PERSONAL, "iso-2022-jp"));
+//     // 日本語部分のみをMime エンコード。
+        PERSONAL = MimeUtility.encodeText(PERSONAL, ENCODE, "B");
+
+        message.setFrom(new InternetAddress(FROM, PERSONAL));
         message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(TO));
         message.setSubject(SUBJECT, ENCODE);
         message.setSentDate(new Date());
@@ -108,6 +108,7 @@ public class SendMail {
         DataSource dataSource=new FileDataSource(path + remainG3LogFile);
         DataHandler dataHandler=new DataHandler(dataSource);
         bodyPart2.setDataHandler(dataHandler);
+        bodyPart2.setFileName(MimeUtility.encodeWord(remainG3LogFile));
         multipart.addBodyPart(bodyPart2);
 
         // メールにマルチパートを設定

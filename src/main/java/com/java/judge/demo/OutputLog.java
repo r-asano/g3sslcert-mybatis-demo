@@ -47,7 +47,7 @@ public class OutputLog {
                               new FileOutputStream
                                 (path + remainG3LogFile), ENCODE)));
 
-            writer.print("rec_upd_date, dn_cn,status, agent_name" + "\r\n");
+            writer.print("rec_upd_date, dn_cn, status, agent_name" + "\r\n");
             writer.print("-----------------------------------------------------------------" + "\r\n");
 
             // statusがG3のレコードを抽出
