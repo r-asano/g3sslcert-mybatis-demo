@@ -115,6 +115,7 @@ public class GetCert {
 
                 // SNI無効
                 boolean disableSNI = true;
+                // onemore flug
                 boolean onemore = false;
 
                 // 排他的論理和で判断
@@ -188,13 +189,15 @@ public class GetCert {
                     }
 
                     // getCertLog：検索日時、CN、検索ドメイン名、指定事業者名、検索結果(*)、SNI有効
-                    String getCertLogRec = updTime + ","
+                    String getCertLogRec =
+                            updTime + ","
                             + domain.getDnCn() + ","
                             + cn + ","
                             + readMapper.selectAgentName(readMapper.selectJointAgentId(domain)) + ","
                             + status + ","
                             + !disableSNI
                             + "\r\n";
+
                     writer.print(getCertLogRec);
 
                     // SNIのいずれかにG3証明書がある場合、statusをG3とする（SNIありのログはとれない可能性あり）

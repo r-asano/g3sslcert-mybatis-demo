@@ -55,11 +55,12 @@ public class OutputLog {
 
             for (DomainDto domain : G3DomainList) {
                 writer.print(
-                        domain.getRecUpdDate() + ","
+                                domain.getRecUpdDate() + ","
                                 + domain.getDnCn() + ","
                                 + domain.getStatus() + ","
                                 + readMapper.selectAgentName(readMapper.selectJointAgentId(domain))
-                                + "\r\n");
+                                + "\r\n"
+                                );
             }
             writer.flush();
             writer.close();

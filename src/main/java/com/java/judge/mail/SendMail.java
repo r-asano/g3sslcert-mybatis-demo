@@ -54,6 +54,9 @@ public class SendMail {
     @Value("${mail.from}")
     private String FROM;
 
+    @Value("${mail.personal}")
+    private String PERSONAL;
+
     @Value("${mail.encoding}")
     private String ENCODE;
 
@@ -74,7 +77,7 @@ public class SendMail {
     public void sendMail(int searchNumber, String prefixAll, String dateString)
             throws MessagingException, UnsupportedEncodingException {
 
-        String remainG3LogFile = prefixAll + remainG3Prefix + dateString;
+        String remainG3LogFile = path + prefixAll + remainG3Prefix + dateString;
 //        String getCertLogFile = prefixAll + getCertPrefix + dateString;
 
         // メールに添付するファイルのオブジェクトを生成
@@ -90,7 +93,7 @@ public class SendMail {
         String BODY_TEXT = mailContext(dateString, remainG3LogFile, searchNumber);
 
         // 基本情報
-        message.setFrom(new InternetAddress(FROM, "", ENCODE));
+        message.setFrom(new InternetAddress(FROM, PERSONAL, ENCODE));
         message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(TO));
         message.setSubject(SUBJECT, ENCODE);
         message.setSentDate(new Date());
@@ -164,7 +167,7 @@ public class SendMail {
                         + "★添付ファイル    : " + remainG3LogFile + "\r\n"
                         + "\r\n"
                         + "★指定事業者ごとの残留G3証明書数\r\n"
-                        + "joint_agent_id, agent_name, amount_of_G3\r\n"
+                        + "joint_agent_id, agent_name, countG3\r\n"
                         + "------------------------------------------------------------\r\n");
 
         // mapでagent_id,count(*)を取得
