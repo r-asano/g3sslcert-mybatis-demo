@@ -77,7 +77,7 @@ public class SendMail {
     public void sendMail(int searchNumber, String prefixAll, String dateString)
             throws MessagingException, UnsupportedEncodingException {
 
-        String remainG3LogFile = path + prefixAll + remainG3Prefix + dateString;
+        String remainG3LogFile = prefixAll + remainG3Prefix + dateString;
 //        String getCertLogFile = prefixAll + getCertPrefix + dateString;
 
         // メールに添付するファイルのオブジェクトを生成
@@ -93,7 +93,7 @@ public class SendMail {
         String BODY_TEXT = mailContext(dateString, remainG3LogFile, searchNumber);
 
         // 基本情報
-        message.setFrom(new InternetAddress(FROM, PERSONAL, ENCODE));
+        message.setFrom(new InternetAddress(FROM, PERSONAL, "iso-2022-jp"));
         message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(TO));
         message.setSubject(SUBJECT, ENCODE);
         message.setSentDate(new Date());
@@ -105,7 +105,7 @@ public class SendMail {
 
         // パート2にファイルを設定
         MimeBodyPart bodyPart2=new MimeBodyPart();
-        DataSource dataSource=new FileDataSource(remainG3LogFile);
+        DataSource dataSource=new FileDataSource(path + remainG3LogFile);
         DataHandler dataHandler=new DataHandler(dataSource);
         bodyPart2.setDataHandler(dataHandler);
         multipart.addBodyPart(bodyPart2);
