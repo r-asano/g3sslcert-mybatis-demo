@@ -1,7 +1,10 @@
 package com.java.judge.demo;
 
-import java.io.FileWriter;
+import java.io.BufferedWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.URL;
@@ -30,11 +33,9 @@ import com.java.judge.dto.DomainDto;
 import com.java.judge.mapper.ReadMapper;
 import com.java.judge.read.UtilDaoInterface;
 
-import lombok.extern.slf4j.Slf4j;
 import sun.security.ssl.SSLSocketImpl;
 
 @Service
-@Slf4j
 public class GetCert {
 
     @Autowired
@@ -55,6 +56,9 @@ public class GetCert {
     @Value("${app.timeout}")
     private Integer timeout;
 
+    @Value("${mail.encoding}")
+    private String ENCODE;
+
     /*
      * 証明書情報の取得
      * 証明書の状態更新
@@ -70,13 +74,20 @@ public class GetCert {
 
         // 実行ログ
         String getCertLogFile = prefixAll + getCertPrefix + dateString;
-        FileWriter writer = new FileWriter(path + getCertLogFile);
+
+        // FileOutputStreamで文字コード・改行コードを指定(Shift-JIS,\r\n)
+        PrintWriter writer = new PrintWriter(
+                          new BufferedWriter(
+                          new OutputStreamWriter(
+                          new FileOutputStream
+                            (path + getCertLogFile), ENCODE)));
+
 
         // getCertLog：検索日時、CN、検索ドメイン名、指定事業者名、検索結果(*)、SNI有効
         String headerRec =
                 "Timestamp, dn_cn, FQDN, agent_name, status, SNI\r\n"
                 + "------------------------------------------\r\n";
-        writer.write(headerRec);
+        writer.print(headerRec);
 
         // wildcard用にList型を用意
         List<String> dnCn = new ArrayList<String>();
@@ -166,17 +177,14 @@ public class GetCert {
                             } catch (CertificateExpiredException e) {
                                 System.err.println("Certificate is expired: " + cn + ", SNI:" + !disableSNI);
                                 status = "ERROR: " + e.getMessage();
-                                log.info("Certificate is expired: " + cn + ", SNI:" + !disableSNI);
                             }
                         } else {
                             System.err.println("Unknown certificate type: " + cn + ", SNI: " + !disableSNI);
                             status = "ERROR: UNKNOWN CERTIFICATE TYPE";
-                            log.info("Unknown certificate type: " + cn + ", SNI: " + !disableSNI);
                         }
                     } catch (Exception e) {
                         System.err.println(e.toString() + ": " + cn + ", SNI: " + !disableSNI);
                         status = "ERROR: " + e.toString();
-                        log.info(e.toString()  + ": " + cn + ", SNI: " + !disableSNI);
                     }
 
                     // getCertLog：検索日時、CN、検索ドメイン名、指定事業者名、検索結果(*)、SNI有効
@@ -187,7 +195,7 @@ public class GetCert {
                             + status + ","
                             + !disableSNI
                             + "\r\n";
-                    writer.write(getCertLogRec);
+                    writer.print(getCertLogRec);
 
                     // SNIのいずれかにG3証明書がある場合、statusをG3とする（SNIありのログはとれない可能性あり）
                     if (status.contains("G3") && status.contains("JPRS")) {
@@ -221,7 +229,6 @@ public class GetCert {
             } catch (InterruptedException e) {
                 System.err.println(e.toString());
                 e.getStackTrace();
-                log.info(e.toString());
             }
         }
         writer.flush();

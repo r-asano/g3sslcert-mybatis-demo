@@ -1,7 +1,11 @@
 package com.java.judge.demo;
 
-import java.io.FileWriter;
+
+import java.io.BufferedWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.java.judge.dto.DomainDto;
 import com.java.judge.mapper.ReadMapper;
 
-import lombok.extern.slf4j.Slf4j;
-
 @Service
-@Slf4j
 public class OutputLog {
 
     @Autowired
@@ -36,29 +37,34 @@ public class OutputLog {
     @Transactional
     public void outputG3Log(String dateString, String prefixAll) {
 
-        String logFileName = prefixAll + remainG3Prefix + dateString;
+        String remainG3LogFile = prefixAll + remainG3Prefix + dateString;
 
-        try (FileWriter writer = new FileWriter(path + logFileName)) {
+        try {
+            // FileOutputStreamで文字コード・改行コードを指定
+            PrintWriter writer = new PrintWriter(
+                              new BufferedWriter(
+                              new OutputStreamWriter(
+                              new FileOutputStream
+                                (path + remainG3LogFile), ENCODE)));
 
-            writer.write("rec_upd_date, dn_cn,status, agent_name" + "\r\n");
-            writer.write("-----------------------------------------------------------------" + "\r\n");
+            writer.print("rec_upd_date, dn_cn,status, agent_name" + "\r\n");
+            writer.print("-----------------------------------------------------------------" + "\r\n");
 
             // statusがG3のレコードを抽出
             List<DomainDto> G3DomainList = readMapper.selectG3Domain();
 
             for (DomainDto domain : G3DomainList) {
-                writer.write(
+                writer.print(
                         domain.getRecUpdDate() + ","
                                 + domain.getDnCn() + ","
                                 + domain.getStatus() + ","
                                 + readMapper.selectAgentName(readMapper.selectJointAgentId(domain))
                                 + "\r\n");
-                log.info(domain.toString());
             }
             writer.flush();
+            writer.close();
         } catch (IOException e) {
             e.printStackTrace();
-            log.info(e.toString());
         }
     }
 }

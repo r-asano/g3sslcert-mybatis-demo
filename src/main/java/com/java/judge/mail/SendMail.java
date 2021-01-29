@@ -4,17 +4,23 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.activation.FileDataSource;
+import javax.mail.Message;
 import javax.mail.MessagingException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import com.amazonaws.regions.Regions;
@@ -69,32 +75,54 @@ public class SendMail {
             throws MessagingException, UnsupportedEncodingException {
 
         String remainG3LogFile = prefixAll + remainG3Prefix + dateString;
-        String getCertLogFile = prefixAll + getCertPrefix + dateString;
+//        String getCertLogFile = prefixAll + getCertPrefix + dateString;
 
         // メールに添付するファイルのオブジェクトを生成
-        FileSystemResource G3logFileResource = new FileSystemResource(path + remainG3LogFile);
+//        FileSystemResource G3logFileResource = new FileSystemResource(path + remainG3LogFile);
 //        FileSystemResource getCertLogFileResource = new FileSystemResource(path + getCertLogFile);
 
         // メッセージクラス生成
         MimeMessage message = mailSender.createMimeMessage();
 
-        // メッセージ情報をセットするためのヘルパークラスを生成(添付ファイル使用時の第2引数はtrue)
-        // ENCODEの設定はspring.mail.default-encoding設定が引き継がれないので、明示的に設定
-        MimeMessageHelper helper = new MimeMessageHelper(message, true, ENCODE);
+        MimeMultipart multipart=new MimeMultipart();
 
         String SUBJECT = "■G3サーバ証明書残留状況調査■ (" + dateString + ") -- 淺野 稜";
+        String BODY_TEXT = mailContext(dateString, remainG3LogFile, searchNumber);
 
-        String BODY_TEXT = mailContext(dateString, remainG3LogFile, getCertLogFile, searchNumber);
+        // 基本情報
+        message.setFrom(new InternetAddress(FROM, "", ENCODE));
+        message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(TO));
+        message.setSubject(SUBJECT, ENCODE);
+        message.setSentDate(new Date());
 
-        // mimemessageの設定
-        helper.setText(BODY_TEXT);
-        helper.setFrom(FROM);
-        helper.setTo(TO);
-        helper.setSubject(SUBJECT);
-        helper.addAttachment(remainG3LogFile, G3logFileResource);
+        // パート1に本文を設定
+        MimeBodyPart bodyPart1=new MimeBodyPart();
+        bodyPart1.setText(BODY_TEXT, ENCODE);
+        multipart.addBodyPart(bodyPart1);
+
+        // パート2にファイルを設定
+        MimeBodyPart bodyPart2=new MimeBodyPart();
+        DataSource dataSource=new FileDataSource(remainG3LogFile);
+        DataHandler dataHandler=new DataHandler(dataSource);
+        bodyPart2.setDataHandler(dataHandler);
+        multipart.addBodyPart(bodyPart2);
+
+        // メールにマルチパートを設定
+        message.setContent(multipart);
+
+//        // メッセージ情報をセットするためのヘルパークラスを生成(添付ファイル使用時の第2引数はtrue)
+//        // ENCODEの設定はspring.mail.default-encoding設定が引き継がれないので、明示的に設定
+//        MimeMessageHelper helper = new MimeMessageHelper(message, true, ENCODE);
+//
+//
+//        // mimemessageの設定
+//        helper.setText(BODY_TEXT);
+//        helper.setFrom(FROM);
+//        helper.setTo(TO);
+//        helper.setSubject(SUBJECT);
+//        helper.addAttachment(remainG3LogFile, G3logFileResource);
 //        helper.addAttachment(getCertLogFile, getCertLogFileResource);
 
-        message.addHeader("Attachment-File-Charset", "UTF-8");
 
 
         // メール送信
@@ -120,12 +148,12 @@ public class SendMail {
     /*
      * メール本文
      */
-    public String mailContext(String dateString, String remainG3LogFile, String getCertLogFile, int searchNumber) {
+    public String mailContext(String dateString, String remainG3LogFile, int searchNumber) {
 
         StringBuilder sb = new StringBuilder();
 
         sb.append(
-                "■G3サーバ証明書残留数■  通知\r\n"
+                        "■G3サーバ証明書残留数■  通知\r\n"
                         + "=========================================================================================\r\n"
                         + "★調査日時        : " + dateString + "\r\n"
                         + "★対象範囲        : 有効期間開始日が 2019/08 - 2019/09 のサーバ証明書\r\n"
@@ -153,7 +181,7 @@ public class SendMail {
 
 
         sb.append(
-                "\r\n"
+                        "\r\n"
                         + "以上\r\n"
                         + "-------------------\r\n"
                         + "asano@jprs.co.jp\r\n"
