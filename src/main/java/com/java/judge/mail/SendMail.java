@@ -55,9 +55,6 @@ public class SendMail {
     @Value("${mail.from}")
     private String FROM;
 
-    @Value("${mail.personal}")
-    private String PERSONAL;
-
     @Value("${mail.encoding}")
     private String ENCODE;
 
@@ -89,7 +86,8 @@ public class SendMail {
         String BODY_TEXT = mailContext(dateString, remainG3LogFile, searchNumber);
 
         // 基本情報
-        message.setFrom(new InternetAddress(FROM));
+        // Personalをapplication.prooerties から引くと失敗するのでハードコーディング
+        message.setFrom(new InternetAddress(FROM, "残留G3サーバー証明書通知システム", ENCODE));
         message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(TO));
         message.setSubject(SUBJECT, ENCODE);
         message.setSentDate(new Date());

@@ -68,7 +68,7 @@ public class GetCert {
     public void getCertIssuerStatus(List<DomainDto> domainList, String prefixAll, String dateString) throws IOException {
 
 
-//        // プロキシの名前解決ができないのでIPで指定
+        // プロキシの名前解決ができないのでIPで指定
 //        SocketAddress addr = new InetSocketAddress("172.18.6.18", 8080);
 //        Proxy proxy = new Proxy(Proxy.Type.HTTP, addr);
 
@@ -86,7 +86,7 @@ public class GetCert {
         // getCertLog：検索日時、CN、検索ドメイン名、指定事業者名、検索結果(*)、SNI有効
         String headerRec =
                 "Timestamp, dn_cn, FQDN, agent_name, status, SNI\r\n"
-                + "------------------------------------------\r\n";
+                + "-----------------------------------------------\r\n";
         writer.print(headerRec);
 
         // wildcard用にList型を用意

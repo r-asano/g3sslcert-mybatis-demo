@@ -19,9 +19,8 @@ import com.java.judge.read.UtilDao;
 public class G3sslcertMyBatisDemoApplication {
 
     public static void main(String[] args) throws Exception  {
-
-        ClassPathXmlApplicationContext context =
-                new ClassPathXmlApplicationContext("applicationContext.xml");
+//        ConfigurableApplicationContext context = SpringApplication.run(G3sslcertMyBatisDemoApplication.class,args);
+        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
 
         UtilDao dao = context.getBean(UtilDao.class);
         GetCert getCert = context.getBean(GetCert.class);
@@ -51,9 +50,9 @@ public class G3sslcertMyBatisDemoApplication {
         }
 
         // dn_cnリストの取得 + DB更新
-//        getCert.getCertIssuerStatus(domainList, prefixAll, dateString);
+        getCert.getCertIssuerStatus(domainList, prefixAll, dateString);
         // 残存G3ログ出力
-//        output.outputG3Log(dateString, prefixAll);
+        output.outputG3Log(dateString, prefixAll);
         // メールの送出
         mail.sendMail(domainList.size(), prefixAll, dateString);
 
