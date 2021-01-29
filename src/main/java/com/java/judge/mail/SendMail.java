@@ -89,7 +89,8 @@ public class SendMail {
         String BODY_TEXT = mailContext(dateString, remainG3LogFile, searchNumber);
 
         // 基本情報
-        message.setFrom(new InternetAddress(FROM, PERSONAL, "UTF-8"));
+        message.setHeader("Content-Transfer-Encoding", "7bit");
+        message.setFrom(new InternetAddress(FROM, PERSONAL, ENCODE));
         message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(TO));
         message.setSubject(SUBJECT, ENCODE);
         message.setSentDate(new Date());
