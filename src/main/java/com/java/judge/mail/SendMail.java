@@ -31,7 +31,10 @@ import com.amazonaws.services.simpleemail.model.RawMessage;
 import com.amazonaws.services.simpleemail.model.SendRawEmailRequest;
 import com.java.judge.mapper.ReadMapper;
 
+import lombok.extern.log4j.Log4j2;
+
 @Service
+@Log4j2
 public class SendMail {
 
     @Autowired
@@ -42,9 +45,6 @@ public class SendMail {
 
     @Value("${app.path}")
     private String path;
-
-    @Value("${app.getCertPrefix}")
-    private String getCertPrefix;
 
     @Value("${app.remainG3Prefix}")
     private String remainG3Prefix;
@@ -64,6 +64,9 @@ public class SendMail {
     @Value("${spring.mail.password}")
     private String AWS_SECRET;
 
+    @Value("${enviroment.profile}")
+    private String PROFILE;
+
     /**
      * メール送信
      *
@@ -74,6 +77,7 @@ public class SendMail {
      */
     public void sendMail(int searchNumber, String prefixAll, String dateString)
             throws MessagingException, UnsupportedEncodingException {
+        log.info("sendMail 開始");
 
         String remainG3LogFile = prefixAll + remainG3Prefix + dateString;
 
@@ -109,22 +113,34 @@ public class SendMail {
         message.setContent(multipart);
 
         // メール送信
-        try {
-            AmazonSimpleEmailService client = AmazonSimpleEmailServiceClientBuilder.standard()
-                    .withRegion(Regions.AP_NORTHEAST_1).build();
+        if (PROFILE.equals("development")) {
+            try {
+                mailSender.send(message);
+                log.info("メール送信に成功");
+                log.info("sendMail 正常終了");
+            } catch (Exception e) {
+                e.printStackTrace();
+                log.error(e.getMessage());
+            }
+        } else {
+            try {
+                AmazonSimpleEmailService client = AmazonSimpleEmailServiceClientBuilder.standard()
+                        .withRegion(Regions.AP_NORTHEAST_1).build();
 
-            // Send the email.
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            message.writeTo(outputStream);
-            RawMessage rawMessage = new RawMessage(ByteBuffer.wrap(outputStream.toByteArray()));
+                // Send the email.
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                message.writeTo(outputStream);
+                RawMessage rawMessage = new RawMessage(ByteBuffer.wrap(outputStream.toByteArray()));
 
-            SendRawEmailRequest rawEmailRequest = new SendRawEmailRequest(rawMessage);
+                SendRawEmailRequest rawEmailRequest = new SendRawEmailRequest(rawMessage);
 
-            client.sendRawEmail(rawEmailRequest);
-        } catch (Exception ex) {
-            System.out.println("Email Failed");
-            System.err.println("Error message: " + ex.getMessage());
-            ex.printStackTrace();
+                client.sendRawEmail(rawEmailRequest);
+                log.info("メール送信に成功");
+                log.info("sendMail 正常終了");
+            } catch (Exception e) {
+                e.printStackTrace();
+                log.error(e.getMessage());
+            }
         }
     }
 
@@ -132,6 +148,7 @@ public class SendMail {
      * メール本文
      */
     public String mailContext(String dateString, String remainG3LogFile, int searchNumber) {
+        log.info("mailContext 開始");
 
         StringBuilder sb = new StringBuilder();
 
@@ -148,7 +165,8 @@ public class SendMail {
                         + "\r\n"
                         + "★指定事業者ごとの残留G3証明書数\r\n"
                         + "joint_agent_id, agent_name, countG3\r\n"
-                        + "------------------------------------------------------------\r\n");
+                        + "------------------------------------------------------------\r\n"
+                );
 
         // mapでagent_id,count(*)を取得
         List<Map<String, Object>> countMap = readMapper.countG3GroupByAgent();
@@ -169,10 +187,12 @@ public class SendMail {
                         + "-------------------\r\n"
                         + "asano@jprs.co.jp\r\n"
                         + "開発部  淺野 稜\r\n"
-                        + "-------------------");
+                        + "-------------------"
+                );
 
         String BODY_TEXT = sb.toString();
 
+        log.info("mailContext 正常終了");
         return BODY_TEXT;
     }
 }

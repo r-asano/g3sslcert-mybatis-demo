@@ -16,7 +16,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.java.judge.dto.DomainDto;
 import com.java.judge.mapper.ReadMapper;
 
+import lombok.extern.log4j.Log4j2;
+
 @Service
+@Log4j2
 public class OutputLog {
 
     @Autowired
@@ -36,6 +39,8 @@ public class OutputLog {
      */
     @Transactional
     public void outputG3Log(String dateString, String prefixAll) {
+
+        log.info("outputG3Log 開始");
 
         String remainG3LogFile = prefixAll + remainG3Prefix + dateString;
 
@@ -64,8 +69,10 @@ public class OutputLog {
             }
             writer.flush();
             writer.close();
+            log.info("outputG3Log 正常終了");
         } catch (IOException e) {
             e.printStackTrace();
+            log.error(e.toString());
         }
     }
 }

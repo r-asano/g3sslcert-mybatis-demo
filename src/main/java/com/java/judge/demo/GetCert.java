@@ -1,12 +1,11 @@
 package com.java.judge.demo;
 
-import java.io.BufferedWriter;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.net.Socket;
+import java.net.SocketAddress;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.security.SecureRandom;
@@ -33,9 +32,11 @@ import com.java.judge.dto.DomainDto;
 import com.java.judge.mapper.ReadMapper;
 import com.java.judge.read.UtilDaoInterface;
 
+import lombok.extern.log4j.Log4j2;
 import sun.security.ssl.SSLSocketImpl;
 
 @Service
+@Log4j2
 public class GetCert {
 
     @Autowired
@@ -50,14 +51,14 @@ public class GetCert {
     @Value("${app.path}")
     private String path;
 
-    @Value("${app.getCertPrefix}")
-    private String getCertPrefix;
-
     @Value("${app.timeout}")
     private Integer timeout;
 
     @Value("${mail.encoding}")
     private String ENCODE;
+
+    @Value("${enviroment.profile}")
+    String PROFILE;
 
     /*
      * 証明書情報の取得
@@ -67,27 +68,7 @@ public class GetCert {
     @Transactional
     public void getCertIssuerStatus(List<DomainDto> domainList, String prefixAll, String dateString) throws IOException {
 
-
-        // プロキシの名前解決ができないのでIPで指定
-//        SocketAddress addr = new InetSocketAddress("172.18.6.18", 8080);
-//        Proxy proxy = new Proxy(Proxy.Type.HTTP, addr);
-
-        // 実行ログ
-        String getCertLogFile = prefixAll + getCertPrefix + dateString;
-
-        // FileOutputStreamで文字コード・改行コードを指定(Shift-JIS,\r\n)
-        PrintWriter writer = new PrintWriter(
-                          new BufferedWriter(
-                          new OutputStreamWriter(
-                          new FileOutputStream
-                            (path + getCertLogFile), ENCODE)));
-
-
-        // getCertLog：検索日時、CN、検索ドメイン名、指定事業者名、検索結果(*)、SNI有効
-        String headerRec =
-                "Timestamp, dn_cn, FQDN, agent_name, status, SNI\r\n"
-                + "-----------------------------------------------\r\n";
-        writer.print(headerRec);
+        log.info("GetCert 開始");
 
         // wildcard用にList型を用意
         List<String> dnCn = new ArrayList<String>();
@@ -97,15 +78,14 @@ public class GetCert {
             // nullPointerExceptionの回避
             String status = "";
 
-            System.out.println("================================================\r\n\r\n");
-            System.out.println("対象CN: " + domain.getDnCn() + "\r\n\r\n");
-            System.out.println("================================================\r\n\r\n");
+            log.info("検査対象コモンネーム: " + domain.getDnCn());
 
             // wildcardの判定
             dnCn.clear();
             if (domain.getDnCn().startsWith("*")) {
                 dnCn.add(domain.getDnCn().substring(2));
                 dnCn.add("www." + domain.getDnCn().substring(2));
+                log.info("ワイルドカード証明書");
             } else {
                 dnCn.add(domain.getDnCn());
             }
@@ -126,9 +106,16 @@ public class GetCert {
                             .format(new Timestamp(System.currentTimeMillis()));
 
                     try {
-                        // 対象ドメイン名のHTTPS接続
-                        URL destinationURL = new URL("https://" + cn);
-                        HttpsURLConnection connection = (HttpsURLConnection) destinationURL.openConnection(); // proxy
+                        // 対象ドメインのHTTPS接続
+                        HttpsURLConnection connection;
+                        if (PROFILE.equals("development")) {
+                            // プロキシの名前解決ができないのでIPで指定
+                            SocketAddress addr = new InetSocketAddress("172.18.6.18", 8080);
+                            Proxy proxy = new Proxy(Proxy.Type.HTTP, addr);
+                            connection = (HttpsURLConnection) (new URL("https://" + cn)).openConnection(proxy);
+                        } else {
+                            connection = (HttpsURLConnection) (new URL("https://" + cn)).openConnection();
+                        }
                         connection.setRequestMethod("GET");
 
                         // 証明書チェック無効化
@@ -151,8 +138,6 @@ public class GetCert {
                         // connectionの確立
                         connection.connect();
 
-                        System.out.println("==================== 接続成功 ==================");
-
                         // 対象CNの証明書情報取得
                         Certificate[] certs = connection.getServerCertificates();
 
@@ -161,7 +146,7 @@ public class GetCert {
                             try {
                                 // 証明書が有効か判定
                                 ((X509Certificate) certs[0]).checkValidity();
-                                System.out.println("Certificate is active for current date, SNI: " + !disableSNI);
+                                log.info("証明書は有効です: " + cn + ", SNI: " + !disableSNI);
 
                                 String issuer = ((X509Certificate) certs[0]).getIssuerX500Principal().getName();
 
@@ -176,15 +161,16 @@ public class GetCert {
                                 }
 
                             } catch (CertificateExpiredException e) {
-                                System.err.println("Certificate is expired: " + cn + ", SNI:" + !disableSNI);
+//                                System.err.println("Certificate is expired: " + cn + ", SNI:" + !disableSNI);
+                                log.warn("証明書は失効しています: " + cn + ", SNI:" + !disableSNI);
                                 status = "ERROR: " + e.getMessage();
                             }
                         } else {
-                            System.err.println("Unknown certificate type: " + cn + ", SNI: " + !disableSNI);
+                            log.warn("証明書の型が不明です: " + cn + ", SNI: " + !disableSNI);
                             status = "ERROR: UNKNOWN CERTIFICATE TYPE";
                         }
                     } catch (Exception e) {
-                        System.err.println(e.toString() + ": " + cn + ", SNI: " + !disableSNI);
+                        log.warn(e.toString() + ": " + cn + ", SNI: " + !disableSNI);
                         status = "ERROR: " + e.toString();
                     }
 
@@ -195,10 +181,10 @@ public class GetCert {
                             + cn + ","
                             + readMapper.selectAgentName(readMapper.selectJointAgentId(domain)) + ","
                             + status + ","
-                            + !disableSNI
-                            + "\r\n";
+                            + !disableSNI;
 
-                    writer.print(getCertLogRec);
+//                    writer.print(getCertLogRec);
+                    log.info("検査対象コモンネーム情報: " + getCertLogRec);
 
                     // SNIのいずれかにG3証明書がある場合、statusをG3とする（SNIありのログはとれない可能性あり）
                     if (status.contains("G3") && status.contains("JPRS")) {
@@ -219,9 +205,7 @@ public class GetCert {
             // Domainオブジェクトにstausをセット
             object.domainObjectSet(domain, status);
 
-            System.out.println("=====================================");
-            System.out.println("DOMAIN: " + domain.toString());
-            System.out.println("=====================================");
+            log.info("登録コモンネーム情報: " + domain.toString());
 
             // DB更新
             dao.updateDomainTable(domain);
@@ -230,12 +214,13 @@ public class GetCert {
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
-                System.err.println(e.toString());
+//                System.err.println(e.toString());
+                log.error(e.toString());
                 e.getStackTrace();
             }
         }
-        writer.flush();
-        writer.close();
+
+        log.info("GetCert 正常終了");
     }
 }
 
