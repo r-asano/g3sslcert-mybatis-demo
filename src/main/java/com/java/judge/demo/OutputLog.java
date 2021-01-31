@@ -8,7 +8,6 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,14 +15,15 @@ import org.springframework.transaction.annotation.Transactional;
 import com.java.judge.dto.DomainDto;
 import com.java.judge.mapper.ReadMapper;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
+@RequiredArgsConstructor
 @Service
 @Log4j2
 public class OutputLog {
 
-    @Autowired
-    private ReadMapper readMapper;
+    private final ReadMapper readMapper;
 
     @Value("${app.path}")
     private String path;

@@ -21,7 +21,6 @@ import javax.net.ssl.SSLParameters;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.X509TrustManager;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,21 +29,21 @@ import com.java.judge.dto.DomainDto;
 import com.java.judge.mapper.ReadMapper;
 import com.java.judge.read.UtilDaoInterface;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import sun.security.ssl.SSLSocketImpl;
 
+//finalフィールドへ値をセットするための引数付きコンストラクタを自動生成するLomBokアノテーション
+@RequiredArgsConstructor
 @Service
 @Log4j2
 public class GetCert {
 
-    @Autowired
-    private ReadMapper readMapper;
+    private final ReadMapper readMapper;
 
-    @Autowired
-    private DomainObjectSet object;
+    private final DomainObjectSet object;
 
-    @Autowired
-    private UtilDaoInterface dao;
+    private final UtilDaoInterface dao;
 
     @Value("${app.path}")
     private String path;
