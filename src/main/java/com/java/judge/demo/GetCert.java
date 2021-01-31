@@ -12,8 +12,6 @@ import java.security.SecureRandom;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateExpiredException;
 import java.security.cert.X509Certificate;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,7 +49,7 @@ public class GetCert {
     @Value("${app.path}")
     private String path;
 
-    @Value("${app.timeout}")
+    @Value("${connection.timeout}")
     private Integer timeout;
 
     @Value("${mail.encoding}")
@@ -98,13 +96,8 @@ public class GetCert {
                 // onemore flug
                 boolean onemore = false;
 
-                // 排他的論理和で判断
+                // 排他的論理和で判定
                 while (disableSNI ^ onemore) {
-
-                    // 実行TimeStamp
-                    String updTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-                            .format(new Timestamp(System.currentTimeMillis()));
-
                     try {
                         // 対象ドメインのHTTPS接続
                         HttpsURLConnection connection;
@@ -170,21 +163,14 @@ public class GetCert {
                             status = "ERROR: UNKNOWN CERTIFICATE TYPE";
                         }
                     } catch (Exception e) {
-                        log.warn(e.toString() + ": " + cn + ", SNI: " + !disableSNI);
+                        log.warn("接続エラー: " + e.toString() + ": " + cn + ", SNI: " + !disableSNI);
                         status = "ERROR: " + e.toString();
                     }
 
-                    // getCertLog：検索日時、CN、検索ドメイン名、指定事業者名、検索結果(*)、SNI有効
-                    String getCertLogRec =
-                            updTime + ","
-                            + domain.getDnCn() + ","
-                            + cn + ","
-                            + readMapper.selectAgentName(readMapper.selectJointAgentId(domain)) + ","
-                            + status + ","
-                            + !disableSNI;
-
-//                    writer.print(getCertLogRec);
-                    log.info("検査対象コモンネーム情報: " + getCertLogRec);
+                    log.info("検査対象情報: "
+                            + cn + ", "
+                            + readMapper.selectAgentName(domain.getJointAgentId()) + ", "
+                            + "SNI:" + !disableSNI);
 
                     // SNIのいずれかにG3証明書がある場合、statusをG3とする（SNIありのログはとれない可能性あり）
                     if (status.contains("G3") && status.contains("JPRS")) {
@@ -205,16 +191,15 @@ public class GetCert {
             // Domainオブジェクトにstausをセット
             object.domainObjectSet(domain, status);
 
-            log.info("登録コモンネーム情報: " + domain.toString());
+            log.info("登録情報: " + domain.toString());
 
             // DB更新
             dao.updateDomainTable(domain);
 
-            // Delay
+            // 遅延1000msec
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
-//                System.err.println(e.toString());
                 log.error(e.toString());
                 e.getStackTrace();
             }
