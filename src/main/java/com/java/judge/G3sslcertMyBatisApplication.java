@@ -7,10 +7,10 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 
 @SpringBootApplication
 @MapperScan(basePackages = "com.java.judge.mapper")
-public class G3sslcertMyBatisDemoApplication {
+public class G3sslcertMyBatisApplication {
 
     public static void main(String[] args) throws Exception {
-        new SpringApplicationBuilder(G3sslcertMyBatisDemoApplication.class)
+        new SpringApplicationBuilder(G3sslcertMyBatisApplication.class)
         .web(WebApplicationType.NONE).run(args);
     }
 }

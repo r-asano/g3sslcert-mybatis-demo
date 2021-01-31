@@ -33,7 +33,7 @@ public class G3sslcertMyBatisRunner implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
 
-        log.info("G3sslcertApplication 開始");
+        log.info("G3sslcertMyBatisApplication 開始");
 
         String dateString = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
 
@@ -62,7 +62,7 @@ public class G3sslcertMyBatisRunner implements ApplicationRunner {
         // メールの送出
         mail.sendMail(domainList.size(), prefixAll, dateString);
 
-        log.info("G3sslcertApplication 正常終了");
+        log.info("G3sslcertMyBatisApplication 正常終了");
     }
 
 }

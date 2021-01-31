@@ -92,6 +92,7 @@ public class GetCert {
 
                 // SNI無効
                 boolean disableSNI = true;
+                log.info("SNIモード: " + !disableSNI);
                 // onemore flug
                 boolean onemore = false;
 
@@ -138,7 +139,6 @@ public class GetCert {
                             try {
                                 // 証明書が有効か判定
                                 ((X509Certificate) certs[0]).checkValidity();
-                                log.info("証明書は有効です: " + cn + ", SNI: " + !disableSNI);
 
                                 String issuer = ((X509Certificate) certs[0]).getIssuerX500Principal().getName();
 
@@ -151,6 +151,7 @@ public class GetCert {
                                 } else {
                                     status = issuer.substring(startStatus);
                                 }
+                                log.info("証明書は有効です: " + cn + ", STATUS: " + status + ", SNI: " + !disableSNI);
 
                             } catch (CertificateExpiredException e) {
 //                                System.err.println("Certificate is expired: " + cn + ", SNI:" + !disableSNI);

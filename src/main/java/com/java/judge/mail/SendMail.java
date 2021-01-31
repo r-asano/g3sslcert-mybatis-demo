@@ -116,6 +116,9 @@ public class SendMail {
             try {
                 mailSender.send(message);
                 log.info("メール送信に成功");
+                log.info("FROM: " + FROM);
+                log.info("TO: " + TO);
+                log.info("BODY_TEXT" + BODY_TEXT);
                 log.info("sendMail 正常終了");
             } catch (Exception e) {
                 e.printStackTrace();
@@ -135,6 +138,9 @@ public class SendMail {
 
                 client.sendRawEmail(rawEmailRequest);
                 log.info("メール送信に成功");
+                log.info("FROM: " + FROM);
+                log.info("TO: " + TO);
+                log.info("BODY_TEXT" + BODY_TEXT);
                 log.info("sendMail 正常終了");
             } catch (Exception e) {
                 e.printStackTrace();
