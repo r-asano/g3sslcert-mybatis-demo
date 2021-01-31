@@ -4,7 +4,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
@@ -15,23 +14,21 @@ import com.java.judge.dto.DomainDto;
 import com.java.judge.mail.SendMail;
 import com.java.judge.read.UtilDao;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
+@RequiredArgsConstructor
 @Component
 @Log4j2
-public class G3sslcertRunner implements ApplicationRunner {
+public class G3sslcertMyBatisRunner implements ApplicationRunner {
 
-    @Autowired
-    private UtilDao dao;
+    private final UtilDao dao;
 
-    @Autowired
-    private GetCert getCert;
+    private final GetCert getCert;
 
-    @Autowired
-    private OutputLog output;
+    private final OutputLog output;
 
-    @Autowired
-    private SendMail mail;
+    private final SendMail mail;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
@@ -42,7 +39,7 @@ public class G3sslcertRunner implements ApplicationRunner {
 
         // 初日と最終日のみ全数検査
         boolean zensu = false;
-        if (dateString.equals("2021-01-25") || dateString.equals("2021-03-31")) {
+        if (dateString.equals("2021-02-01") || dateString.equals("2021-03-31")) {
             zensu = true;
         }
 
