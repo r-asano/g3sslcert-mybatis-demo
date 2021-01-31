@@ -15,10 +15,10 @@ import com.java.judge.dto.DomainDto;
 import com.java.judge.mail.SendMail;
 import com.java.judge.read.UtilDao;
 
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 
 @Component
-@Slf4j
+@Log4j2
 public class G3sslcertRunner implements ApplicationRunner {
 
     @Autowired
