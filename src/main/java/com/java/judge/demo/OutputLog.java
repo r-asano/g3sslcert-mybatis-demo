@@ -10,7 +10,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.java.judge.dto.DomainDto;
 import com.java.judge.mapper.ReadMapper;
@@ -37,7 +36,6 @@ public class OutputLog {
     /*
      * 残存G3証明書ログの出力
      */
-    @Transactional
     public void outputG3Log(String dateString, String prefixAll) {
 
         log.info("outputG3Log 開始");

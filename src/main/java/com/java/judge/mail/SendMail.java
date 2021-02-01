@@ -72,7 +72,6 @@ public class SendMail {
      * @throws MessagingException
      * @throws UnsupportedEncodingException
      * @throws IOException
-     * @throws TemplateException
      */
     public void sendMail(int searchNumber, String prefixAll, String dateString)
             throws MessagingException, UnsupportedEncodingException {
@@ -169,7 +168,7 @@ public class SendMail {
                         + "★添付ファイル    : " + remainG3LogFile + "\r\n"
                         + "\r\n"
                         + "★指定事業者ごとの残留G3証明書数\r\n"
-                        + "joint_agent_id, agent_name, countG3\r\n"
+                        + "joint_agent_id,agent_name,countG3\r\n"
                         + "------------------------------------------------------------\r\n"
                 );
 
@@ -179,8 +178,8 @@ public class SendMail {
         // for文でagent_id, agent_name, count(*)をappend
         for (Map<String, Object> entry  : countMap) {
             sb.append(
-                    entry.get("id") + ", "
-                    + readMapper.selectAgentName((String) entry.get("id")) + ", "
+                    entry.get("id") + ","
+                    + readMapper.selectAgentName((String) entry.get("id")) + ","
                     + entry.get("count") + "\r\n"
                     );
         }

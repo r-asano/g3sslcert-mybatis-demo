@@ -13,8 +13,8 @@
         </layout>
     </appender>
 
-    <!-- DEBUGレベル出力用定義 -->
-    <appender name="FILE_DEBUG"
+    <!-- INFO レベル以上をファイルに出力する -->
+    <appender name="FILE_INFO"
         class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOG}/G3sslcertApplication-logger.log</file>
         <encoder
@@ -25,7 +25,7 @@
         <rollingPolicy
             class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- rollover daily and when the file reaches 10 MegaBytes -->
-            <fileNamePattern>${LOG}/G3sslcertApplication-logger-%d{yyyy-MM-dd}.%i.log
+            <fileNamePattern>${LOG}/G3sslcertApplication.log.%d{yyyy-MM-dd}.%i
             </fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy
                 class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
@@ -35,12 +35,13 @@
     </appender>
 
     <!-- ERRORレベル出力用定義 -->
-    <appender name="FILE_ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <appender name="FILE_ERROR"
+        class="ch.qos.logback.core.rolling.RollingFileAppender">
         <!-- ERRORレベルのみ出力するようフィルタを定義する -->
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
-          <level>ERROR</level>
-          <onMatch>ACCEPT</onMatch>
-          <onMismatch>DENY</onMismatch>
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
         </filter>
         <file>${LOG}/error.G3sslcertApplication-logger.log</file>
         <encoder
@@ -51,7 +52,7 @@
         <rollingPolicy
             class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- rollover daily and when the file reaches 10 MegaBytes -->
-            <fileNamePattern>${LOG}/error.G3sslcertApplication-logger-%d{yyyy-MM-dd}.%i.log
+            <fileNamePattern>${LOG}/error.G3sslcertApplication.log.%d{yyyy-MM-dd}.%i
             </fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy
                 class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
@@ -62,7 +63,7 @@
 
     <!-- LOG everything at DEBUG level -->
     <root level="info">
-        <appender-ref ref="FILE_DEBUG" />
+        <appender-ref ref="FILE_INFO" />
         <appender-ref ref="FILE_ERROR" />
         <appender-ref ref="CONSOLE" />
     </root>

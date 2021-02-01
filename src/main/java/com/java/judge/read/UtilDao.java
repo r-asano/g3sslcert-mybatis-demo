@@ -19,25 +19,19 @@ public class UtilDao implements UtilDaoInterface {
     private ReadMapper readMapper;
 
     @Override
-    @Transactional
     public List<DomainDto> getG3List() {
-
         List<DomainDto> g3DnCn = readMapper.selectG3Domain();
-
         return g3DnCn;
     }
 
     @Override
-    @Transactional
     public List<DomainDto> getAllList() {
-
         List<DomainDto> allDnCn = readMapper.selectAllDomain();
-
         return allDnCn;
     }
 
-
     @Override
+    // Updateに対してトランザクション処理をかける
     @Transactional
     public void updateDomainTable(DomainDto updDomain) {
         readMapper.updateDomain(updDomain);

@@ -23,7 +23,6 @@ import javax.net.ssl.X509TrustManager;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.java.judge.dto.DomainDto;
 import com.java.judge.mapper.ReadMapper;
@@ -58,12 +57,10 @@ public class GetCert {
     String PROFILE;
 
     /*
-     * 証明書情報の取得
-     * 証明書の状態更新
-     * ログの出力
+     * サーバー証明書情報の取得・状態更新
      */
-    @Transactional
-    public void getCertIssuerStatus(List<DomainDto> domainList, String prefixAll, String dateString) throws IOException {
+    public void getCertIssuerStatus(List<DomainDto> domainList, String prefixAll, String dateString)
+            throws IOException {
 
         log.info("GetCert 開始");
 
