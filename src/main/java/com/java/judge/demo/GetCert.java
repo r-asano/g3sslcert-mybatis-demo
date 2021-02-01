@@ -89,7 +89,7 @@ public class GetCert {
 
                 // SNI無効
                 boolean disableSNI = true;
-                log.info("SNIモード: " + !disableSNI);
+
                 // onemore flug
                 boolean onemore = false;
 
@@ -118,6 +118,7 @@ public class GetCert {
                         if (disableSNI) {
                             socketFactory = new SNIDisabledSSLSocketFactory(socketFactory);
                         }
+                        log.info("SNIモード: " + !disableSNI);
 
                         // connectionのタイムアウト設定
                         connection.setConnectTimeout(timeout);
