@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE logback>
 <configuration>
-    <property name="LOG" value="./log" />
+    <property name="LOG" value="/home/jprs/asano/g3sslcert-mybatis-demo/exe-log/" />
 
     <!-- CONSOLE用定義 -->
     <appender name="CONSOLE"
