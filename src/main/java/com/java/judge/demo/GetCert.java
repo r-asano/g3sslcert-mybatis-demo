@@ -153,15 +153,15 @@ public class GetCert {
 
                             } catch (CertificateExpiredException e) {
 //                                System.err.println("Certificate is expired: " + cn + ", SNI:" + !disableSNI);
-                                log.warn("証明書は失効しています: " + cn + ", SNI:" + !disableSNI);
+                                log.info("証明書は失効しています: " + cn + ", SNI:" + !disableSNI);
                                 status = "ERROR: " + e.getMessage();
                             }
                         } else {
-                            log.warn("証明書の型が不明です: " + cn + ", SNI: " + !disableSNI);
+                            log.info("証明書の型が不明です: " + cn + ", SNI: " + !disableSNI);
                             status = "ERROR: UNKNOWN CERTIFICATE TYPE";
                         }
                     } catch (Exception e) {
-                        log.warn("接続エラー: " + e.toString() + ": " + cn + ", SNI: " + !disableSNI);
+                        log.info("接続エラー: " + e.toString() + ": " + cn + ", SNI: " + !disableSNI);
                         status = "ERROR: " + e.toString();
                     }
 

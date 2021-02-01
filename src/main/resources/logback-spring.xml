@@ -16,20 +16,19 @@
     <!-- INFO レベル以上をファイルに出力する -->
     <appender name="FILE_INFO"
         class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOG}/G3sslcertApplication-logger.log</file>
+        <!-- <file>${LOG}/G3sslcertApplication-logger.log</file> -->
         <encoder
             class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
         </encoder>
-
         <rollingPolicy
             class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- rollover daily and when the file reaches 10 MegaBytes -->
-            <fileNamePattern>${LOG}/G3sslcertApplication.log.%d{yyyy-MM-dd}.%i
+            <fileNamePattern>${LOG}/G3sslcertApplication.log.%d{yyyy-MM-dd}
             </fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy
                 class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <maxFileSize>10MB</maxFileSize>
+                <maxFileSize>20MB</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
         </rollingPolicy>
     </appender>
@@ -43,20 +42,19 @@
             <onMatch>ACCEPT</onMatch>
             <onMismatch>DENY</onMismatch>
         </filter>
-        <file>${LOG}/error.G3sslcertApplication-logger.log</file>
+        <!-- <file>${LOG}/error.G3sslcertApplication-logger.log</file> -->
         <encoder
             class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
         </encoder>
-
         <rollingPolicy
             class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- rollover daily and when the file reaches 10 MegaBytes -->
-            <fileNamePattern>${LOG}/error.G3sslcertApplication.log.%d{yyyy-MM-dd}.%i
+            <fileNamePattern>${LOG}/error.G3sslcertApplication.log.%d{yyyy-MM-dd}
             </fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy
                 class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <maxFileSize>10MB</maxFileSize>
+                <maxFileSize>20MB</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
         </rollingPolicy>
     </appender>
