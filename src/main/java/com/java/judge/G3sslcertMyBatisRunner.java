@@ -39,7 +39,7 @@ public class G3sslcertMyBatisRunner implements ApplicationRunner {
 
         // 初日と最終日のみ全数検査
         boolean zensu = false;
-        if (dateString.equals("2021-02-02") || dateString.equals("2021-03-31")) {
+        if (dateString.equals("2021-02-01") || dateString.equals("2021-03-31")) {
             zensu = true;
         }
 

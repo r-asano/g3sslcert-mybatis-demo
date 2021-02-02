@@ -1,8 +1,9 @@
 package com.java.judge.mail;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.Date;
 import java.util.List;
@@ -10,7 +11,6 @@ import java.util.Map;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
-import javax.activation.FileDataSource;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
@@ -18,6 +18,7 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.internet.MimeUtility;
+import javax.mail.util.ByteArrayDataSource;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
@@ -70,11 +71,10 @@ public class SendMail {
      * メール送信
      *
      * @throws MessagingException
-     * @throws UnsupportedEncodingException
      * @throws IOException
      */
     public void sendMail(int searchNumber, String prefixAll, String dateString)
-            throws MessagingException, UnsupportedEncodingException {
+            throws MessagingException, IOException {
         log.info("sendMail 開始");
 
         String remainG3LogFile = prefixAll + remainG3Prefix + dateString;
@@ -101,8 +101,9 @@ public class SendMail {
 
         // パート2にファイルを設定
         MimeBodyPart bodyPart2=new MimeBodyPart();
-        DataSource dataSource=new FileDataSource(path + remainG3LogFile);
-        DataHandler dataHandler=new DataHandler(dataSource);
+        InputStream attachment = new FileInputStream(path + remainG3LogFile);
+        DataSource dataSource = new ByteArrayDataSource(attachment, "text/plain; charset=" + ENCODE);
+        DataHandler dataHandler = new DataHandler(dataSource);
         bodyPart2.setDataHandler(dataHandler);
         bodyPart2.setFileName(MimeUtility.encodeWord(remainG3LogFile));
         multipart.addBodyPart(bodyPart2);
