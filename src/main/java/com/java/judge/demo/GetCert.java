@@ -56,6 +56,10 @@ public class GetCert {
     @Value("${enviroment.profile}")
     String PROFILE;
 
+    @Value("${delay.time}")
+    private Integer delay;
+
+
     /*
      * サーバー証明書情報の取得・状態更新
      */
@@ -195,7 +199,7 @@ public class GetCert {
 
             // 遅延1000msec
             try {
-                Thread.sleep(1000);
+                Thread.sleep(delay);
             } catch (InterruptedException e) {
                 log.error(e.toString());
                 e.getStackTrace();
