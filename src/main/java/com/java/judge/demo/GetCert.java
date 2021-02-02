@@ -119,9 +119,13 @@ public class GetCert {
                             socketFactory = new SNIDisabledSSLSocketFactory(socketFactory);
                         }
                         log.info("SNIモード: " + !disableSNI);
+                        log.info("検査対象情報: "
+                                + cn + ", "
+                                + readMapper.selectAgentName(domain.getJointAgentId()));
 
                         // connectionのタイムアウト設定
                         connection.setConnectTimeout(timeout);
+                        connection.setReadTimeout(timeout);
 
                         // 設定をconnectionに反映
                         connection.setSSLSocketFactory(socketFactory);
@@ -164,11 +168,6 @@ public class GetCert {
                         log.info("接続エラー: " + e.toString() + ": " + cn + ", SNI: " + !disableSNI);
                         status = "ERROR: " + e.toString();
                     }
-
-                    log.info("検査対象情報: "
-                            + cn + ", "
-                            + readMapper.selectAgentName(domain.getJointAgentId()) + ", "
-                            + "SNI:" + !disableSNI);
 
                     // SNIのいずれかにG3証明書がある場合、statusをG3とする（SNIありのログはとれない可能性あり）
                     if (status.contains("G3") && status.contains("JPRS")) {
