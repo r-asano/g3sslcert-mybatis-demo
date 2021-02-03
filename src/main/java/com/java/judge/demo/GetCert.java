@@ -85,9 +85,9 @@ public class GetCert {
                 dnCn.add("www." + domain.getDnCn().substring(2));
                 log.info("ワイルドカード証明書");
             } else if (domain.isTwoWayFlag()) {
-                dnCn.add(domain.getDnCn().substring(2));
-                dnCn.add("www." + domain.getDnCn().substring(2));
-                log.info("ダブルオプションあり: " + domain.isTwoWayFlag());
+                dnCn.add(domain.getDnCn().substring(4));
+                dnCn.add("www." + domain.getDnCn().substring(4));
+                log.info("ダブルオプションあり");
             } else {
                 dnCn.add(domain.getDnCn());
             }
