@@ -43,8 +43,6 @@ public class G3sslcertMyBatisRunner implements ApplicationRunner {
             zensu = true;
         }
 
-        zensu = true;
-
         log.info("全数検査モード: " + zensu);
 
         String prefixAll;

@@ -87,7 +87,7 @@ public class GetCert {
             } else if (domain.isTwoWayFlag()) {
                 if(domain.getDnCn().startsWith("www")) {
                     dnCn.add(domain.getDnCn().substring(4));
-                    dnCn.add("www." + domain.getDnCn().substring(4));
+                    dnCn.add(domain.getDnCn());
                 } else {
                     dnCn.add(domain.getDnCn());
                     dnCn.add("www." + domain.getDnCn());
