@@ -41,4 +41,6 @@ public class DomainDto {
 
     private String jointAgentId;
 
+    private boolean twoWayFlag;
+
 }
