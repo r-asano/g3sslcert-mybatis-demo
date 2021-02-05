@@ -61,10 +61,6 @@ public class GetCert {
 
     private HttpsURLConnection connection;
 
-    private int responseCode;
-
-    private String responseMsg;
-
     /*
      * サーバー証明書情報の取得・状態更新
      */
@@ -172,7 +168,6 @@ public class GetCert {
                                 }
                                 log.info("証明書は有効です: " + cn + ", STATUS: " + status + ", SNI: " + !disableSNI);
                             } catch (CertificateExpiredException e) {
-//                                System.err.println("Certificate is expired: " + cn + ", SNI:" + !disableSNI);
                                 log.info("証明書は失効しています: " + cn + ", SNI:" + !disableSNI);
                                 status = "ERROR: " + e.getMessage();
                             }
