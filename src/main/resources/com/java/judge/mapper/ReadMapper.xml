@@ -122,7 +122,8 @@
         GROUP BY
             id
         ORDER BY
-            count desc
+            count DESC,
+            joint_agent_id ASC
     </select>
     <select id="selectJointAgentId" resultType="string">
         SELECT

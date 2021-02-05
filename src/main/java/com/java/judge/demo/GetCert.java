@@ -59,6 +59,11 @@ public class GetCert {
     @Value("${delay.time}")
     private Integer delay;
 
+    private HttpsURLConnection connection;
+
+    private int responseCode;
+
+    private String responseMsg;
 
     /*
      * サーバー証明書情報の取得・状態更新
@@ -110,7 +115,6 @@ public class GetCert {
                 while (disableSNI ^ onemore) {
                     try {
                         // 対象ドメインのHTTPS接続
-                        HttpsURLConnection connection;
                         if (PROFILE.equals("development")) {
                             // プロキシの名前解決ができないのでIPで指定
                             SocketAddress addr = new InetSocketAddress("172.18.6.18", 8080);
@@ -167,7 +171,6 @@ public class GetCert {
                                     status = issuer.substring(startStatus);
                                 }
                                 log.info("証明書は有効です: " + cn + ", STATUS: " + status + ", SNI: " + !disableSNI);
-
                             } catch (CertificateExpiredException e) {
 //                                System.err.println("Certificate is expired: " + cn + ", SNI:" + !disableSNI);
                                 log.info("証明書は失効しています: " + cn + ", SNI:" + !disableSNI);
@@ -200,7 +203,6 @@ public class GetCert {
 
             // Domainオブジェクトにstausをセット
             object.domainObjectSet(domain, status);
-
             log.info("登録情報: " + domain.toString());
 
             // DB更新
